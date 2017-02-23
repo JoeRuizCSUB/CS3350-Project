@@ -14,12 +14,12 @@ float gravity(Vec p1_pos, Vec p2_pos, float p1_mass, float p2_mass)
 */
 
 #include <GL/glx.h>
-#include "fonts.h"
-Rect pauseGame(int xsize, int ysize, Rect pausebox)
+void pauseGame(int xsize, int ysize, Rect *pausebox)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    pausebox.bot = ysize / 2;
-    pausebox.left = xsize / 2;
-    pausebox.center = 1;
-    return pausebox;
+    pausebox->bot = ysize / 2;
+    pausebox->left = xsize / 2;
+    pausebox->center = 1;
+    ggprint8b(&pausebox, 20, 0x00ff0000, "GAME PAUSED...");
+    return;
 }
