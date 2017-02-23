@@ -1,9 +1,13 @@
 //3350 Spring 2017
 //
-//program: asteroids.cpp
+//original program: asteroids.cpp
+//
 //author:  Gordon Griesel
 //date:    2014
 //mod spring 2015: added constructors
+//
+//modified by: Joe Ruiz, Jonathan Roman, Chris Kelly, Sean Nickell
+//renamed to spaceescape.cpp
 //
 //This program is a game starting point for 335
 //
@@ -82,7 +86,10 @@ extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
 //-----------------------------------------------------------------------------
 
+extern void pauseGame(int xsize, int ysize, Rect *pausebox);
+
 int xres=1250, yres=900;
+int pause_game = 0;
 
 struct Astronaut {
 	Vec dir;
@@ -137,6 +144,12 @@ struct Debris {
    int mass;
    Flt radius;
    Debris() { }
+};
+
+//Created by Joe
+struct Goal {
+    Vec pos;
+    Goal() {}
 };
 
 struct Game {
@@ -314,11 +327,12 @@ void check_resize(XEvent *e)
 
 void init(Game *g)
 {
-	//build 10 asteroids...
-	for (int j=0; j<10; j++) {
+    	//Joe decreased asteroid size
+	//build asteroids...
+	for (int j=0; j<3; j++) {
 		Asteroid *a = new Asteroid;
-		a->nverts = 8;
-		a->radius = rnd()*80.0 + 40.0;
+		a->nverts = 4;
+		a->radius = rnd()*40.0 + 40.0;
 		Flt r2 = a->radius / 2.0;
 		Flt angle = 0.0f;
 		Flt inc = (PI * 2.0) / (Flt)a->nverts;
@@ -331,12 +345,12 @@ void init(Game *g)
 		a->pos[1] = (Flt)(rand() % yres);
 		a->pos[2] = 0.0f;
 		a->angle = 0.0;
-		a->rotate = rnd() * 4.0 - 2.0;
+		a->rotate = rnd() * 2.0 - 2.0;
 		a->color[0] = 0.8;
 		a->color[1] = 0.8;
 		a->color[2] = 0.7;
-		a->vel[0] = (Flt)(rnd()*2.0-1.0);
-		a->vel[1] = (Flt)(rnd()*2.0-1.0);
+		a->vel[0] = (Flt)(rnd());
+		a->vel[1] = (Flt)(rnd());
 		//std::cout << "asteroid" << std::endl;
 		//add to front of linked list
 		a->next = g->ahead;
@@ -493,6 +507,7 @@ int check_keys(XEvent *e)
 {
 	//keyboard input?
 	static int shift=0;
+	Rect pause;
 	int key = XLookupKeysym(&e->xkey, 0);
 	//Log("key: %i\n", key);
 	if (e->type == KeyRelease) {
@@ -517,7 +532,10 @@ int check_keys(XEvent *e)
 			return 1;
 		case XK_f:
 			break;
-		case XK_s:
+		case XK_p:
+			pause_game ^= 1;
+			if (pause_game)
+			    pauseGame(xres, yres, &pause);
 			break;
 		case XK_Down:
 			break;
@@ -583,6 +601,9 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
 
 void physics(Game *g)
 {
+    if (pause_game)
+	return;
+
 	Flt d0,d1,dist;
 	//Update astronaut position
 	g->astronaut.pos[0] += g->astronaut.vel[0];
@@ -734,12 +755,13 @@ void physics(Game *g)
 		//convert angle to a vector
 		Flt xdir = cos(rad);
 		Flt ydir = sin(rad);
-		g->astronaut.vel[0] += xdir*0.02f;
-		g->astronaut.vel[1] += ydir*0.02f;
+		//Joe slowed astronaut down
+		g->astronaut.vel[0] += xdir*0.005f;
+		g->astronaut.vel[1] += ydir*0.005f;
 		Flt speed = sqrt(g->astronaut.vel[0]*g->astronaut.vel[0]+
 				g->astronaut.vel[1]*g->astronaut.vel[1]);
-		if (speed > 10.0f) {
-			speed = 10.0f;
+		if (speed > 3.0f) {
+			speed = 3.0f;
 			normalize(g->astronaut.vel);
 			g->astronaut.vel[0] *= speed;
 			g->astronaut.vel[1] *= speed;
