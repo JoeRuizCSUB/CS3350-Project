@@ -45,8 +45,6 @@
 #include <GL/glx.h>
 #include "log.h"
 #include "fonts.h"
-#include "ppm.h"
-//#include "seanN.cpp"
 
 //defined types
 typedef float Flt;
@@ -86,7 +84,6 @@ extern double physicsCountdown;
 extern double timeSpan;
 extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
-extern int ShowBackground();
 //-----------------------------------------------------------------------------
 
 Rect pauseGame(int xsize, int ysize, Rect pausebox);
@@ -140,13 +137,6 @@ struct Asteroid {
 	next = NULL;
     }
 };
-
-// Created by Sean
-Ppmimage *SpaceBackground=NULL;
-GLuint SpaceBackgroundTexture;
-int background = 0;
-// end of Sean modifications
-
 
 // Created by Joe
 struct Debris {
@@ -321,19 +311,6 @@ void init_opengl(void)
     //Do this to allow fonts
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
-
-    // Created by Sean
-    SpaceBackground = ppm6GetImage("./SpaceBackground.ppm");
-    glGenTextures(1, &SpaceBackgroundTexture);
-
-    glBindTexture(GL_TEXTURE_2D, SpaceBackgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3,
-	    SpaceBackground->width, SpaceBackground->height,
-	    0, GL_RGB, GL_UNSIGNED_BYTE, SpaceBackground->data);
-
-    // end of Sean Modifications   
 }
 
 void check_resize(XEvent *e)
@@ -357,7 +334,6 @@ void init(Game *g)
 	Asteroid *a = new Asteroid;
 	a->nverts = 4;
 	a->radius = rnd()*40.0 + 40.0;
-
 	Flt r2 = a->radius / 2.0;
 	Flt angle = 0.0f;
 	Flt inc = (PI * 2.0) / (Flt)a->nverts;
@@ -370,14 +346,12 @@ void init(Game *g)
 	a->pos[1] = (Flt)(rand() % yres);
 	a->pos[2] = 0.0f;
 	a->angle = 0.0;
-
 	a->rotate = rnd() * 2.0 - 2.0;
 	a->color[0] = 0.8;
 	a->color[1] = 0.8;
 	a->color[2] = 0.7;
 	a->vel[0] = (Flt)(rnd());
 	a->vel[1] = (Flt)(rnd());
-
 	//std::cout << "asteroid" << std::endl;
 	//add to front of linked list
 	a->next = g->ahead;
@@ -558,9 +532,6 @@ int check_keys(XEvent *e)
 	    return 1;
 	case XK_f:
 	    break;
-
-	case XK_s:
-
 	case XK_p:
 	    pause_game ^= 1;
 	    if (pause_game)
@@ -572,9 +543,6 @@ int check_keys(XEvent *e)
 	    break;
 	case XK_minus:
 	    break;
-    	case XK_b:
-	    background = ShowBackground();
-    	    break;		
     }
     return 0;
 }
@@ -787,7 +755,6 @@ void physics(Game *g)
 	//convert angle to a vector
 	Flt xdir = cos(rad);
 	Flt ydir = sin(rad);
-
 	//Joe slowed astronaut down
 	g->astronaut.vel[0] += xdir*0.005f;
 	g->astronaut.vel[1] += ydir*0.005f;
@@ -795,7 +762,6 @@ void physics(Game *g)
 		g->astronaut.vel[1]*g->astronaut.vel[1]);
 	if (speed > 3.0f) {
 	    speed = 3.0f;
-
 	    normalize(g->astronaut.vel);
 	    g->astronaut.vel[0] *= speed;
 	    g->astronaut.vel[1] *= speed;
@@ -847,26 +813,7 @@ void physics(Game *g)
 void render(Game *g)
 {
     Rect r;
-
-    glClear(GL_COLOR_BUFFER_BIT);	
-    // Sean Modifications
-    
-    if (background)
-    {
-	
-    	glBindTexture(GL_TEXTURE_2D, SpaceBackgroundTexture);
-    	glBegin(GL_QUADS);
-    	glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 0);
-    	glTexCoord2f(0.0f, 0.0f); glVertex2i(0, yres);
-    	glTexCoord2f(1.0f, 0.0f); glVertex2i(xres, yres);
-    	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres, 0);
-    	glEnd();
-    }	
-    // end of Sean modifications
-
-	
     glClear(GL_COLOR_BUFFER_BIT);
-
     //
     r.bot = yres - 20;
     r.left = 10;
@@ -874,8 +821,6 @@ void render(Game *g)
     ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
     ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
     ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
-
-
     //pause game created by Joe
     if (pause_game) {
     	glClear(GL_COLOR_BUFFER_BIT);
@@ -907,7 +852,6 @@ void render(Game *g)
     glVertex2f(0.0f, 0.0f);
     glEnd();
     glPopMatrix();
-
     if (!pause_game) {
 	if (keys[XK_Up] || g->mouseThrustOn) {
 	    int i;
@@ -930,7 +874,7 @@ void render(Game *g)
 	    }
 	    glEnd();
 	}
- 
+    }
     }
     //-------------------------------------------------------------------------
     //Draw the asteroids
