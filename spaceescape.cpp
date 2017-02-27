@@ -41,8 +41,6 @@
 #include <GL/glx.h>
 #include "log.h"
 #include "fonts.h"
-#include "ppm.h"
-//#include "seanN.cpp"
 
 //defined types
 typedef float Flt;
@@ -82,7 +80,6 @@ extern double physicsCountdown;
 extern double timeSpan;
 extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
-extern int ShowBackground();
 //-----------------------------------------------------------------------------
 
 int xres=1250, yres=900;
@@ -132,13 +129,6 @@ struct Asteroid {
 	next = NULL;
     }
 };
-
-// Created by Sean
-Ppmimage *SpaceBackground=NULL;
-GLuint SpaceBackgroundTexture;
-int background = 0;
-// end of Sean modifications
-
 
 // Created by Joe
 struct Debris {
@@ -311,6 +301,7 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
+
     // Created by Sean
     SpaceBackground = ppm6GetImage("./images/SpaceBackground.ppm");
     glGenTextures(1, &SpaceBackgroundTexture);
@@ -323,8 +314,6 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, SpaceBackground->data);
 
     // end of Sean Modifications    
-
-
 }
 
 void check_resize(XEvent *e)
@@ -345,8 +334,8 @@ void init(Game *g)
     //build 10 asteroids...
     for (int j=0; j<10; j++) {
 	Asteroid *a = new Asteroid;
-	a->nverts = 8;
-	a->radius = rnd()*80.0 + 40.0;
+	a->nverts = 4;
+	a->radius = rnd()*40.0 + 40.0;
 	Flt r2 = a->radius / 2.0;
 	Flt angle = 0.0f;
 	Flt inc = (PI * 2.0) / (Flt)a->nverts;
@@ -359,12 +348,13 @@ void init(Game *g)
 	a->pos[1] = (Flt)(rand() % yres);
 	a->pos[2] = 0.0f;
 	a->angle = 0.0;
-	a->rotate = rnd() * 4.0 - 2.0;
+
+	a->rotate = rnd() * 2.0 - 2.0;
 	a->color[0] = 0.8;
 	a->color[1] = 0.8;
 	a->color[2] = 0.7;
-	a->vel[0] = (Flt)(rnd()*2.0-1.0);
-	a->vel[1] = (Flt)(rnd()*2.0-1.0);
+	a->vel[0] = (Flt)(rnd());
+	a->vel[1] = (Flt)(rnd());
 	//std::cout << "asteroid" << std::endl;
 	//add to front of linked list
 	a->next = g->ahead;
@@ -546,6 +536,11 @@ int check_keys(XEvent *e)
 	case XK_f:
 	    break;
 	case XK_s:
+      break;
+	case XK_p:
+	    pause_game ^= 1;
+	    if (pause_game)
+		pauseGame(xres, yres, pbox);
 	    break;
 	case XK_Down:
 	    break;
@@ -553,9 +548,6 @@ int check_keys(XEvent *e)
 	    break;
 	case XK_minus:
 	    break;
-    	case XK_b:
-	    background = ShowBackground();
-    	    break;		
     }
     return 0;
 }
@@ -765,12 +757,14 @@ void physics(Game *g)
 	//convert angle to a vector
 	Flt xdir = cos(rad);
 	Flt ydir = sin(rad);
-	g->astronaut.vel[0] += xdir*0.02f;
-	g->astronaut.vel[1] += ydir*0.02f;
+
+	//Joe slowed astronaut down
+	g->astronaut.vel[0] += xdir*0.005f;
+	g->astronaut.vel[1] += ydir*0.005f;
 	Flt speed = sqrt(g->astronaut.vel[0]*g->astronaut.vel[0]+
 		g->astronaut.vel[1]*g->astronaut.vel[1]);
-	if (speed > 10.0f) {
-	    speed = 10.0f;
+	if (speed > 3.0f) {
+	    speed = 3.0f;
 	    normalize(g->astronaut.vel);
 	    g->astronaut.vel[0] *= speed;
 	    g->astronaut.vel[1] *= speed;
@@ -838,19 +832,21 @@ void render(Game *g)
     }	
     // end of Sean modifications
 
-	
-
-
-
-
-
-    //
     r.bot = yres - 20;
     r.left = 10;
     r.center = 0;
     ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
     ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
     ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
+
+    //pause game created by Joe
+    if (pause_game) {
+    	glClear(GL_COLOR_BUFFER_BIT);
+	pbox = pauseGame(xres, yres, pbox);
+	 ggprint16(&pbox, 20, 0x00ff0000, "GAME PAUSED...");
+	 ggprint12(&pbox, 20, 0x00ff0000, "Press P to resume");
+    }
+    if (!pause_game) {
     //-------------------------------------------------------------------------
     //Draw the astronaut
     glColor3fv(g->astronaut.color);
@@ -874,26 +870,30 @@ void render(Game *g)
     glVertex2f(0.0f, 0.0f);
     glEnd();
     glPopMatrix();
-    if (keys[XK_Up] || g->mouseThrustOn) {
-	int i;
-	//draw thrust
-	Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
-	//convert angle to a vector
-	Flt xdir = cos(rad);
-	Flt ydir = sin(rad);
-	Flt xs,ys,xe,ye,r;
-	glBegin(GL_LINES);
-	for (i=0; i<16; i++) {
-	    xs = -xdir * 11.0f + rnd() * 4.0 - 2.0;
-	    ys = -ydir * 11.0f + rnd() * 4.0 - 2.0;
-	    r = rnd()*40.0+40.0;
-	    xe = -xdir * r + rnd() * 18.0 - 9.0;
-	    ye = -ydir * r + rnd() * 18.0 - 9.0;
-	    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
-	    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
-	    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
+
+    if (!pause_game) {
+	if (keys[XK_Up] || g->mouseThrustOn) {
+	    int i;
+	    //draw thrust
+	    Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
+	    //convert angle to a vector
+	    Flt xdir = cos(rad);
+	    Flt ydir = sin(rad);
+	    Flt xs,ys,xe,ye,r;
+	    glBegin(GL_LINES);
+	    for (i=0; i<16; i++) {
+		xs = -xdir * 11.0f + rnd() * 4.0 - 2.0;
+		ys = -ydir * 11.0f + rnd() * 4.0 - 2.0;
+		r = rnd()*40.0+40.0;
+		xe = -xdir * r + rnd() * 18.0 - 9.0;
+		ye = -ydir * r + rnd() * 18.0 - 9.0;
+		glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
+		glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
+		glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
+	    }
+	    glEnd();
 	}
-	glEnd();
+    }
     }
     //-------------------------------------------------------------------------
     //Draw the asteroids
