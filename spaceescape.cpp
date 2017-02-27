@@ -47,6 +47,7 @@
 typedef float Flt;
 typedef float Vec[3];
 typedef Flt	Matrix[4][4];
+bool GameStartMenu = true;
 
 //macros
 #define rnd() (((double)rand())/(double)RAND_MAX)
@@ -141,6 +142,13 @@ struct Asteroid {
 	next = NULL;
     }
 };
+
+//Chris's modifications
+Ppmimage *StartUpMenu = NULL;
+GLuint StartUpMenuTexture;
+int menu = 1;
+//end of CK mod
+
 
 
 // Created by Joe
@@ -319,6 +327,18 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, SpaceBackground->data);
 
     // end of Sean Modifications    
+ //Chris's Code
+        StartUpMenu = ppm6GetImage("StartUpMenu.ppm");
+        glGenTextures(1, &StartUpMenuTexture);
+
+        glBindTexture(GL_TEXTURE_2D, StartUpMenuTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3,
+                StartUpMenu->width, StartUpMenu->height,
+                0, GL_RGB, GL_UNSIGNED_BYTE, StartUpMenu->data);
+        //ck end
+
 }
 
 void check_resize(XEvent *e)
@@ -445,6 +465,7 @@ int check_keys(XEvent *e)
 	case XK_f:
 	    break;
 	case XK_s:
+		GameStartMenu = false;
 	    break;
 	case XK_p:
 	    pause_game ^= 1;
@@ -722,6 +743,16 @@ void render(Game *g)
 {
     Rect r;
     glClear(GL_COLOR_BUFFER_BIT);	
+    if(GameStartMenu == true) {
+                glBindTexture(GL_TEXTURE_2D, StartUpMenuTexture);
+                glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+                glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+                glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+                glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+                glEnd();
+
+    } else { 
     //pause game created by Joe
     if (pause_game) {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -846,6 +877,7 @@ void render(Game *g)
 	glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
 	glEnd();
     }
+  }
 }
 
 
