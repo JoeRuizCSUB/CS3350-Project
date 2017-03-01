@@ -316,7 +316,7 @@ void init_opengl(void)
 
 
     // Created by Sean
-    SpaceBackground = ppm6GetImage("SpaceBackground.ppm");
+    SpaceBackground = ppm6GetImage("./Images/SpaceBackground.ppm");
     glGenTextures(1, &SpaceBackgroundTexture);
 
     glBindTexture(GL_TEXTURE_2D, SpaceBackgroundTexture);
@@ -328,7 +328,7 @@ void init_opengl(void)
 
     // end of Sean Modifications    
  //Chris's Code
-        StartUpMenu = ppm6GetImage("StartUpMenu.ppm");
+        StartUpMenu = ppm6GetImage("./Images/StartUpMenu.ppm");
         glGenTextures(1, &StartUpMenuTexture);
 
         glBindTexture(GL_TEXTURE_2D, StartUpMenuTexture);
