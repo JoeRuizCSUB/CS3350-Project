@@ -9,7 +9,7 @@
 //
 // Possible requirements:
 // ----------------------
-// welcome screen
+// welcome screen *
 // menu
 // multiple simultaneous key-press
 // show exhaust for thrusting
@@ -90,6 +90,7 @@ extern double timeSpan;
 extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
 extern int ShowBackground();
+extern void healthbar(int x,int y,Rect r);
 //-----------------------------------------------------------------------------
 
 Rect pauseGame(int xsize, int ysize, Rect pausebox);
@@ -787,6 +788,7 @@ void render(Game *g)
 	ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
 	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
 	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
+	healthbar(((xres/2)+350),yres-15,r);
 
 	if (!pause_game) {
 	    //-------------------------------------------------------------------------
