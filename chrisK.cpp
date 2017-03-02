@@ -1,3 +1,8 @@
+//Author: Chris Kelly
+//Purpose: SPACE Escape personal file 
+//Date - 3-2-17
+//CS 3350 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
