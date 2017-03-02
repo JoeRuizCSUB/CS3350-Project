@@ -1,5 +1,9 @@
-int ShowBackground()
+int SeanKeypress(int &counter)
 {
-    return(1);
-}
+    if (counter <5) 
+	counter++;
+    else
+       counter = 1;
 
+    return(counter);
+}
