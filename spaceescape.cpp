@@ -42,37 +42,20 @@
 #include "log.h"
 #include "fonts.h"
 #include "ppm.h"
+////////////////////////////////////////////////////////////
+// Jonathan Added
+// Contains all of the structures
+// most declarations
+#include "typedefine.h"
+////////////////////////////////////////////////////////////
 
-//defined types
-typedef float Flt;
-typedef float Vec[3];
-typedef Flt	Matrix[4][4];
-bool GameStartMenu = true;
-
-//macros
-#define rnd() (((double)rand())/(double)RAND_MAX)
-#define random(a) (rand()%a)
-#define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
-#define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
-#define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
-#define VecDot(a,b)	((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
-#define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
-			     (c)[1]=(a)[1]-(b)[1]; \
-(c)[2]=(a)[2]-(b)[2]
-//constants
-const float timeslice = 1.0f;
-const float gravity = -0.2f;
-#define PI 3.141592653589793
-#define ALPHA 1
-const int MAX_BULLETS = 11;
-const Flt MINIMUM_ASTEROID_SIZE = 60.0;
-
+bool GameStartMenu = true;      //
 //X Windows variables
-Display *dpy;
-Window win;
-GLXContext glc;
-
+Display *dpy;   //
+Window win;     //
+GLXContext glc; //
 // Created by Sean
+
 Ppmimage *Level1=NULL;
 GLuint Level1Texture;
 
@@ -92,122 +75,15 @@ int background = 1;
 // end of Sean modification
 
 
-//-----------------------------------------------------------------------------
-//Setup timers
-const double physicsRate = 1.0 / 60.0;
-const double oobillion = 1.0 / 1e9;
-extern struct timespec timeStart, timeCurrent;
-extern struct timespec timePause;
-extern double physicsCountdown;
-extern double timeSpan;
-extern double timeDiff(struct timespec *start, struct timespec *end);
-extern void timeCopy(struct timespec *dest, struct timespec *source);
-extern int SeanKeypress(int&);
-extern int ShowBackground();
-extern void healthbar(int x,int y,Rect r);
-//-----------------------------------------------------------------------------
-
-Rect pauseGame(int xsize, int ysize, Rect pausebox);
 int xres=1250, yres=900;
 Rect pbox;
 int pause_game = 0;
-
-struct Astronaut {
-    Vec dir;
-    Vec pos;
-    Vec vel;
-    int mass;
-    float angle;
-    float color[3];
-    Astronaut() {
-	VecZero(dir);
-	pos[0] = (Flt)(xres/2);
-	pos[1] = (Flt)(yres/2);
-	pos[2] = 0.0f;
-	VecZero(vel);
-	angle = 0.0;
-	color[0] = 1.0;
-	color[1] = 1.0;
-	color[2] = 1.0;
-    }
-};
-
-struct Bullet {
-    Vec pos;
-    Vec vel;
-    float color[3];
-    struct timespec time;
-    Bullet() { }
-};
-
-struct Asteroid {
-    Vec pos;
-    Vec vel;
-    int mass;
-    int nverts;
-    Flt radius;
-    Vec vert[8];
-    float angle;
-    float rotate;
-    float color[3];
-    struct Asteroid *prev;
-    struct Asteroid *next;
-    Asteroid() {
-	prev = NULL;
-	next = NULL;
-    }
-};
-
 //Chris's modifications
 Ppmimage *StartUpMenu = NULL;
 GLuint StartUpMenuTexture;
 int menu = 1;
 //end of CK mod
-
-
-
-// Created by Joe
-struct Debris {
-    Vec pos;
-    Vec vel;
-    int mass;
-    Flt radius;
-    Debris() { }
-};
-
-struct Game {
-    Astronaut astronaut;
-    Asteroid *ahead;
-    Bullet *barr;
-    int nasteroids;
-    int nbullets;
-    struct timespec bulletTimer;
-    Game() {
-	ahead = NULL;
-	barr = new Bullet[MAX_BULLETS];
-	nasteroids = 0;
-	nbullets = 0;
-    }
-    ~Game() {
-	delete [] barr;
-    }
-};
-
-
 int keys[65536];
-
-//function prototypes
-void initXWindows(void);
-void init_opengl(void);
-void cleanupXWindows(void);
-void check_resize(XEvent *e);
-void check_mouse(XEvent *e, Game *game);
-int check_keys(XEvent *e);
-void init(Game *g);
-void init_sounds(void);
-void physics(Game *game);
-void render(Game *game);
-void show_mouse_cursor(const int onoff);
 
 
 int main(void)
@@ -338,6 +214,7 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
+
 	    Level1->width, Level1->height,
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
@@ -382,7 +259,6 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level5->data);
 
     //End of Seans	
-
 
     //Chris's Code
     StartUpMenu = ppm6GetImage("./Images/StartUpMenu.ppm");
@@ -644,18 +520,23 @@ void physics(Game *g)
 	b->pos[0] += b->vel[0];
 	b->pos[1] += b->vel[1];
 	//Check for collision with window edges
+	////////////////////////////////////////////////////////////////////////////////////
+	// Jonathan commented out so that bullets would 
+	// end at window edges. No wrap around is wanted for the
+	// game...
 	if (b->pos[0] < 0.0) {
-	    b->pos[0] += (float)xres;
+	    //b->pos[0] += (float)xres;
 	}
 	else if (b->pos[0] > (float)xres) {
-	    b->pos[0] -= (float)xres;
+	    //b->pos[0] -= (float)xres;
 	}
 	else if (b->pos[1] < 0.0) {
-	    b->pos[1] += (float)yres;
+	    //b->pos[1] += (float)yres;
 	}
 	else if (b->pos[1] > (float)yres) {
-	    b->pos[1] -= (float)yres;
+	    //b->pos[1] -= (float)yres;
 	}
+	////////////////////////////////////////////////////////////////////////////////////
 	i++;
     }
     //
@@ -680,7 +561,18 @@ void physics(Game *g)
 	a->angle += a->rotate;
 	a = a->next;
     }
-    //
+
+    ////////////////////////////////////////////////////////////////////////
+    // Jonathan Added
+    // Added
+    // Attempt to detect collision between asteroid and
+    // astronaut. Was successful, code was moved into
+    // jonathanR.cpp. 
+    astronautCollision(g);
+    // End attempt...
+    ////////////////////////////////////////////////////////////////////////
+
+
     //Asteroid collision with bullets?
     //If collision detected:
     //     1. delete the bullet
@@ -817,7 +709,7 @@ void render(Game *g)
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	glEnd();
 
-    } else { 
+  } else { 
 	//pause game created by Joe
 	if (pause_game) {
 	    glClear(GL_COLOR_BUFFER_BIT);
@@ -886,6 +778,7 @@ void render(Game *g)
 	ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
 	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
 	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
+
 	healthbar(((xres/2)+350),yres-15,r);
 
 	if (!pause_game) {
@@ -985,6 +878,3 @@ void render(Game *g)
 	}
     }
 }
-
-
-
