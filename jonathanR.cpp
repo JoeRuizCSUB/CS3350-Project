@@ -6,27 +6,56 @@
 #include<iostream>
 #include <GL/glx.h>
 #include <cmath>
-using namespace std;
-void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
-    int i;
-    int triangleAmount = 200; //# of triangles used to draw circle
+#include "typedefine.h"
+#include <unistd.h>
+#include <ctime>
 
-    //GLfloat radius = 0.8f; //radius
-    GLfloat twicePi = 2.0f * 3.125;
+void astronautCollision(Game *g){
+    Asteroid *a = g->ahead;
+    // Attempt to detect collision between asteroid and
+    // astronaut
+    Flt d2, d3, dist2;
+    while(a){
+	d2 = g->astronaut.pos[0] - a->pos[0];
+	d3 = g->astronaut.pos[1] - a->pos[1];
+	dist2 = (d2*d2 + d3*d3);
+	std::cout << "distance: " << dist2 << std::endl;
+	if (dist2 < a->radius*a->radius){
+	    std::cout << "Hitting Asteroid\n";
+	    //std::cout << "asteroid hit." << std::endl;
+	    //this asteroid is hit.
+	    if (a->radius > MINIMUM_ASTEROID_SIZE) {
+		//break it into pieces.
+		Asteroid *ta = a;
+		buildAsteroidFragment(ta, a); 
+		int r = rand()%10+5;
+		for (int k=0; k<r; k++) {
+		    //get the next asteroid position in the array
+		    Asteroid *ta = new Asteroid;
+		    buildAsteroidFragment(ta, a); 
+		    //add to front of asteroid linked list
+		    ta->next = g->ahead;
+		    if (g->ahead != NULL)
+			g->ahead->prev = ta; 
+		    g->ahead = ta; 
+		    g->nasteroids++;
+		}
+	    } else {
+		a->color[0] = 1.0;
+		a->color[1] = 0.1;
+		a->color[2] = 0.1;
+		//asteroid is too small to break up
+		//delete the asteroid and bullet
+		Asteroid *savea = a->next;
+		deleteAsteroid(g, a); 
+		a = savea;
+		g->nasteroids--;
+	    }
 
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x, y); // center of circle
-    for(i = 0; i <= triangleAmount;i++) {
-	// To ensure inside loop
-	std::cout << "in loop\n";	
-	glVertex2f(
-		x + (radius * cos(i *  twicePi / triangleAmount)), 
-		y + (radius * sin(i * twicePi / triangleAmount))
-		);
-    }
-    // Statement used to ensure entering function when called
-    // in asteroids.cpp
-//    std::cout << "Inside Draw Circle Function\n";
-    glEnd();
+	}
+	if (a == NULL)
+	    break;
+	a = a->next;
+    }   
+    // End attempt...
 }
-
