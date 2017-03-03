@@ -9,7 +9,7 @@
 //
 // Possible requirements:
 // ----------------------
-// welcome screen
+// welcome screen *
 // menu
 // multiple simultaneous key-press
 // show exhaust for thrusting
@@ -55,10 +55,26 @@ Display *dpy;   //
 Window win;     //
 GLXContext glc; //
 // Created by Sean
-Ppmimage *SpaceBackground=NULL; //
-GLuint SpaceBackgroundTexture;  //
-int background = 0;
+
+Ppmimage *Level1=NULL;
+GLuint Level1Texture;
+
+Ppmimage *Level2=NULL;
+GLuint Level2Texture;
+
+Ppmimage *Level3=NULL;
+GLuint Level3Texture;
+
+Ppmimage *Level4=NULL;
+GLuint Level4Texture;
+
+Ppmimage *Level5=NULL;
+GLuint Level5Texture;
+int background = 1;
+
 // end of Sean modification
+
+
 int xres=1250, yres=900;
 Rect pbox;
 int pause_game = 0;
@@ -191,17 +207,59 @@ void init_opengl(void)
 
 
     // Created by Sean
-    SpaceBackground = ppm6GetImage("./Images/SpaceBackground.ppm");
-    glGenTextures(1, &SpaceBackgroundTexture);
+    Level1 = ppm6GetImage("./Images/Level1.ppm");
+    glGenTextures(1, &Level1Texture);
 
-    glBindTexture(GL_TEXTURE_2D, SpaceBackgroundTexture);
+    glBindTexture(GL_TEXTURE_2D, Level1Texture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-	    SpaceBackground->width, SpaceBackground->height,
-	    0, GL_RGB, GL_UNSIGNED_BYTE, SpaceBackground->data);
 
-    // end of Sean Modifications    
+	    Level1->width, Level1->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
+
+    Level2 = ppm6GetImage("./Images/Level2.ppm");
+    glGenTextures(1, &Level2Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Level2Texture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+	    Level2->width, Level2->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
+
+    Level3 = ppm6GetImage("./Images/Level3.ppm");
+    glGenTextures(1, &Level3Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Level3Texture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+	    Level3->width, Level3->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level3->data);
+
+    Level4 = ppm6GetImage("./Images/Level4.ppm");
+    glGenTextures(1, &Level4Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Level4Texture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+	    Level4->width, Level4->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level4->data);
+
+    Level5 = ppm6GetImage("./Images/Level5.ppm");
+    glGenTextures(1, &Level5Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Level5Texture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+	    Level5->width, Level5->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level5->data);
+
+    //End of Seans	
+
     //Chris's Code
     StartUpMenu = ppm6GetImage("./Images/StartUpMenu.ppm");
     glGenTextures(1, &StartUpMenuTexture);
@@ -348,8 +406,10 @@ int check_keys(XEvent *e)
 		pauseGame(xres, yres, pbox);
 	    break;
 	case XK_b:
-	    background ^= 1; 
+	    //SeansKeypress area
+	    background = SeanKeypress(background);		
 	    break;
+	    //End of Sean
 	case XK_Down:
 	    break;
 	case XK_equal:
@@ -420,18 +480,24 @@ void physics(Game *g)
     //Update astronaut position
     g->astronaut.pos[0] += g->astronaut.vel[0];
     g->astronaut.pos[1] += g->astronaut.vel[1];
+
+    //Joe added slow astronaut, cannot stay at full speed forever
+    g->astronaut.vel[0] *= 0.9971;
+    g->astronaut.vel[1] *= 0.9971;
+
     //Check for collision with window edges
+    //Joe added window edge borders for astronaut only
     if (g->astronaut.pos[0] < 0.0) {
-	g->astronaut.pos[0] += (float)xres;
+	g->astronaut.pos[0] = 0.0;
     }
-    else if (g->astronaut.pos[0] > (float)xres) {
-	g->astronaut.pos[0] -= (float)xres;
+    if (g->astronaut.pos[0] > (float)xres) {
+	g->astronaut.pos[0] = (float)xres;
     }
-    else if (g->astronaut.pos[1] < 0.0) {
-	g->astronaut.pos[1] += (float)yres;
+    if (g->astronaut.pos[1] < 0.0) {
+	g->astronaut.pos[1] = 0.0;
     }
-    else if (g->astronaut.pos[1] > (float)yres) {
-	g->astronaut.pos[1] -= (float)yres;
+    if (g->astronaut.pos[1] > (float)yres) {
+	g->astronaut.pos[1] = (float)yres;
     }
     //
     //
@@ -643,7 +709,7 @@ void render(Game *g)
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	glEnd();
 
-    } else { 
+  } else { 
 	//pause game created by Joe
 	if (pause_game) {
 	    glClear(GL_COLOR_BUFFER_BIT);
@@ -652,19 +718,59 @@ void render(Game *g)
 	    ggprint12(&pbox, 20, 0x00ff0000, "Press P to resume");
 	}
 
-	// Sean Modifications
-	if (background)
-	{
-	    glBindTexture(GL_TEXTURE_2D, SpaceBackgroundTexture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0, yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres, yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres, 0);
-	    glEnd();
-	}	
-	// end of Sean modifications
 
+	//Sean Modifications
+	if (background ==1) {
+	    glBindTexture(GL_TEXTURE_2D, Level1Texture);
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	    glEnd();
+	}
+
+	if (background ==2) {
+	    glBindTexture(GL_TEXTURE_2D, Level2Texture);
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	    glEnd();
+	}
+
+	if (background ==3) {
+	    glBindTexture(GL_TEXTURE_2D, Level3Texture);
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	    glEnd();
+	}
+
+	if (background ==4) {
+	    glBindTexture(GL_TEXTURE_2D, Level4Texture);
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	    glEnd();
+	}
+
+	if (background ==5) {
+	    glBindTexture(GL_TEXTURE_2D, Level5Texture);
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	    glEnd();
+	}
+
+	// end of Seans
 
 	r.bot = yres - 20;
 	r.left = 10;
@@ -672,6 +778,8 @@ void render(Game *g)
 	ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
 	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
 	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
+
+	healthbar(((xres/2)+350),yres-15,r);
 
 	if (!pause_game) {
 	    //-------------------------------------------------------------------------
@@ -770,6 +878,3 @@ void render(Game *g)
 	}
     }
 }
-
-
-
