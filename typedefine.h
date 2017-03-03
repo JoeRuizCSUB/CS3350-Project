@@ -42,7 +42,6 @@ extern void timeCopy(struct timespec *dest, struct timespec *source);
 extern int ShowBackground();
 //-----------------------------------------------------------------------------
 
-Rect pauseGame(int xsize, int ysize, Rect pausebox);
 struct Astronaut {
     Vec dir;
     Vec pos;
@@ -133,3 +132,7 @@ void astronautCollision(struct Game *g);
 void deleteAsteroid(Game *g, Asteroid *node);
 void buildAsteroidFragment(Asteroid *ta, Asteroid *a);
 //////////////////////////////////////////////////////////////////////////////////////
+Rect pauseGame(int xsize, int ysize, Rect pausebox);
+int SeanKeypress(int &counter);
+void healthbar(int x, int y, Rect r);
+

@@ -19,9 +19,7 @@ void astronautCollision(Game *g){
 	d2 = g->astronaut.pos[0] - a->pos[0];
 	d3 = g->astronaut.pos[1] - a->pos[1];
 	dist2 = (d2*d2 + d3*d3);
-	std::cout << "distance: " << dist2 << std::endl;
 	if (dist2 < a->radius*a->radius){
-	    std::cout << "Hitting Asteroid\n";
 	    //std::cout << "asteroid hit." << std::endl;
 	    //this asteroid is hit.
 	    if (a->radius > MINIMUM_ASTEROID_SIZE) {
