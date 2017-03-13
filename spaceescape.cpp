@@ -732,58 +732,7 @@ void render(Game *g)
 	}
 
 
-	//Sean Modifications
-	if (background ==1) {
-	    glBindTexture(GL_TEXTURE_2D, Level1Texture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-	    glEnd();
-	}
-
-	if (background ==2) {
-	    glBindTexture(GL_TEXTURE_2D, Level2Texture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-	    glEnd();
-	}
-
-	if (background ==3) {
-	    glBindTexture(GL_TEXTURE_2D, Level3Texture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-	    glEnd();
-	}
-
-	if (background ==4) {
-	    glBindTexture(GL_TEXTURE_2D, Level4Texture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-	    glEnd();
-	}
-
-	if (background ==5) {
-	    glBindTexture(GL_TEXTURE_2D, Level5Texture);
-	    glBegin(GL_QUADS);
-	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-	    glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-	    glEnd();
-	}
-
-	// end of Seans
+	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
 
 	r.bot = yres - 20;
 	r.left = 10;

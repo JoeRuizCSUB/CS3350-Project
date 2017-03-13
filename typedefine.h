@@ -138,6 +138,7 @@ int reduceAmo(int bulletsRemain);
 //////////////////////////////////////////////////////////////////////////////////////
 Rect pauseGame(int xsize, int ysize, Rect pausebox);
 int SeanKeypress(int &counter);
+void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
 
