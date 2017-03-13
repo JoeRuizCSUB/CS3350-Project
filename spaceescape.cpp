@@ -84,12 +84,7 @@ GLuint StartUpMenuTexture;
 int menu = 1;
 //end of CK mod
 int keys[65536];
-// Added by Jonathan
-// Used to keep track of how much health, fuel 
-// and bullets remain
-int health = 300;
-float fuel = 300;
-int bulletsRemain = 50;
+
 
 int main(void)
 {
@@ -573,7 +568,7 @@ void physics(Game *g)
     // Attempt to detect collision between asteroid and
     // astronaut. Was successful, code was moved into
     // jonathanR.cpp. 
-    astronautCollision(g, health);
+    astronautCollision(g);
     // End attempt...
     ////////////////////////////////////////////////////////////////////////
 
@@ -647,10 +642,7 @@ void physics(Game *g)
 	if (g->astronaut.angle < 0.0f)
 	    g->astronaut.angle += 360.0f;
     }
-    // Jonathan
-    // Added second conditional statement to stop
-    // thrust from occuring if no fuel remains
-    if (keys[XK_Up] && fuelRemains(fuel)) {
+    if (keys[XK_Up]) {
 	//apply thrust
 	//convert astronaut angle to radians
 	Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
@@ -677,12 +669,7 @@ void physics(Game *g)
 	double ts = timeDiff(&g->bulletTimer, &bt);
 	if (ts > 0.1) {
 	    timeCopy(&g->bulletTimer, &bt);
-	    
-	    // Jonathan
-	    // Added additional conditional statement so that astronaut
-	    // does not have unlimited amount of bullets.
-	    if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
-		bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
+	    if (g->nbullets < MAX_BULLETS) {
 		//shoot a bullet...
 		//Bullet *b = new Bullet;
 		Bullet *b = &g->barr[g->nbullets];
@@ -732,8 +719,9 @@ void render(Game *g)
 	}
 
 
+	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
 	//Sean Modifications
-	if (background ==1) {
+	/*if (background ==1) {
 	    glBindTexture(GL_TEXTURE_2D, Level1Texture);
 	    glBegin(GL_QUADS);
 	    glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
@@ -781,7 +769,7 @@ void render(Game *g)
 	    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
 	    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	    glEnd();
-	}
+	}*/
 
 	// end of Seans
 
@@ -792,13 +780,7 @@ void render(Game *g)
 	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
 	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
 
-	// Display and decrease health when colliding with asteroid
-	// Chris added
-	healthbar(((xres/2)+350),yres-15,r, health);
-
-	// Display and decrease fuel when pressing up key
-	// Jonathan added
-	fuelbar(((xres/2)-150),yres-15,r, fuel);
+	healthbar(((xres/2)+350),yres-15,r);
 
 	if (!pause_game) {
 	    //-------------------------------------------------------------------------
@@ -826,17 +808,9 @@ void render(Game *g)
 	    glPopMatrix();
 
 	    if (!pause_game) {
-		// Jonathan
-		// Added second condition to stop rendering
-		// thrust coming out of astronaut
-		if (keys[XK_Up] && fuelRemains(fuel)) {
+		if (keys[XK_Up]) {
 		    int i;
 		    //draw thrust
-		    // Jonathan Added
-		    // Reduce fuel remaining
-		    if (fuelRemains(fuel)) {
-			fuel = reduceFuel(fuel);
-		    }
 		    Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
 		    //convert angle to a vector
 		    Flt xdir = cos(rad);

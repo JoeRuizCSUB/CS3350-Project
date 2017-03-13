@@ -8,7 +8,7 @@
 //defined types
 typedef float Flt;
 typedef float Vec[3];
-typedef Flt Matrix[4][4];
+typedef Flt     Matrix[4][4];
 extern int xres, yres;
 
 //macros
@@ -26,7 +26,7 @@ const float timeslice = 1.0f;
 const float gravity = -0.2f;
 #define PI 3.141592653589793
 #define ALPHA 1
-const int MAX_BULLETS = 100;
+const int MAX_BULLETS = 11;
 const Flt MINIMUM_ASTEROID_SIZE = 60.0;
 
 //-----------------------------------------------------------------------------
@@ -128,16 +128,12 @@ void render(Game *game);
 void show_mouse_cursor(const int onoff);
 
 // Jonathan Added
-void astronautCollision(struct Game *g, int &health);
+void astronautCollision(struct Game *g);
 void deleteAsteroid(Game *g, Asteroid *node);
 void buildAsteroidFragment(Asteroid *ta, Asteroid *a);
-int fuelRemains(float fuel);
-float reduceFuel(float fuel);
-int remainingAmo(int bulletsRemain);
-int reduceAmo(int bulletsRemain);
 //////////////////////////////////////////////////////////////////////////////////////
 Rect pauseGame(int xsize, int ysize, Rect pausebox);
 int SeanKeypress(int &counter);
-void healthbar(int x, int y, Rect r, int &health);
-void fuelbar(int x, int y, Rect r, float &fuel);
+void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void healthbar(int x, int y, Rect r);
 
