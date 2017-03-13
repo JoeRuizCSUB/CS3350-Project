@@ -22,37 +22,38 @@
 #include "ppm.h"
 
 
-	
 
-void healthbar(int x, int y, Rect r) 
+
+void healthbar(int x, int y, Rect r, int &health) 
 {
-   // glDisable(GL_TEXTURE_2D);
-    glColor3f(1.0,0.0,0.0);
+    int healthView = health;
+    // glDisable(GL_TEXTURE_2D);
+    glColor3f(0.0,0.0,0.0);
     int cx = x;
     int cy = y;
     glBegin(GL_QUADS);
-    		glVertex2i(cx-155,cy+15);
-    		glVertex2i(cx+155,cy+15);
-    		glVertex2i(cx+155,cy-15);
-    		glVertex2i(cx-155,cy-15);
-   glEnd(); 
-   glEnable(GL_TEXTURE_2D);
-   glColor3f(0.0,1.0,0.0);
-   glBegin(GL_QUADS);
-    		glVertex2i(cx-150,cy+10);
-    		glVertex2i(cx+150,cy+10);
-    		glVertex2i(cx+150,cy-10);
-    		glVertex2i(cx-150,cy-10);
-   glEnd(); 
-   r.bot = cy -5;
-   r.left = cx ;
-   r.center = 1;
-  //glEnable(GL_TEXTURE_2D);
-   ggprint8b(&r,20,0x00ffffff, "Health");
-   glEnable(GL_TEXTURE_2D);
+    glVertex2i(cx-155,cy+15);
+    glVertex2i(cx+155,cy+15);
+    glVertex2i(cx+155,cy-15);
+    glVertex2i(cx-155,cy-15);
+    glEnd(); 
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(0.0,1.0,0.0);
+    if (healthView <= 20) {
+	glColor3f(1.0,0.0,0.0);
+    }
 
-
-
-
+    glBegin(GL_QUADS);
+    glVertex2i(cx-150,cy+10);
+    glVertex2i(cx+healthView-150,cy+10);
+    glVertex2i(cx+healthView-150,cy-10);
+    glVertex2i(cx-150,cy-10);
+    glEnd(); 
+    r.bot = cy -5;
+    r.left = cx ;
+    r.center = 1;
+    //glEnable(GL_TEXTURE_2D);		If you want to see amount
+    ggprint8b(&r,20,0x00ffffff, "Health");// %d", health);
+    glEnable(GL_TEXTURE_2D);
 
 }
