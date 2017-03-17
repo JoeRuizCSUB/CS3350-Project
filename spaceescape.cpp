@@ -76,8 +76,13 @@ int background = 1;
 
 
 int xres=1250, yres=900;
+// Added by Joe
 Rect pbox;
 int pause_game = 1;
+int level = 1;
+int restart = 0;
+// end of Joe
+//
 //Chris's modifications
 Ppmimage *StartUpMenu = NULL;
 GLuint StartUpMenuTexture;
@@ -90,13 +95,13 @@ int keys[65536];
 int health = 300;
 float fuel = 300;
 int bulletsRemain = 50;
+Game game;
 
 int main(void)
 {
     logOpen();
     initXWindows();
     init_opengl();	
-    Game game;
     init(&game);
     srand(time(NULL));
     clock_gettime(CLOCK_REALTIME, &timePause);
@@ -108,7 +113,7 @@ int main(void)
 	    XEvent e;
 	    XNextEvent(dpy, &e);
 	    check_resize(&e);
-	    done = check_keys(&e);
+	    done = check_keys(&e, &game);
 	}
 	clock_gettime(CLOCK_REALTIME, &timeCurrent);
 	timeSpan = timeDiff(&timeStart, &timeCurrent);
@@ -137,7 +142,7 @@ void set_title(void)
 {
     //Set the window title bar.
     XMapWindow(dpy, win);
-    XStoreName(dpy, win, "CS335 - Asteroids template");
+    XStoreName(dpy, win, "CS3350 Project - Space Escape");
 }
 
 void setup_screen_res(const int w, const int h)
@@ -374,7 +379,7 @@ void show_mouse_cursor(const int onoff)
 }
 
 
-int check_keys(XEvent *e)
+int check_keys(XEvent *e, Game *g)
 {
     //keyboard input?
     static int shift=0;
@@ -400,7 +405,20 @@ int check_keys(XEvent *e)
     switch (key) {
 	case XK_Escape:
 	    return 1;
-	case XK_f:
+	case XK_e:
+	    if (pause_game)
+		return 1;
+	case XK_r:
+	    if (pause_game) {
+		restartLevel(health, fuel, bulletsRemain);
+		g->ahead = NULL;
+
+		init(&game);
+		g->astronaut.pos[0] = (Flt)(xres/4);
+		g->astronaut.pos[1] = (Flt)(xres/4);
+		g->astronaut.vel[0] = 0.0;
+		g->astronaut.vel[1] = 0.0;
+	    }
 	    break;
 	case XK_s:
 	    // Conditional statement so that
@@ -411,13 +429,19 @@ int check_keys(XEvent *e)
 	    }
 	    break;
 	case XK_p:
+	    // Added by Joe
 	    // Do not allow to be paused before the game
 	    // starts.
 	    if (GameStartMenu == false){
 		pause_game ^= 1;
-		if (pause_game)
+		if (pause_game) {
 		    pauseGame(xres, yres, pbox);
+		    //int restart = checkPauseKeys(key, restart);
+		    //if (restart)
+		    //return 1;
+		}
 	    }
+	    // end of Joe
 	    break;
 	case XK_b:
 	    //SeansKeypress area
@@ -743,21 +767,16 @@ void render(Game *g)
 	glEnd();
 
     } else { 
-	//pause game created by Joe
-	if (pause_game) {
-	    glClear(GL_COLOR_BUFFER_BIT);
-	    pbox = pauseGame(xres, yres, pbox);
-	    ggprint16(&pbox, 20, 0x00ff0000, "GAME PAUSED...");
-	    ggprint12(&pbox, 20, 0x00ff0000, "Press P to resume");
-	}
-
-
 	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
+	//pause game created by Joe
+	if (pause_game)
+	    pauseGame(xres, yres, pbox); 
+	// end Joe
 
 	r.bot = yres - 20;
 	r.left = 10;
 	r.center = 0;
-	ggprint8b(&r, 16, 0x00ff0000, "cs335 - Asteroids");
+	ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
 	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
 	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
 
@@ -794,37 +813,36 @@ void render(Game *g)
 	    glEnd();
 	    glPopMatrix();
 
-	    if (!pause_game) {
-		// Jonathan
-		// Added second condition to stop rendering
-		// thrust coming out of astronaut
-		if (keys[XK_Up] && fuelRemains(fuel)) {
-		    int i;
-		    //draw thrust
-		    // Jonathan Added
-		    // Reduce fuel remaining
-		    if (fuelRemains(fuel)) {
-			fuel = reduceFuel(fuel);
-		    }
-		    Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
-		    //convert angle to a vector
-		    Flt xdir = cos(rad);
-		    Flt ydir = sin(rad);
-		    Flt xs,ys,xe,ye,r;
-		    glBegin(GL_LINES);
-		    for (i=0; i<8; i++) {
-			xs = -xdir * 11.0f + rnd() * 8.0 - 2.0;
-			ys = -ydir * 11.0f + rnd() * 8.0 - 2.0;
-			r = rnd()+30.0;
-			xe = -xdir * r + rnd() * 18.0 - 9.0;
-			ye = -ydir * r + rnd() * 18.0 - 9.0;
-			glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
-			glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
-			glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
-		    }
-		    glEnd();
+	    // Jonathan
+	    // Added second condition to stop rendering
+	    // thrust coming out of astronaut
+	    if (keys[XK_Up] && fuelRemains(fuel)) {
+		int i;
+		//draw thrust
+		// Jonathan Added
+		// Reduce fuel remaining
+		if (fuelRemains(fuel)) {
+		    fuel = reduceFuel(fuel);
 		}
+		Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
+		//convert angle to a vector
+		Flt xdir = cos(rad);
+		Flt ydir = sin(rad);
+		Flt xs,ys,xe,ye,r;
+		glBegin(GL_LINES);
+		for (i=0; i<8; i++) {
+		    xs = -xdir * 11.0f + rnd() * 8.0 - 2.0;
+		    ys = -ydir * 11.0f + rnd() * 8.0 - 2.0;
+		    r = rnd()+30.0;
+		    xe = -xdir * r + rnd() * 18.0 - 9.0;
+		    ye = -ydir * r + rnd() * 18.0 - 9.0;
+		    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
+		    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
+		    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
+		}
+		glEnd();
 	    }
+
 	}
 	//-------------------------------------------------------------------------
 	//Draw the asteroids
