@@ -77,7 +77,7 @@ int background = 1;
 
 int xres=1250, yres=900;
 Rect pbox;
-int pause_game = 0;
+int pause_game = 1;
 //Chris's modifications
 Ppmimage *StartUpMenu = NULL;
 GLuint StartUpMenuTexture;
@@ -403,12 +403,21 @@ int check_keys(XEvent *e)
 	case XK_f:
 	    break;
 	case XK_s:
-	    GameStartMenu = false;
+	    // Conditional statement so that
+	    // game does not start before pressing 's'
+	    if (GameStartMenu == true){
+		GameStartMenu = false;
+		pause_game = false;
+	    }
 	    break;
 	case XK_p:
-	    pause_game ^= 1;
-	    if (pause_game)
-		pauseGame(xres, yres, pbox);
+	    // Do not allow to be paused before the game
+	    // starts.
+	    if (GameStartMenu == false){
+		pause_game ^= 1;
+		if (pause_game)
+		    pauseGame(xres, yres, pbox);
+	    }
 	    break;
 	case XK_b:
 	    //SeansKeypress area
@@ -512,15 +521,21 @@ void physics(Game *g)
     int i=0;
     while (i < g->nbullets) {
 	Bullet *b = &g->barr[i];
-	//How long has bullet been alive?
-	double ts = timeDiff(&b->time, &bt);
-	if (ts > 2.5) {
-	    //time to delete the bullet.
+
+	// Jonathan Changed From Original...
+	// Bullets are now removed as soon as they hit any
+	// edge of the screen instead of timing how long the
+	// bullet has been alive. (Was previously used for
+	// wrap around of bullet)
+	if ((b->pos[0] < 0.0) || (b->pos[0] > (float)xres) ||
+		(b->pos[1] < 0.0) ||  (b->pos[1] > (float)yres) ) {
+
 	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
 	    g->nbullets--;
 	    //do not increment i.
 	    continue;
 	}
+
 	//move the bullet
 	b->pos[0] += b->vel[0];
 	b->pos[1] += b->vel[1];
@@ -574,6 +589,11 @@ void physics(Game *g)
     // astronaut. Was successful, code was moved into
     // jonathanR.cpp. 
     astronautCollision(g, health);
+
+    // Currently exits the game if all health is lost. Change
+    // it so that the game starts over...
+    if (health == 0)
+	exit(0);
     // End attempt...
     ////////////////////////////////////////////////////////////////////////
 
@@ -677,7 +697,7 @@ void physics(Game *g)
 	double ts = timeDiff(&g->bulletTimer, &bt);
 	if (ts > 0.1) {
 	    timeCopy(&g->bulletTimer, &bt);
-	    
+
 	    // Jonathan
 	    // Added additional conditional statement so that astronaut
 	    // does not have unlimited amount of bullets.
@@ -722,7 +742,7 @@ void render(Game *g)
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	glEnd();
 
-  } else { 
+    } else { 
 	//pause game created by Joe
 	if (pause_game) {
 	    glClear(GL_COLOR_BUFFER_BIT);
@@ -838,14 +858,12 @@ void render(Game *g)
 	for (int i=0; i<g->nbullets; i++) {
 	    Bullet *b = &g->barr[i];
 	    //Log("draw bullet...\n");
-	    glColor3f(1.0, 1.0, 1.0);
 	    glBegin(GL_POINTS);
 	    glVertex2f(b->pos[0],      b->pos[1]);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]);
 	    glVertex2f(b->pos[0]+1.0f, b->pos[1]);
 	    glVertex2f(b->pos[0],      b->pos[1]-1.0f);
 	    glVertex2f(b->pos[0],      b->pos[1]+1.0f);
-	    glColor3f(0.8, 0.8, 0.8);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
 	    glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);

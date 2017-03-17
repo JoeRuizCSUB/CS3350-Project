@@ -26,7 +26,7 @@ void astronautCollision(Game *g, int &health)
 	    
 	    // Reducing health when hitting an asteroid.
 	    if (health >= 0){
-	    	health = health - 20;
+	    	health = health - 120;
 		// So that health display does not show 
 		// a negative number.
 		if (health < 0) {
