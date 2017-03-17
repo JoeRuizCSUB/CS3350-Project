@@ -51,8 +51,8 @@ struct Astronaut {
     float color[3];
     Astronaut() {
         VecZero(dir);
-        pos[0] = (Flt)(xres/2);
-        pos[1] = (Flt)(yres/2);
+        pos[0] = (Flt)(xres/4);
+        pos[1] = (Flt)(yres/4);
         pos[2] = 0.0f;
         VecZero(vel);
         angle = 0.0;
@@ -120,7 +120,7 @@ void init_opengl(void);
 void cleanupXWindows(void);
 void check_resize(XEvent *e);
 void check_mouse(XEvent *e, Game *game);
-int check_keys(XEvent *e);
+int check_keys(XEvent *e, Game *g);
 void init(Game *g);
 void init_sounds(void);
 void physics(Game *game);
@@ -136,7 +136,8 @@ float reduceFuel(float fuel);
 int remainingAmo(int bulletsRemain);
 int reduceAmo(int bulletsRemain);
 //////////////////////////////////////////////////////////////////////////////////////
-Rect pauseGame(int xsize, int ysize, Rect pausebox);
+void pauseGame(int xsize, int ysize, Rect pausebox);
+void restartLevel(int &health, float &fuel, int &bulletsRemain);
 int SeanKeypress(int &counter);
 void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void healthbar(int x, int y, Rect r, int &health);
