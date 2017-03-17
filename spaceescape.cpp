@@ -536,17 +536,6 @@ void physics(Game *g)
 	    continue;
 	}
 
-	// Gordon had it set to delete based off the time the bullet
-	// has been "alive". Changed above.
-
-	/*double ts = timeDiff(&b->time, &bt);
-	  if (ts > 2.5) {
-	//time to delete the bullet.
-	memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
-	g->nbullets--;
-	//do not increment i.
-	continue;
-	}*/
 	//move the bullet
 	b->pos[0] += b->vel[0];
 	b->pos[1] += b->vel[1];
@@ -920,14 +909,12 @@ void render(Game *g)
 	for (int i=0; i<g->nbullets; i++) {
 	    Bullet *b = &g->barr[i];
 	    //Log("draw bullet...\n");
-	    //glColor3f(1.0f, 1.0f, 1.0f);
 	    glBegin(GL_POINTS);
 	    glVertex2f(b->pos[0],      b->pos[1]);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]);
 	    glVertex2f(b->pos[0]+1.0f, b->pos[1]);
 	    glVertex2f(b->pos[0],      b->pos[1]-1.0f);
 	    glVertex2f(b->pos[0],      b->pos[1]+1.0f);
-	    //glColor3f(0.8f, 0.8f, 0.8f);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
 	    glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
 	    glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
