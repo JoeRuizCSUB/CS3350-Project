@@ -95,6 +95,7 @@ int keys[65536];
 int health = 300;
 float fuel = 300;
 int bulletsRemain = 50;
+int dead = 0;
 Game game;
 
 int main(void)
@@ -411,8 +412,10 @@ int check_keys(XEvent *e, Game *g)
 	case XK_r:
 	    if (pause_game) {
 		restartLevel(health, fuel, bulletsRemain);
+		dead = 0;
 		g->ahead = NULL;
 
+		g->nasteroids = 0;
 		init(&game);
 		g->astronaut.pos[0] = (Flt)(xres/4);
 		g->astronaut.pos[1] = (Flt)(xres/4);
@@ -432,7 +435,7 @@ int check_keys(XEvent *e, Game *g)
 	    // Added by Joe
 	    // Do not allow to be paused before the game
 	    // starts.
-	    if (GameStartMenu == false){
+	    if (GameStartMenu == false && !dead){
 		pause_game ^= 1;
 		if (pause_game) {
 		    pauseGame(xres, yres, pbox);
@@ -616,8 +619,22 @@ void physics(Game *g)
 
     // Currently exits the game if all health is lost. Change
     // it so that the game starts over...
-    if (health == 0)
-	exit(0);
+    if (health == 0){
+	// Make sure to pause the game and expect an input.
+	// 'dead' is used to ensure that 'p' in the pause_game menu
+	// is no longer allowed to be pressed since health is now 0 
+	// which means you either restart or exit.
+	pause_game = true;
+	dead = 1;
+	if (pause_game) {
+	    pauseGame(xres, yres, pbox);
+	    //int restart = checkPauseKeys(key, restart);
+	    //if (restart)
+	    //return 1;
+	}
+
+	//exit(0);
+    }
     // End attempt...
     ////////////////////////////////////////////////////////////////////////
 
