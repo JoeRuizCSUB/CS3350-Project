@@ -410,7 +410,7 @@ int check_keys(XEvent *e, Game *g)
 	    if (pause_game)
 		return 1;
 	case XK_r:
-	    if (pause_game) {
+	    if (pause_game || dead || fuel==0) {
 		restartLevel(health, fuel, bulletsRemain);
 		dead = 0;
 		g->ahead = NULL;
@@ -421,6 +421,7 @@ int check_keys(XEvent *e, Game *g)
 		g->astronaut.pos[1] = (Flt)(xres/4);
 		g->astronaut.vel[0] = 0.0;
 		g->astronaut.vel[1] = 0.0;
+		pause_game = 0;
 	    }
 	    break;
 	case XK_s:
@@ -627,7 +628,7 @@ void physics(Game *g)
 	pause_game = true;
 	dead = 1;
 	if (pause_game) {
-	    pauseGame(xres, yres, pbox);
+	    deadGame(xres, yres, pbox);
 	    //int restart = checkPauseKeys(key, restart);
 	    //if (restart)
 	    //return 1;
@@ -785,17 +786,13 @@ void render(Game *g)
 
     } else { 
 	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
-	//pause game created by Joe
-	if (pause_game)
-	    pauseGame(xres, yres, pbox); 
-	// end Joe
 
 	r.bot = yres - 20;
 	r.left = 10;
 	r.center = 0;
 	ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
-	ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g->nbullets);
-	ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g->nasteroids);
+	ggprint8b(&r, 16, 0x00ffff00, "Bullets Remaining: %i", bulletsRemain);
+	ggprint8b(&r, 16, 0x00ffff00, "Asteroids Remaining: %i", g->nasteroids);
 
 	// Display and decrease health when colliding with asteroid
 	// Chris added
@@ -808,7 +805,7 @@ void render(Game *g)
 	if (!pause_game) {
 	    //-------------------------------------------------------------------------
 	    //Draw the astronaut
-	    glColor3fv(g->astronaut.color);
+	    //glColor3fv(g->astronaut.color);
 	    glPushMatrix();
 	    glTranslatef(g->astronaut.pos[0], g->astronaut.pos[1], g->astronaut.pos[2]);
 	    //float angle = atan2(astronaut.dir[1], astronaut.dir[0]);
@@ -824,7 +821,7 @@ void render(Game *g)
 	    glVertex2f(  0.0f, 20.0f);
 	    glVertex2f( 12.0f, -10.0f);
 	    glEnd();
-	    glColor3f(1.0f, 0.0f, 0.0f);
+	    //glColor3f(1.0f, 0.0f, 0.0f);
 	    glBegin(GL_POINTS);
 	    glVertex2f(0.0f, 0.0f);
 	    glEnd();
@@ -856,6 +853,7 @@ void render(Game *g)
 		    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
 		    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
 		    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
+	    glColor3f(1.0f, 1.0f, 1.0f);
 		}
 		glEnd();
 	    }
@@ -867,7 +865,7 @@ void render(Game *g)
 	    Asteroid *a = g->ahead;
 	    while (a) {
 		//Log("draw asteroid...\n");
-		glColor3fv(a->color);
+		//glColor3fv(a->color);
 		glPushMatrix();
 		glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
 		glRotatef(a->angle, 0.0f, 0.0f, 1.0f);
@@ -905,5 +903,16 @@ void render(Game *g)
 	    glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
 	    glEnd();
 	}
+	//pause game created by Joe
+	if (pause_game && dead==0)
+	    pauseGame(xres, yres, pbox);
+	if (dead) 
+	    deadGame(xres, yres, pbox);
+	if (fuel == 0 && g->astronaut.vel[0] < 0.08 && g->astronaut.vel[1] < 0.08) {
+	    strandedGame(xres, yres, pbox);	    
+	    pause_game = 1;
+	}
+	// end Joe
+
     }
 }

@@ -1,6 +1,7 @@
 CFLAGS = -I ./include
 ##LIB    = ./libggfonts.so
-LFLAGS = -lrt -lX11 -lGLU -lGL -pthread -lm #-lXrandr
+LFLAGS = -lrt -lX11 -lGLU -lGL /usr/lib/x86_64-linux-gnu/libopenal.so \
+	 -pthread -lm #-lXrandr
 
 all: spaceescape
 
