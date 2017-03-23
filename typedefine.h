@@ -137,6 +137,8 @@ int remainingAmo(int bulletsRemain);
 int reduceAmo(int bulletsRemain);
 //////////////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
+void deadGame(int xsize, int ysize, Rect pausebox);
+void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain);
 int SeanKeypress(int &counter);
 void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
