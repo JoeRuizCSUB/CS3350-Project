@@ -73,6 +73,8 @@ GLuint Level5Texture;
 int background = 1;
 
 // end of Sean modification
+Ppmimage *healthBox = NULL;
+GLuint healthBoxTexture;
 
 
 int xres=1250, yres=900;
@@ -97,6 +99,7 @@ float fuel = 300;
 int bulletsRemain = 50;
 int dead = 0;
 Game game;
+HealthBox healthbox;
 
 int main(void)
 {
@@ -281,6 +284,19 @@ void init_opengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
 	    StartUpMenu->width, StartUpMenu->height,
 	    0, GL_RGB, GL_UNSIGNED_BYTE, StartUpMenu->data);
+
+
+    healthBox= ppm6GetImage("./Images/Health.ppm");
+    glGenTextures(1, &healthBoxTexture);
+    glBindTexture(GL_TEXTURE_2D, healthBoxTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+            healthBox->width, healthBox->height,
+            0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
+
+
+
     //ck end
 
 }
@@ -332,6 +348,7 @@ void init(Game *g)
 	g->ahead = a;
 	g->nasteroids++;
     }
+    buildHealthBox(&healthbox);
     clock_gettime(CLOCK_REALTIME, &g->bulletTimer);
     memset(keys, 0, 65536);
 }
@@ -610,6 +627,29 @@ void physics(Game *g)
 	a = a->next;
     }
 
+
+
+
+    healthbox.pos[0] += healthbox.vel[0];
+    healthbox.pos[1] += healthbox.vel[1];
+    //Check for collision with window edges
+    if (healthbox.pos[0] < -100.0) {
+        healthbox.pos[0] += (float)xres+200;
+    }
+    else if (healthbox.pos[0] > (float)xres+100) {
+        healthbox.pos[0] -= (float)xres+200;
+    }
+    else if (healthbox.pos[1] < -100.0) {
+        healthbox.pos[1] += (float)yres+200;
+    }
+    else if (healthbox.pos[1] > (float)yres+100) {
+        healthbox.pos[1] -= (float)yres+200;
+    }
+    healthbox.angle += healthbox.rotate;
+
+
+
+
     ////////////////////////////////////////////////////////////////////////
     // Jonathan Added
     // Added
@@ -786,6 +826,11 @@ void render(Game *g)
 
     } else { 
 	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
+
+	if (health < 100) {
+            DrawHealthBox(healthBoxTexture, &healthbox);
+        }
+
 
 	r.bot = yres - 20;
 	r.left = 10;

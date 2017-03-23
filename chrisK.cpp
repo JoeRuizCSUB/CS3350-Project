@@ -20,7 +20,7 @@
 #include "log.h"
 #include "fonts.h"
 #include "ppm.h"
-
+#include "typedefine.h"
 
 
 
@@ -56,4 +56,47 @@ void healthbar(int x, int y, Rect r, int &health)
     ggprint8b(&r,20,0x00ffffff, "Health");// %d", health);
     glEnable(GL_TEXTURE_2D);
 
+}
+
+void buildHealthBox(HealthBox *h) {
+    h->radius = 100;
+    h->angle = 0.0f;
+    h->pos[0] = (Flt)(rand() % xres);
+    h->pos[1] = (Flt)(rand() % xres);
+    h->pos[2] = 0.0f;
+    h->angle = 0.0;
+
+    h->rotate = rnd() * 10.0 - 2.0;
+    h->vel[0] = (Flt)(rnd()/2);
+    h->vel[1] = (Flt)(rnd()/2);
+
+}
+
+
+// Function used to draw health box and update the position
+// so that it "floats" in space.
+
+
+void DrawHealthBox(GLuint healthBoxTexture, HealthBox *h) {
+
+    glPushMatrix();
+    glTranslatef(h->pos[0], h->pos[1], h->pos[2]);
+    glRotatef(h->angle/5, 0.0f, 0.0f, 1.0f);
+
+
+    // Texture
+
+    glBindTexture(GL_TEXTURE_2D, healthBoxTexture);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(100,0);
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(100,yres/30);
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(xres/10,yres/30);
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(xres/10,0);
+    glEnd();
+    glPopMatrix();
+    glBegin(GL_POINTS);
+
+    // glVertex2f(a->pos[0], a->pos[1]);
+
+    glEnd();
 }

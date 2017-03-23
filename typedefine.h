@@ -87,6 +87,20 @@ struct Asteroid {
     }
 };
 
+
+struct HealthBox {
+    Vec pos;
+    Vec vel;
+    Flt radius;
+    float angle;
+    float rotate;
+
+};
+
+
+
+
+
 // Created by Joe
 struct Debris {
     Vec pos;
@@ -144,4 +158,8 @@ int SeanKeypress(int &counter);
 void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
+
+void buildHealthBox(HealthBox *h);
+void DrawHealthBox(GLuint, HealthBox *h);
+
 
