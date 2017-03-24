@@ -3,21 +3,12 @@
 //Date Modified: 3/2/17
 
 #include <GL/glx.h>
+#include </usr/include/AL/alut.h>
 #include "ppm.h"
 
 extern int xres, yres;
 
-int SeanKeypress(int &counter)
-{
-    if (counter <5) 
-	counter++;
-    else
-	counter = 1;
-
-    return(counter);
-}
-
-void SeanRender(int background, GLuint Level1Texture, GLuint Level2Texture, 
+void changeBackground(int background, GLuint Level1Texture, GLuint Level2Texture, 
 	GLuint Level3Texture, GLuint Level4Texture, GLuint Level5Texture)
 {
     if (background ==1) {
@@ -70,3 +61,19 @@ void SeanRender(int background, GLuint Level1Texture, GLuint Level2Texture,
 	glEnd();
     }
 }
+
+void getAudio(int num, ALuint* alSource)
+{
+    if (num == 0) {
+	alSourceStop(alSource[0]);
+	alSourcePlay(alSource[0]);
+    }
+    else {
+	alSourceStopv(8, alSource);
+	for (int i=1; i<8; i++) {
+	    if (num == i) 
+		alSourcePlay(alSource[i]);
+	}	
+    }
+}
+

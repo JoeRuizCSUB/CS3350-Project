@@ -5,6 +5,7 @@
 #include "fonts.h"
 #include "ppm.h"
 #include <cstdlib>
+#include </usr/include/AL/alut.h>
 //defined types
 typedef float Flt;
 typedef float Vec[3];
@@ -131,6 +132,7 @@ struct Game {
 //function prototypes
 void initXWindows(void);
 void init_opengl(void);
+void init_openal(void);
 void cleanupXWindows(void);
 void check_resize(XEvent *e);
 void check_mouse(XEvent *e, Game *game);
@@ -154,8 +156,8 @@ void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain);
-int SeanKeypress(int &counter);
-void SeanRender(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void getAudio(int, ALuint*); 
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
 
