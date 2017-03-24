@@ -39,6 +39,7 @@
 //#include <GL/glu.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
+#include </usr/include/AL/alut.h>
 #include "log.h"
 #include "fonts.h"
 #include "ppm.h"
@@ -54,7 +55,11 @@ bool GameStartMenu = true;      //
 Display *dpy;   //
 Window win;     //
 GLXContext glc; //
-// Created by Sean
+
+/*********************************************************/ 
+// Sean's Global Variables
+
+// **Textures**
 
 Ppmimage *Level1=NULL;
 GLuint Level1Texture;
@@ -72,7 +77,13 @@ Ppmimage *Level5=NULL;
 GLuint Level5Texture;
 int background = 1;
 
-// end of Sean modification
+// **Sounds**
+ALuint alBuffer[8];
+ALuint alSource[8];
+int sound = 1;
+// End of Sean's Global Variables
+/********************************************************/
+
 Ppmimage *healthBox = NULL;
 GLuint healthBoxTexture;
 
@@ -106,6 +117,7 @@ int main(void)
     logOpen();
     initXWindows();
     init_opengl();	
+    init_openal();
     init(&game);
     srand(time(NULL));
     clock_gettime(CLOCK_REALTIME, &timePause);
@@ -292,12 +304,61 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            healthBox->width, healthBox->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
+	    healthBox->width, healthBox->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
 
 
 
     //ck end
+
+}
+
+//openal function for audio created by Sean
+void init_openal(void)
+{
+
+    alutInit(0, NULL);
+
+    alGetError();
+
+    float vec[6] = {0.0f,0.0f,1.0f, 0.0f,1.0f,0.0f};
+    alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+    alListenerfv(AL_ORIENTATION, vec);
+    alListenerf(AL_GAIN, 1.0f);
+
+
+    alBuffer[0] = alutCreateBufferFromFile("./Sounds/Bullet.wav");
+    alBuffer[1] = alutCreateBufferFromFile("./Sounds/StartScreen.wav");
+    alBuffer[2] = alutCreateBufferFromFile("./Sounds/Backstory.wav");
+    alBuffer[3] = alutCreateBufferFromFile("./Sounds/Level1.wav");
+    alBuffer[4] = alutCreateBufferFromFile("./Sounds/Level2.wav");
+    alBuffer[5] = alutCreateBufferFromFile("./Sounds/Level3.wav");
+    alBuffer[6] = alutCreateBufferFromFile("./Sounds/Level4.wav");
+    alBuffer[7] = alutCreateBufferFromFile("./Sounds/Level5.wav");
+
+
+    alGenSources(8, alSource);
+    alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
+    alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
+    alSourcei(alSource[2], AL_BUFFER, alBuffer[2]);
+    alSourcei(alSource[3], AL_BUFFER, alBuffer[3]);
+    alSourcei(alSource[4], AL_BUFFER, alBuffer[4]);
+    alSourcei(alSource[5], AL_BUFFER, alBuffer[5]);
+    alSourcei(alSource[6], AL_BUFFER, alBuffer[6]);
+    alSourcei(alSource[7], AL_BUFFER, alBuffer[7]);
+
+    alSourcef(alSource[0], AL_GAIN, 1.0f);
+    alSourcef(alSource[0], AL_PITCH, 1.0f);
+    alSourcei(alSource[0], AL_LOOPING, AL_FALSE);
+
+
+    for (int i=1; i<8; i++) {
+	alSourcef(alSource[i], AL_GAIN, 1.0f);
+	alSourcef(alSource[i], AL_PITCH, 1.0f);
+	alSourcei(alSource[i], AL_LOOPING, AL_TRUE);
+    }
+
+    getAudio(1, alSource);
 
 }
 
@@ -421,6 +482,26 @@ int check_keys(XEvent *e, Game *g)
     }
     if (shift){}
     switch (key) {
+	
+	/*************************************************************/
+	// These keypresses are only for testing purposes, made by sean
+	case XK_m:
+	   if(sound<7)
+	      sound ++;
+	   else
+	      sound = 1;
+	   getAudio(sound, alSource);
+	   break;
+	case XK_b:
+	   if(background<5)
+	       background++;
+	   else
+	       background = 1;
+	   changeBackground(background, Level1Texture, Level2Texture, 
+		   Level3Texture, Level4Texture, Level5Texture); 
+	   break;	
+	   // End of testing keypresses
+	/************************************************************/
 	case XK_Escape:
 	    return 1;
 	case XK_e:
@@ -464,11 +545,6 @@ int check_keys(XEvent *e, Game *g)
 	    }
 	    // end of Joe
 	    break;
-	case XK_b:
-	    //SeansKeypress area
-	    background = SeanKeypress(background);		
-	    break;
-	    //End of Sean
 	case XK_Down:
 	    break;
 	case XK_equal:
@@ -634,16 +710,16 @@ void physics(Game *g)
     healthbox.pos[1] += healthbox.vel[1];
     //Check for collision with window edges
     if (healthbox.pos[0] < -100.0) {
-        healthbox.pos[0] += (float)xres+200;
+	healthbox.pos[0] += (float)xres+200;
     }
     else if (healthbox.pos[0] > (float)xres+100) {
-        healthbox.pos[0] -= (float)xres+200;
+	healthbox.pos[0] -= (float)xres+200;
     }
     else if (healthbox.pos[1] < -100.0) {
-        healthbox.pos[1] += (float)yres+200;
+	healthbox.pos[1] += (float)yres+200;
     }
     else if (healthbox.pos[1] > (float)yres+100) {
-        healthbox.pos[1] -= (float)yres+200;
+	healthbox.pos[1] -= (float)yres+200;
     }
     healthbox.angle += healthbox.rotate;
 
@@ -774,6 +850,7 @@ void physics(Game *g)
     }
     if (keys[XK_space]) {
 	//a little time between each bullet
+	getAudio(0, alSource);
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 	double ts = timeDiff(&g->bulletTimer, &bt);
@@ -825,11 +902,11 @@ void render(Game *g)
 	glEnd();
 
     } else { 
-	SeanRender(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
+	changeBackground(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
 
 	if (health < 100) {
-            DrawHealthBox(healthBoxTexture, &healthbox);
-        }
+	    DrawHealthBox(healthBoxTexture, &healthbox);
+	}
 
 
 	r.bot = yres - 20;
@@ -898,7 +975,7 @@ void render(Game *g)
 		    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
 		    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
 		    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
-	    glColor3f(1.0f, 1.0f, 1.0f);
+		    glColor3f(1.0f, 1.0f, 1.0f);
 		}
 		glEnd();
 	    }
@@ -934,7 +1011,7 @@ void render(Game *g)
 	//-------------------------------------------------------------------------
 	//Draw the bullets
 	for (int i=0; i<g->nbullets; i++) {
-	    Bullet *b = &g->barr[i];
+	    Bullet *b = &g->barr[i]; 
 	    //Log("draw bullet...\n");
 	    glBegin(GL_POINTS);
 	    glVertex2f(b->pos[0],      b->pos[1]);
