@@ -61,26 +61,30 @@ GLXContext glc; //
 
 // **Textures**
 
+GLuint glTexture[5];
 Ppmimage *Level1=NULL;
-GLuint Level1Texture;
+//GLuint Level1Texture;
 
 Ppmimage *Level2=NULL;
-GLuint Level2Texture;
+//GLuint Level2Texture;
 
 Ppmimage *Level3=NULL;
-GLuint Level3Texture;
+//GLuint Level3Texture;
 
 Ppmimage *Level4=NULL;
-GLuint Level4Texture;
+//GLuint Level4Texture;
 
 Ppmimage *Level5=NULL;
-GLuint Level5Texture;
-int background = 1;
+//GLuint Level5Texture;
+int background = 0;
 
 // **Sounds**
+
 ALuint alBuffer[8];
 ALuint alSource[8];
 int sound = 1;
+int soundnums = 8;
+
 // End of Sean's Global Variables
 /********************************************************/
 
@@ -234,9 +238,9 @@ void init_opengl(void)
 
     // Created by Sean
     Level1 = ppm6GetImage("./Images/Level1.ppm");
-    glGenTextures(1, &Level1Texture);
+    glGenTextures(1, &glTexture[0]);
 
-    glBindTexture(GL_TEXTURE_2D, Level1Texture);
+    glBindTexture(GL_TEXTURE_2D, glTexture[0]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
@@ -245,9 +249,9 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
     Level2 = ppm6GetImage("./Images/Level2.ppm");
-    glGenTextures(1, &Level2Texture);
+    glGenTextures(1, &glTexture[1]);
 
-    glBindTexture(GL_TEXTURE_2D, Level2Texture);
+    glBindTexture(GL_TEXTURE_2D, glTexture[1]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
@@ -255,9 +259,9 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
 
     Level3 = ppm6GetImage("./Images/Level3.ppm");
-    glGenTextures(1, &Level3Texture);
+    glGenTextures(1, &glTexture[2]);
 
-    glBindTexture(GL_TEXTURE_2D, Level3Texture);
+    glBindTexture(GL_TEXTURE_2D, glTexture[2]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
@@ -265,9 +269,9 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level3->data);
 
     Level4 = ppm6GetImage("./Images/Level4.ppm");
-    glGenTextures(1, &Level4Texture);
+    glGenTextures(1, &glTexture[3]);
 
-    glBindTexture(GL_TEXTURE_2D, Level4Texture);
+    glBindTexture(GL_TEXTURE_2D, glTexture[3]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
@@ -275,9 +279,9 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level4->data);
 
     Level5 = ppm6GetImage("./Images/Level5.ppm");
-    glGenTextures(1, &Level5Texture);
+    glGenTextures(1, &glTexture[4]);
 
-    glBindTexture(GL_TEXTURE_2D, Level5Texture);
+    glBindTexture(GL_TEXTURE_2D, glTexture[4]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
@@ -326,7 +330,6 @@ void init_openal(void)
     alListenerfv(AL_ORIENTATION, vec);
     alListenerf(AL_GAIN, 1.0f);
 
-
     alBuffer[0] = alutCreateBufferFromFile("./Sounds/Bullet.wav");
     alBuffer[1] = alutCreateBufferFromFile("./Sounds/StartScreen.wav");
     alBuffer[2] = alutCreateBufferFromFile("./Sounds/Backstory.wav");
@@ -336,29 +339,25 @@ void init_openal(void)
     alBuffer[6] = alutCreateBufferFromFile("./Sounds/Level4.wav");
     alBuffer[7] = alutCreateBufferFromFile("./Sounds/Level5.wav");
 
+    	
+    alGenSources(soundnums, alSource);
+    
+    for (int i=0; i<soundnums; i++) 
+    	alSourcei(alSource[i], AL_BUFFER, alBuffer[i]);
 
-    alGenSources(8, alSource);
-    alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
-    alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
-    alSourcei(alSource[2], AL_BUFFER, alBuffer[2]);
-    alSourcei(alSource[3], AL_BUFFER, alBuffer[3]);
-    alSourcei(alSource[4], AL_BUFFER, alBuffer[4]);
-    alSourcei(alSource[5], AL_BUFFER, alBuffer[5]);
-    alSourcei(alSource[6], AL_BUFFER, alBuffer[6]);
-    alSourcei(alSource[7], AL_BUFFER, alBuffer[7]);
-
+    // alSource[0] is a non looping sound
     alSourcef(alSource[0], AL_GAIN, 1.0f);
     alSourcef(alSource[0], AL_PITCH, 1.0f);
     alSourcei(alSource[0], AL_LOOPING, AL_FALSE);
 
-
+    // alSources 1-7 are looping sounds	
     for (int i=1; i<8; i++) {
 	alSourcef(alSource[i], AL_GAIN, 1.0f);
 	alSourcef(alSource[i], AL_PITCH, 1.0f);
 	alSourcei(alSource[i], AL_LOOPING, AL_TRUE);
     }
-
-    getAudio(1, alSource);
+    // play alSource 1 right in the beginning.	
+    getAudio(sound, alSource);
 
 }
 
@@ -493,12 +492,11 @@ int check_keys(XEvent *e, Game *g)
 	   getAudio(sound, alSource);
 	   break;
 	case XK_b:
-	   if(background<5)
+	   if(background<4)
 	       background++;
 	   else
-	       background = 1;
-	   changeBackground(background, Level1Texture, Level2Texture, 
-		   Level3Texture, Level4Texture, Level5Texture); 
+	       background = 0;
+	   getBackground(background, glTexture); 
 	   break;	
 	   // End of testing keypresses
 	/************************************************************/
@@ -850,7 +848,6 @@ void physics(Game *g)
     }
     if (keys[XK_space]) {
 	//a little time between each bullet
-	getAudio(0, alSource);
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 	double ts = timeDiff(&g->bulletTimer, &bt);
@@ -863,6 +860,7 @@ void physics(Game *g)
 	    if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
 		bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
 		//shoot a bullet...
+		getAudio(0, alSource);
 		//Bullet *b = new Bullet;
 		Bullet *b = &g->barr[g->nbullets];
 		timeCopy(&b->time, &bt);
@@ -902,7 +900,7 @@ void render(Game *g)
 	glEnd();
 
     } else { 
-	changeBackground(background, Level1Texture, Level2Texture, Level3Texture, Level4Texture, Level5Texture);
+	getBackground(background, glTexture);
 
 	if (health < 100) {
 	    DrawHealthBox(healthBoxTexture, &healthbox);

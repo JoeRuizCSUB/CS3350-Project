@@ -156,7 +156,7 @@ void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain);
-void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void getBackground(int, GLuint*);
 void getAudio(int, ALuint*); 
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
