@@ -98,10 +98,6 @@ struct HealthBox {
 
 };
 
-
-
-
-
 // Created by Joe
 struct Debris {
     Vec pos;
@@ -151,17 +147,19 @@ int fuelRemains(float fuel);
 float reduceFuel(float fuel);
 int remainingAmo(int bulletsRemain);
 int reduceAmo(int bulletsRemain);
+void getHealthPack(Game *g, HealthBox *healthbox, int &health);
 //////////////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain);
-void getBackground(int, GLuint*);
+void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void getAudio(int, ALuint*); 
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
 
 void buildHealthBox(HealthBox *h);
 void DrawHealthBox(GLuint, HealthBox *h);
+unsigned char *buildAlphaData(Ppmimage *img);
 
 

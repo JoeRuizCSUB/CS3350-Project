@@ -20,13 +20,13 @@ void astronautCollision(Game *g, int &health)
 	d2 = g->astronaut.pos[0] - a->pos[0];
 	d3 = g->astronaut.pos[1] - a->pos[1];
 	dist2 = (d2*d2 + d3*d3);
-	if (dist2 < a->radius*a->radius) {
+	if (dist2 < (a->radius*2)*(a->radius*2)) {
 	    //std::cout << "asteroid hit." << std::endl;
 	    //this asteroid is hit.
-	    
+
 	    // Reducing health when hitting an asteroid.
 	    if (health >= 0){
-	    	health = health - 120;
+		health = health - 120;
 		// So that health display does not show 
 		// a negative number.
 		if (health < 0) {
@@ -87,7 +87,7 @@ void fuelbar(int x, int y, Rect r, float &fuel)
     glEnable(GL_TEXTURE_2D);
     glColor3f(0.0,1.0,0.0);
     if (fuel <= 50) {
-        glColor3f(1.0,0.0,0.0);
+	glColor3f(1.0,0.0,0.0);
     }
 
     glBegin(GL_QUADS);
@@ -140,3 +140,18 @@ int remainingAmo(int bulletsRemain)
 int reduceAmo(int bulletsRemain){
     return --bulletsRemain;
 }
+
+void getHealthPack(Game *g, HealthBox *healthbox, int &health)
+{
+    // Attempt to detect collision between asteroid and
+    // astronaut
+    Flt d2, d3, dist2;
+    d2 = g->astronaut.pos[0] - healthbox->pos[0];
+    d3 = g->astronaut.pos[1] - healthbox->pos[1];
+    dist2 = (d2*d2 + d3*d3);
+    if (dist2 < healthbox->radius*healthbox->radius) {
+	// You can come into the radius of the healthbox
+	health += 50;
+    }
+}
+
