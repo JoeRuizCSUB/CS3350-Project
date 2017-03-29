@@ -39,7 +39,7 @@ void healthbar(int x, int y, Rect r, int &health)
     glEnd(); 
     glEnable(GL_TEXTURE_2D);
     glColor3f(0.0,1.0,0.0);
-    if (healthView <= 20) {
+    if (healthView <= 100) {
 	glColor3f(1.0,0.0,0.0);
     }
 
