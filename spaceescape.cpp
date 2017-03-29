@@ -109,7 +109,7 @@ int keys[65536];
 // Added by Jonathan
 // Used to keep track of how much health, fuel 
 // and bullets remain
-int health = 99;
+int health = 300;
 float fuel = 300;
 int bulletsRemain = 50;
 int dead = 0;
