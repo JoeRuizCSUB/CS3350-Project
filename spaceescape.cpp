@@ -1,9 +1,12 @@
 //3350 Spring 2017
 //
-//program: asteroids.cpp
-//author:  Gordon Griesel
+//original program: asteroids.cpp
+//original author:  Gordon Griesel
 //date:    2014
 //mod spring 2015: added constructors
+//
+//modified by: Jonathan Roman, Chris Kelley, Sean Nickell, Joseph Ruiz
+//renamed to: spaceescape.cpp
 //
 //This program is a game starting point for 335
 //
@@ -26,6 +29,14 @@
 // sound
 // use of textures
 // 
+// SpaceEscape is a single-player, space shooting survival game, similar to
+// the classic Asteroids game. The main difference is the player has a limited
+// amount of fuel and ammunition, and can be hit three times prior to dying.
+// There are item drops to replenish your limited supplies that occur when you 
+// shoot an asteroid and you are running low. The goal is to survive as long
+// as possible until the wormhole opens up and you reach the next level and
+// get closer to Earth.
+//
 //
 #include <iostream>
 #include <cstdlib>
