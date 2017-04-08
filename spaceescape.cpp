@@ -987,7 +987,6 @@ void physics(Game *g)
     }
     if (keys[XK_space]) {
         //a little time between each bullet
-        getAudio(0, alSource);
         struct timespec bt;
         clock_gettime(CLOCK_REALTIME, &bt);
         double ts = timeDiff(&g->bulletTimer, &bt);
@@ -998,7 +997,8 @@ void physics(Game *g)
             // Added additional conditional statement so that astronaut
             // does not have unlimited amount of bullets.
             if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
-                bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
+        	getAudio(0, alSource);
+		bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
                 //shoot a bullet...
                 //Bullet *b = new Bullet;
                 Bullet *b = &g->barr[g->nbullets];
