@@ -78,8 +78,8 @@ GLuint Level5Texture;
 int background = 1;
 
 // **Sounds**
-ALuint alBuffer[8];
-ALuint alSource[8];
+ALuint alBuffer[9];
+ALuint alSource[9];
 int sound = 1;
 // End of Sean's Global Variables
 /********************************************************/
@@ -425,9 +425,9 @@ void init_openal(void)
     alBuffer[5] = alutCreateBufferFromFile("./Sounds/Level3.wav");
     alBuffer[6] = alutCreateBufferFromFile("./Sounds/Level4.wav");
     alBuffer[7] = alutCreateBufferFromFile("./Sounds/Level5.wav");
+    alBuffer[8] = alutCreateBufferFromFile("./Sounds/Explosion.wav");	
 
-
-    alGenSources(8, alSource);
+    alGenSources(9, alSource);
     alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
     alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
     alSourcei(alSource[2], AL_BUFFER, alBuffer[2]);
@@ -436,10 +436,15 @@ void init_openal(void)
     alSourcei(alSource[5], AL_BUFFER, alBuffer[5]);
     alSourcei(alSource[6], AL_BUFFER, alBuffer[6]);
     alSourcei(alSource[7], AL_BUFFER, alBuffer[7]);
+    alSourcei(alSource[8], AL_BUFFER, alBuffer[8]);	
 
     alSourcef(alSource[0], AL_GAIN, 1.0f);
     alSourcef(alSource[0], AL_PITCH, 1.0f);
     alSourcei(alSource[0], AL_LOOPING, AL_FALSE);
+
+    alSourcef(alSource[8], AL_GAIN, 1.0f);
+    alSourcef(alSource[8], AL_PITCH, 1.0f);
+    alSourcei(alSource[8], AL_LOOPING, AL_FALSE);
 
 
     for (int i=1; i<8; i++) {
@@ -909,8 +914,9 @@ void physics(Game *g)
             dist = (d0*d0 + d1*d1);
             if (dist < (a->radius*a->radius)) {
                 //std::cout << "asteroid hit." << std::endl;
-                //this asteroid is hit.
-                if (a->radius > MINIMUM_ASTEROID_SIZE) {
+                //this asteroid is hit. 
+        	getAudio(8, alSource);
+		if (a->radius > MINIMUM_ASTEROID_SIZE) {
                     //break it into pieces.
                     Asteroid *ta = a;
                     buildAsteroidFragment(ta, a);
