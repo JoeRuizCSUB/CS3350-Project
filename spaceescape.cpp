@@ -264,7 +264,7 @@ void init_opengl(void)
             Level1->width, Level1->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
-    Level2 = ppm6GetImage("./Images/Level2.ppm");
+    Level2 = ppm6GetImage("./Images/Level1.ppm");
     glGenTextures(1, &Level2Texture);
 
     glBindTexture(GL_TEXTURE_2D, Level2Texture);
@@ -274,7 +274,7 @@ void init_opengl(void)
             Level2->width, Level2->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
 
-    Level3 = ppm6GetImage("./Images/Level3.ppm");
+    Level3 = ppm6GetImage("./Images/Level1.ppm");
     glGenTextures(1, &Level3Texture);
 
     glBindTexture(GL_TEXTURE_2D, Level3Texture);
@@ -284,7 +284,7 @@ void init_opengl(void)
             Level3->width, Level3->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, Level3->data);
 
-    Level4 = ppm6GetImage("./Images/Level4.ppm");
+    Level4 = ppm6GetImage("./Images/Level1.ppm");
     glGenTextures(1, &Level4Texture);
 
     glBindTexture(GL_TEXTURE_2D, Level4Texture);
