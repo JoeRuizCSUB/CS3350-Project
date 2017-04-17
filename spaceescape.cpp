@@ -253,6 +253,7 @@ void init_opengl(void)
 
 
     // Created by Sean
+    system("convert ./Images/Level1.jpg ./Images/Level1.ppm");
     Level1 = ppm6GetImage("./Images/Level1.ppm");
     glGenTextures(1, &Level1Texture);
 
@@ -264,7 +265,8 @@ void init_opengl(void)
             Level1->width, Level1->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
-    Level2 = ppm6GetImage("./Images/Level1.ppm");
+    system("convert ./Images/Level2.jpg ./Images/Level2.ppm");
+    Level2 = ppm6GetImage("./Images/Level2.ppm");
     glGenTextures(1, &Level2Texture);
 
     glBindTexture(GL_TEXTURE_2D, Level2Texture);
@@ -273,40 +275,10 @@ void init_opengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
             Level2->width, Level2->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
-
-    Level3 = ppm6GetImage("./Images/Level1.ppm");
-    glGenTextures(1, &Level3Texture);
-
-    glBindTexture(GL_TEXTURE_2D, Level3Texture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            Level3->width, Level3->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Level3->data);
-
-    Level4 = ppm6GetImage("./Images/Level1.ppm");
-    glGenTextures(1, &Level4Texture);
-
-    glBindTexture(GL_TEXTURE_2D, Level4Texture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            Level4->width, Level4->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Level4->data);
-
-    Level5 = ppm6GetImage("./Images/Level5.ppm");
-    glGenTextures(1, &Level5Texture);
-
-    glBindTexture(GL_TEXTURE_2D, Level5Texture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            Level5->width, Level5->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Level5->data);
-
     //End of Seans	
 
     //Chris's Code
+    system("convert ./Images/StartUpMenu.jpg ./Images/StartUpMenu.ppm");
     StartUpMenu = ppm6GetImage("./Images/StartUpMenu.ppm");
     glGenTextures(1, &StartUpMenuTexture);
 
@@ -318,6 +290,7 @@ void init_opengl(void)
             0, GL_RGB, GL_UNSIGNED_BYTE, StartUpMenu->data);
 
 
+    system("convert ./Images/Health.jpg ./Images/Health.ppm");
     healthBox= ppm6GetImage("./Images/Health.ppm");
     glGenTextures(1, &healthBoxTexture);
     glBindTexture(GL_TEXTURE_2D, healthBoxTexture);
@@ -327,6 +300,7 @@ void init_opengl(void)
             healthBox->width, healthBox->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
 
+    system("convert ./Images/Fuel.jpg ./Images/Fuel.ppm");
     fuelBox= ppm6GetImage("./Images/Fuel.ppm");
     glGenTextures(1, &fuelBoxTexture);
     glBindTexture(GL_TEXTURE_2D, fuelBoxTexture);
@@ -336,6 +310,7 @@ void init_opengl(void)
             fuelBox->width, fuelBox->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, fuelBox->data);
 
+    system("convert ./Images/AmoPack.jpg ./Images/AmoPack.ppm");
     amoBox= ppm6GetImage("./Images/AmoPack.ppm");
     glGenTextures(1, &amoBoxTexture);
     glBindTexture(GL_TEXTURE_2D, amoBoxTexture);
@@ -346,6 +321,7 @@ void init_opengl(void)
             0, GL_RGB, GL_UNSIGNED_BYTE, amoBox->data);
 
 
+    system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
     Asteroidpic= ppm6GetImage("./Images/Asteroid.ppm");
     glGenTextures(1, &AsteroidTexturepic);
     glBindTexture(GL_TEXTURE_2D, AsteroidTexturepic);
@@ -357,6 +333,7 @@ void init_opengl(void)
 
 
 
+    system("convert ./Images/Astronaut.jpg ./Images/Astronaut.ppm");
     astronautpic= ppm6GetImage("./Images/Astronaut.ppm");
     glGenTextures(1, &astronautpicTexturepic);
     glBindTexture(GL_TEXTURE_2D, astronautpicTexturepic);
