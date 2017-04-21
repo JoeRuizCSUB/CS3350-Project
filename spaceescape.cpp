@@ -1,6 +1,6 @@
 //3350 Spring 2017
 //
-//program: asteroids.cpp
+//program: /steroids.cpp
 //author:  Gordon Griesel
 //date:    2014
 //mod spring 2015: added constructors
@@ -326,7 +326,7 @@ void init_opengl(void)
             0, GL_RGB, GL_UNSIGNED_BYTE, amoBox->data);
 
 
-    system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
+    //system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
     Asteroidpic= ppm6GetImage("./Images/Asteroid.ppm");
     glGenTextures(1, &AsteroidTexturepic);
     glBindTexture(GL_TEXTURE_2D, AsteroidTexturepic);
