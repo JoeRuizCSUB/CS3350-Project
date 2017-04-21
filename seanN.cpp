@@ -1,6 +1,9 @@
 //Author: Sean Nickell
-//Purpose of file: Keypresses, and soon to be rendering
-//Date Modified: 3/2/17
+//Purpose of file: audio and visual manipulation
+//Date Modified: 4/20/17
+
+//Also contributed openAl function in main, all the audio,
+//and many of the visual
 
 #include <GL/glx.h>
 #include </usr/include/AL/alut.h>
