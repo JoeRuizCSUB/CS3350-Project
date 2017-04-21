@@ -1,6 +1,6 @@
 //3350 Spring 2017
 //
-//program: asteroids.cpp
+//program: /steroids.cpp
 //author:  Gordon Griesel
 //date:    2014
 //mod spring 2015: added constructors
@@ -102,6 +102,11 @@ GLuint AsteroidTexturepic;
 Ppmimage *astronautpic = NULL;
 GLuint astronautpicTexturepic;
 
+Ppmimage *bulletImage;
+GLuint bulletTexture;
+Sprite bullet_sprite;
+
+
 int xres=1250, yres=900;
 // Added by Joe
 Rect pbox;
@@ -131,7 +136,7 @@ AmoBox amobox;
 int gotHealth = 0;
 int gotFuel = 0;
 int gotAmo = 0;
-
+int score = 0;
 int main(void)
 {
     logOpen();
@@ -321,7 +326,7 @@ void init_opengl(void)
             0, GL_RGB, GL_UNSIGNED_BYTE, amoBox->data);
 
 
-    system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
+    //system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
     Asteroidpic= ppm6GetImage("./Images/Asteroid.ppm");
     glGenTextures(1, &AsteroidTexturepic);
     glBindTexture(GL_TEXTURE_2D, AsteroidTexturepic);
@@ -333,7 +338,7 @@ void init_opengl(void)
 
 
 
-    system("convert ./Images/Astronaut.jpg ./Images/Astronaut.ppm");
+    //system("convert ./Images/Astronaut.jpg ./Images/Astronaut.ppm");
     astronautpic= ppm6GetImage("./Images/Astronaut.ppm");
     glGenTextures(1, &astronautpicTexturepic);
     glBindTexture(GL_TEXTURE_2D, astronautpicTexturepic);
@@ -342,6 +347,17 @@ void init_opengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
             astronautpic->width, astronautpic->height,
             0, GL_RGB, GL_UNSIGNED_BYTE, astronautpic->data);
+
+    glGenTextures(1, &bulletTexture);
+    bulletImage = ppm6GetImage("./Images/bullet.ppm");
+    int w3 = bulletImage->width;
+    int h3 = bulletImage->height;
+    glBindTexture(GL_TEXTURE_2D, bulletTexture);
+    //
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w3, h3, 0, GL_RGB, GL_UNSIGNED_BYTE, bulletImage->data);
+
 
 
 
@@ -891,7 +907,8 @@ void physics(Game *g)
             dist = (d0*d0 + d1*d1);
             if (dist < (a->radius*a->radius)) {
                 //std::cout << "asteroid hit." << std::endl;
-                //this asteroid is hit. 
+                //this asteroid is hit.
+		score = Score(score);
         	getAudio(8, alSource);
 		if (a->radius > MINIMUM_ASTEROID_SIZE) {
                     //break it into pieces.
@@ -1045,11 +1062,13 @@ void render(Game *g)
 
         // Display and decrease health when colliding with asteroid
         // Chris added
-        healthbar(((xres/2)+350),yres-15,r, health);
+	//
+	menubar(((xres/2)),yres-835,r, score);
+        healthbar(((xres/2)+200),yres-825,r, health);
 
         // Display and decrease fuel when pressing up key
         // Jonathan added
-        fuelbar(((xres/2)-150),yres-15,r, fuel);
+        fuelbar(((xres/2)-190),yres-825,r, fuel);
 
         if (!pause_game) {
             //-------------------------------------------------------------------------
@@ -1154,6 +1173,7 @@ void render(Game *g)
 
 
         //-------------------------------------------------------------------------
+	bulletdisplay(bulletsRemain,bullet_sprite);
         //Draw the asteroids
         {
             Asteroid *a = g->ahead;
@@ -1171,10 +1191,10 @@ void render(Game *g)
                 //glColor4ub(255,255,255,255);
                 glBegin(GL_QUADS);
 
-                glTexCoord2f(0.0f, 1.0f); glVertex2i(-a->radius*2,-a->radius*2);
-                glTexCoord2f(0.0f, 0.0f); glVertex2i(-a->radius*2,a->radius*2);
-                glTexCoord2f(1.0f, 0.0f); glVertex2i(a->radius*2,a->radius*2);
-                glTexCoord2f(1.0f, 1.0f); glVertex2i(a->radius*2,-a->radius*2);
+                glTexCoord2f(0.0f, 1.0f); glVertex2i(-a->radius-10,-a->radius-10);
+                glTexCoord2f(0.0f, 0.0f); glVertex2i(-a->radius-10,a->radius+10);
+                glTexCoord2f(1.0f, 0.0f); glVertex2i(a->radius+10,a->radius+10);
+                glTexCoord2f(1.0f, 1.0f); glVertex2i(a->radius+10,-a->radius-10);
 
                 glEnd();
                 glPopMatrix();	
