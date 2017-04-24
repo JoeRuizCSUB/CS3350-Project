@@ -63,8 +63,8 @@ struct Astronaut {
     float color[3];
     Astronaut() {
         VecZero(dir);
-        pos[0] = (Flt)(xres/4);
-        pos[1] = (Flt)(yres/4);
+        pos[0] = 10.0;
+        pos[1] = 20.0;
         pos[2] = 0.0f;
         VecZero(vel);
         angle = 0.0;
@@ -135,27 +135,19 @@ struct AmoBox {
 
 };
 
-
-// Created by Joe
-struct Debris {
-    Vec pos;
-    Vec vel;
-    int mass;
-    Flt radius;
-    Debris() { }
-};
-
 struct Game {
     Astronaut astronaut;
     Asteroid *ahead;
     Bullet *barr;
-    int nasteroids;
+    int big_asteroids;
+    int small_asteroids;
     int nbullets;
     struct timespec bulletTimer;
     Game() {
         ahead = NULL;
         barr = new Bullet[MAX_BULLETS];
-        nasteroids = 0;
+        big_asteroids = 0;
+	small_asteroids = 0;
         nbullets = 0;
     }
     ~Game() {
@@ -196,7 +188,8 @@ void buildAmoBox(AmoBox *a);
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
-void restartLevel(int &health, float &fuel, int &bulletsRemain);
+void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score);
+void initBigAsteroid(Game *g);
 void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void getAudio(int, ALuint*); 
 void healthbar(int x, int y, Rect r, int &health);

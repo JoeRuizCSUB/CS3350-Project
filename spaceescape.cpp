@@ -150,22 +150,22 @@ int main(void)
 
     int done=0;
     while (!done) {
-        while (XPending(dpy)) {
-            XEvent e;
-            XNextEvent(dpy, &e);
-            check_resize(&e);
-            done = check_keys(&e, &game);
-        }
-        clock_gettime(CLOCK_REALTIME, &timeCurrent);
-        timeSpan = timeDiff(&timeStart, &timeCurrent);
-        timeCopy(&timeStart, &timeCurrent);
-        physicsCountdown += timeSpan;
-        while (physicsCountdown >= physicsRate) {
-            physics(&game);
-            physicsCountdown -= physicsRate;
-        }
-        render(&game);
-        glXSwapBuffers(dpy, win);
+	while (XPending(dpy)) {
+	    XEvent e;
+	    XNextEvent(dpy, &e);
+	    check_resize(&e);
+	    done = check_keys(&e, &game);
+	}
+	clock_gettime(CLOCK_REALTIME, &timeCurrent);
+	timeSpan = timeDiff(&timeStart, &timeCurrent);
+	timeCopy(&timeStart, &timeCurrent);
+	physicsCountdown += timeSpan;
+	while (physicsCountdown >= physicsRate) {
+	    physics(&game);
+	    physicsCountdown -= physicsRate;
+	}
+	render(&game);
+	glXSwapBuffers(dpy, win);
     }
     cleanupXWindows();
     cleanup_fonts();
@@ -200,23 +200,23 @@ void initXWindows(void)
     setup_screen_res(xres, yres);
     dpy = XOpenDisplay(NULL);
     if (dpy == NULL) {
-        std::cout << "\n\tcannot connect to X server" << std::endl;
-        exit(EXIT_FAILURE);
+	std::cout << "\n\tcannot connect to X server" << std::endl;
+	exit(EXIT_FAILURE);
     }
     Window root = DefaultRootWindow(dpy);
     XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
     if (vi == NULL) {
-        std::cout << "\n\tno appropriate visual found\n" << std::endl;
-        exit(EXIT_FAILURE);
+	std::cout << "\n\tno appropriate visual found\n" << std::endl;
+	exit(EXIT_FAILURE);
     } 
     Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
     swa.colormap = cmap;
     swa.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask |
-        PointerMotionMask | MotionNotify | ButtonPress | ButtonRelease |
-        StructureNotifyMask | SubstructureNotifyMask;
+	PointerMotionMask | MotionNotify | ButtonPress | ButtonRelease |
+	StructureNotifyMask | SubstructureNotifyMask;
     win = XCreateWindow(dpy, root, 0, 0, xres, yres, 0,
-            vi->depth, InputOutput, vi->visual,
-            CWColormap | CWEventMask, &swa);
+	    vi->depth, InputOutput, vi->visual,
+	    CWColormap | CWEventMask, &swa);
     set_title();
     glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
     glXMakeCurrent(dpy, win, glc);
@@ -267,8 +267,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
 
-            Level1->width, Level1->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
+	    Level1->width, Level1->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
     system("convert ./Images/Level2.jpg ./Images/Level2.ppm");
     Level2 = ppm6GetImage("./Images/Level2.ppm");
@@ -278,8 +278,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            Level2->width, Level2->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
+	    Level2->width, Level2->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
     //End of Seans	
 
     //Chris's Code
@@ -291,8 +291,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            StartUpMenu->width, StartUpMenu->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, StartUpMenu->data);
+	    StartUpMenu->width, StartUpMenu->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, StartUpMenu->data);
 
 
     system("convert ./Images/Health.jpg ./Images/Health.ppm");
@@ -302,8 +302,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            healthBox->width, healthBox->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
+	    healthBox->width, healthBox->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, healthBox->data);
 
     system("convert ./Images/Fuel.jpg ./Images/Fuel.ppm");
     fuelBox= ppm6GetImage("./Images/Fuel.ppm");
@@ -312,8 +312,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            fuelBox->width, fuelBox->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, fuelBox->data);
+	    fuelBox->width, fuelBox->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, fuelBox->data);
 
     system("convert ./Images/AmoPack.jpg ./Images/AmoPack.ppm");
     amoBox= ppm6GetImage("./Images/AmoPack.ppm");
@@ -322,8 +322,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            amoBox->width, amoBox->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, amoBox->data);
+	    amoBox->width, amoBox->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, amoBox->data);
 
 
     //system("convert ./Images/Asteroid.jpg ./Images/Asteroid.ppm");
@@ -333,8 +333,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            Asteroidpic->width, Asteroidpic->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, Asteroidpic->data);
+	    Asteroidpic->width, Asteroidpic->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Asteroidpic->data);
 
 
 
@@ -345,8 +345,8 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-            astronautpic->width, astronautpic->height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, astronautpic->data);
+	    astronautpic->width, astronautpic->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, astronautpic->data);
 
     glGenTextures(1, &bulletTexture);
     bulletImage = ppm6GetImage("./Images/bullet.ppm");
@@ -373,7 +373,7 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     unsigned char *silhouetteData = buildAlphaData(Asteroidpic);
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData);
+	    GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData);
 
 
     glGenTextures(1, &silhouette_astronautpicTexturepic);
@@ -382,7 +382,7 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     unsigned char *silhouetteData2 = buildAlphaData(astronautpic);
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData2);
+	    GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData2);
 
 
 
@@ -441,9 +441,9 @@ void init_openal(void)
 
 
     for (int i=1; i<8; i++) {
-        alSourcef(alSource[i], AL_GAIN, 1.0f);
-        alSourcef(alSource[i], AL_PITCH, 1.0f);
-        alSourcei(alSource[i], AL_LOOPING, AL_TRUE);
+	alSourcef(alSource[i], AL_GAIN, 1.0f);
+	alSourcef(alSource[i], AL_PITCH, 1.0f);
+	alSourcei(alSource[i], AL_LOOPING, AL_TRUE);
     }
 
     getAudio(1, alSource);
@@ -455,48 +455,19 @@ void check_resize(XEvent *e)
     //The ConfigureNotify is sent by the
     //server if the window is resized.
     if (e->type != ConfigureNotify)
-        return;
+	return;
     XConfigureEvent xce = e->xconfigure;
     if (xce.width != xres || xce.height != yres) {
-        //Window size did change.
-        reshape_window(xce.width, xce.height);
+	//Window size did change.
+	reshape_window(xce.width, xce.height);
     }
 }
 
 void init(Game *g)
 {
-    //build 3 asteroids...
-    for (int j=0; j<3; j++) {
-        Asteroid *a = new Asteroid;
-        a->nverts = 4;
-        a->radius = rnd()*40.0 + 40.0;
-        Flt r2 = a->radius / 2.0;
-        Flt angle = 0.0f;
-        Flt inc = (PI * 2.0) / (Flt)a->nverts;
-        for (int i=0; i<a->nverts; i++) {
-            a->vert[i][0] = sin(angle) * (r2 + rnd() * a->radius);
-            a->vert[i][1] = cos(angle) * (r2 + rnd() * a->radius);
-            angle += inc;
-        }
-        a->pos[0] = (Flt)(rand() % xres);
-        a->pos[1] = (Flt)(rand() % yres);
-        a->pos[2] = 0.0f;
-        a->angle = 0.0;
-
-        a->rotate = rnd() * 2.0 - 2.0;
-        a->color[0] = 0.8;
-        a->color[1] = 0.8;
-        a->color[2] = 0.7;
-        a->vel[0] = (Flt)(rnd());
-        a->vel[1] = (Flt)(rnd());
-        //std::cout << "asteroid" << std::endl;
-        //add to front of linked list
-        a->next = g->ahead;
-        if (g->ahead != NULL)
-            g->ahead->prev = a;
-        g->ahead = a;
-        g->nasteroids++;
-    }
+    //build 3 big asteroids...
+    for (int j=0; j<3; j++) 
+	initBigAsteroid(g); 
     buildHealthBox(&healthbox);
     buildFuelBox(&fuelbox);
     buildAmoBox(&amobox);
@@ -508,9 +479,9 @@ void normalize(Vec v)
 {
     Flt len = v[0]*v[0] + v[1]*v[1];
     if (len == 0.0f) {
-        v[0] = 1.0;
-        v[1] = 0.0;
-        return;
+	v[0] = 1.0;
+	v[1] = 0.0;
+	return;
     }
     len = 1.0f / sqrt(len);
     v[0] *= len;
@@ -525,9 +496,9 @@ void set_mouse_position(int x, int y)
 void show_mouse_cursor(const int onoff)
 {
     if (onoff) {
-        //this removes our own blank cursor.
-        XUndefineCursor(dpy, win);
-        return;
+	//this removes our own blank cursor.
+	XUndefineCursor(dpy, win);
+	return;
     }
     //vars to make blank cursor
     Pixmap blank;
@@ -537,7 +508,7 @@ void show_mouse_cursor(const int onoff)
     //make a blank cursor
     blank = XCreateBitmapFromData (dpy, win, data, 1, 1);
     if (blank == None)
-        std::cout << "error: out of memory." << std::endl;
+	std::cout << "error: out of memory." << std::endl;
     cursor = XCreatePixmapCursor(dpy, blank, blank, &dummy, &dummy, 0, 0);
     XFreePixmap(dpy, blank);
     //this makes you the cursor. then set it using this function
@@ -555,92 +526,96 @@ int check_keys(XEvent *e, Game *g)
     int key = XLookupKeysym(&e->xkey, 0);
     //Log("key: %i\n", key);
     if (e->type == KeyRelease) {
-        keys[key]=0;
-        if (key == XK_Shift_L || key == XK_Shift_R)
-            shift=0;
-        return 0;
+	keys[key]=0;
+	if (key == XK_Shift_L || key == XK_Shift_R)
+	    shift=0;
+	return 0;
     }
     if (e->type == KeyPress) {
-        //std::cout << "press" << std::endl;
-        keys[key]=1;
-        if (key == XK_Shift_L || key == XK_Shift_R) {
-            shift=1;
-            return 0;
-        }
+	//std::cout << "press" << std::endl;
+	keys[key]=1;
+	if (key == XK_Shift_L || key == XK_Shift_R) {
+	    shift=1;
+	    return 0;
+	}
     } else {
-        return 0;
+	return 0;
     }
     if (shift){}
     switch (key) {
 
-        /*************************************************************/
-        // These keypresses are only for testing purposes, made by sean
-        case XK_m:
-            if(sound<7)
-                sound ++;
-            else
-                sound = 1;
-            getAudio(sound, alSource);
-            break;
-        case XK_b:
-            if(background<5)
-                background++;
-            else
-                background = 1;
-            changeBackground(background, Level1Texture, Level2Texture, 
-                    Level3Texture, Level4Texture, Level5Texture); 
-            break;	
-            // End of testing keypresses
-            /************************************************************/
-        case XK_Escape:
-            return 1;
-        case XK_e:
-            if (pause_game)
-                return 1;
-        case XK_r:
-            if (pause_game || dead || fuel==0) {
-                restartLevel(health, fuel, bulletsRemain);
-                dead = 0;
-                g->ahead = NULL;
+	/*************************************************************/
+	// These keypresses are only for testing purposes, made by sean
+	case XK_m:
+	    if(sound<7)
+		sound ++;
+	    else
+		sound = 1;
+	    getAudio(sound, alSource);
+	    if (pause_game)
+		GameStartMenu = true;
+	    break;
+	case XK_b:
+	    if(background<5)
+		background++;
+	    else
+		background = 1;
+	    changeBackground(background, Level1Texture, Level2Texture, 
+		    Level3Texture, Level4Texture, Level5Texture); 
+	    break;	
+	    // End of testing keypresses
+	    /************************************************************/
+	case XK_Escape:
+	    return 1;
+	case XK_e:
+	    if (pause_game)
+		return 1;
+	case XK_r:
+	    if (pause_game || dead || fuel==0) {
+		restartLevel(health, fuel, bulletsRemain, score);
+		dead = 0;
+		g->ahead = NULL;
 
-                g->nasteroids = 0;
-                init(&game);
-                g->astronaut.pos[0] = (Flt)(xres/4);
-                g->astronaut.pos[1] = (Flt)(xres/4);
-                g->astronaut.vel[0] = 0.0;
-                g->astronaut.vel[1] = 0.0;
-                pause_game = 0;
-            }
-            break;
-        case XK_s:
-            // Conditional statement so that
-            // game does not start before pressing 's'
-            if (GameStartMenu == true){
-                GameStartMenu = false;
-                pause_game = false;
-            }
-            break;
-        case XK_p:
-            // Added by Joe
-            // Do not allow to be paused before the game
-            // starts.
-            if (GameStartMenu == false && !dead){
-                pause_game ^= 1;
-                if (pause_game) {
-                    pauseGame(xres, yres, pbox);
-                    //int restart = checkPauseKeys(key, restart);
-                    //if (restart)
-                    //return 1;
-                }
-            }
-            // end of Joe
-            break;
-        case XK_Down:
-            break;
-        case XK_equal:
-            break;
-        case XK_minus:
-            break;
+		g->big_asteroids = 0;
+		g->small_asteroids = 0;
+		init(&game);
+		g->astronaut.pos[0] = 10.0;
+		g->astronaut.pos[1] = 20.0;
+		g->astronaut.vel[0] = 0.0;
+		g->astronaut.vel[1] = 0.0;
+		g->astronaut.angle = 0.0;
+		pause_game = 0;
+	    }
+	    break;
+	case XK_s:
+	    // Conditional statement so that
+	    // game does not start before pressing 's'
+	    if (GameStartMenu == true){
+		GameStartMenu = false;
+		pause_game = false;
+	    }
+	    break;
+	case XK_p:
+	    // Added by Joe
+	    // Do not allow to be paused before the game
+	    // starts.
+	    if (GameStartMenu == false && !dead){
+		pause_game ^= 1;
+		if (pause_game) {
+		    pauseGame(xres, yres, pbox);
+		    //int restart = checkPauseKeys(key, restart);
+		    //if (restart)
+		    //return 1;
+		}
+	    }
+	    // end of Joe
+	    break;
+	case XK_Down:
+	    break;
+	case XK_equal:
+	    break;
+	case XK_minus:
+	    break;
     }
     return 0;
 }
@@ -649,23 +624,23 @@ void deleteAsteroid(Game *g, Asteroid *node)
 {
     //remove a node from doubly-linked list
     if (node->prev == NULL) {
-        if (node->next == NULL) {
-            //only 1 item in list.
-            g->ahead = NULL;
-        } else {
-            //at beginning of list.
-            node->next->prev = NULL;
-            g->ahead = node->next;
-        }
+	if (node->next == NULL) {
+	    //only 1 item in list.
+	    g->ahead = NULL;
+	} else {
+	    //at beginning of list.
+	    node->next->prev = NULL;
+	    g->ahead = node->next;
+	}
     } else {
-        if (node->next == NULL) {
-            //at end of list.
-            node->prev->next = NULL;
-        } else {
-            //in middle of list.
-            node->prev->next = node->next;
-            node->next->prev = node->prev;
-        }
+	if (node->next == NULL) {
+	    //at end of list.
+	    node->prev->next = NULL;
+	} else {
+	    //in middle of list.
+	    node->prev->next = node->next;
+	    node->next->prev = node->prev;
+	}
     }
     delete node;
     node = NULL;
@@ -680,9 +655,9 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
     Flt angle = 0.0f;
     Flt inc = (PI * 2.0) / (Flt)ta->nverts;
     for (int i=0; i<ta->nverts; i++) {
-        ta->vert[i][0] = sin(angle) * (r2 + rnd() * ta->radius);
-        ta->vert[i][1] = cos(angle) * (r2 + rnd() * ta->radius);
-        angle += inc;
+	ta->vert[i][0] = sin(angle) * (r2 + rnd() * ta->radius);
+	ta->vert[i][1] = cos(angle) * (r2 + rnd() * ta->radius);
+	angle += inc;
     }
     ta->pos[0] = a->pos[0] + rnd()*10.0-5.0;
     ta->pos[1] = a->pos[1] + rnd()*10.0-5.0;
@@ -700,7 +675,7 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
 void physics(Game *g)
 {
     if (pause_game)
-        return;
+	return;
     Flt d0,d1,dist;
     //Update astronaut position
     g->astronaut.pos[0] += g->astronaut.vel[0];
@@ -713,16 +688,16 @@ void physics(Game *g)
     //Check for collision with window edges
     //Joe added window edge borders for astronaut only
     if (g->astronaut.pos[0] < 0.0) {
-        g->astronaut.pos[0] = 0.0;
+	g->astronaut.pos[0] = 0.0;
     }
     if (g->astronaut.pos[0] > (float)xres) {
-        g->astronaut.pos[0] = (float)xres;
+	g->astronaut.pos[0] = (float)xres;
     }
     if (g->astronaut.pos[1] < 0.0) {
-        g->astronaut.pos[1] = 0.0;
+	g->astronaut.pos[1] = 0.0;
     }
     if (g->astronaut.pos[1] > (float)yres) {
-        g->astronaut.pos[1] = (float)yres;
+	g->astronaut.pos[1] = (float)yres;
     }
     //
     //
@@ -731,66 +706,68 @@ void physics(Game *g)
     clock_gettime(CLOCK_REALTIME, &bt);
     int i=0;
     while (i < g->nbullets) {
-        Bullet *b = &g->barr[i];
+	Bullet *b = &g->barr[i];
 
-        // Jonathan Changed From Original...
-        // Bullets are now removed as soon as they hit any
-        // edge of the screen instead of timing how long the
-        // bullet has been alive. (Was previously used for
-        // wrap around of bullet)
-        if ((b->pos[0] < 0.0) || (b->pos[0] > (float)xres) ||
-                (b->pos[1] < 0.0) ||  (b->pos[1] > (float)yres) ) {
+	// Jonathan Changed From Original...
+	// Bullets are now removed as soon as they hit any
+	// edge of the screen instead of timing how long the
+	// bullet has been alive. (Was previously used for
+	// wrap around of bullet)
+	if ((b->pos[0] < 0.0) || (b->pos[0] > (float)xres) ||
+		(b->pos[1] < 0.0) ||  (b->pos[1] > (float)yres) ) {
 
-            memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
-            g->nbullets--;
-            //do not increment i.
-            continue;
-        }
+	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
+	    g->nbullets--;
+	    //do not increment i.
+	    continue;
+	}
 
-        //move the bullet
-        b->pos[0] += b->vel[0];
-        b->pos[1] += b->vel[1];
-        //Check for collision with window edges
-        ////////////////////////////////////////////////////////////////////////////////////
-        // Jonathan commented out so that bullets would 
-        // end at window edges. No wrap around is wanted for the
-        // game...
-        if (b->pos[0] < 0.0) {
-            //b->pos[0] += (float)xres;
-        }
-        else if (b->pos[0] > (float)xres) {
-            //b->pos[0] -= (float)xres;
-        }
-        else if (b->pos[1] < 0.0) {
-            //b->pos[1] += (float)yres;
-        }
-        else if (b->pos[1] > (float)yres) {
-            //b->pos[1] -= (float)yres;
-        }
-        ////////////////////////////////////////////////////////////////////////////////////
-        i++;
+	//move the bullet
+	b->pos[0] += b->vel[0];
+	b->pos[1] += b->vel[1];
+	//Check for collision with window edges
+	////////////////////////////////////////////////////////////////////////////////////
+	// Jonathan commented out so that bullets would 
+	// end at window edges. No wrap around is wanted for the
+	// game...
+	if (b->pos[0] < 0.0) {
+	    //b->pos[0] += (float)xres;
+	}
+	else if (b->pos[0] > (float)xres) {
+	    //b->pos[0] -= (float)xres;
+	}
+	else if (b->pos[1] < 0.0) {
+	    //b->pos[1] += (float)yres;
+	}
+	else if (b->pos[1] > (float)yres) {
+	    //b->pos[1] -= (float)yres;
+	}
+	////////////////////////////////////////////////////////////////////////////////////
+	i++;
     }
     //
     //Update asteroid positions
+    if (g->small_asteroids < 8 && g->big_asteroids < 2)
+	initBigAsteroid(g);
     Asteroid *a = g->ahead;
     while (a) {
-        a->pos[0] += a->vel[0];
-        a->pos[1] += a->vel[1];
-        //Check for collision with window edges
-        if (a->pos[0] < -100.0) {
-            a->pos[0] += (float)xres+200;
-        }
-        else if (a->pos[0] > (float)xres+100) {
-            a->pos[0] -= (float)xres+200;
-        }
-        else if (a->pos[1] < -100.0) {
-            a->pos[1] += (float)yres+200;
-        }
-        else if (a->pos[1] > (float)yres+100) {
-            a->pos[1] -= (float)yres+200;
-        }
-        a->angle += a->rotate;
-        a = a->next;
+	a->pos[0] += a->vel[0];
+	a->pos[1] += a->vel[1];
+	//Check for collision with window edges
+	if (a->pos[0] < -100.0) {
+	    a->pos[0] += (float)xres+200;
+	}
+	else if (a->pos[0] > (float)xres+100) {
+	    a->pos[0] -= (float)xres+200;
+	}
+	else if (a->pos[1] < -100.0) {
+	    a->pos[1] += (float)yres+200;
+	}
+	else if (a->pos[1] > (float)yres+100) {
+	    a->pos[1] -= (float)yres+200;
+	}
+	a->angle += a->rotate;
+	a = a->next;
     }
 
 
@@ -799,16 +776,16 @@ void physics(Game *g)
     healthbox.pos[1] += healthbox.vel[1];
     //Check for collision with window edges
     if (healthbox.pos[0] < -100.0) {
-        healthbox.pos[0] += (float)xres+200;
+	healthbox.pos[0] += (float)xres+200;
     }
     else if (healthbox.pos[0] > (float)xres+100) {
-        healthbox.pos[0] -= (float)xres+200;
+	healthbox.pos[0] -= (float)xres+200;
     }
     else if (healthbox.pos[1] < -100.0) {
-        healthbox.pos[1] += (float)yres+200;
+	healthbox.pos[1] += (float)yres+200;
     }
     else if (healthbox.pos[1] > (float)yres+100) {
-        healthbox.pos[1] -= (float)yres+200;
+	healthbox.pos[1] -= (float)yres+200;
     }
     healthbox.angle += healthbox.rotate;
 
@@ -817,16 +794,16 @@ void physics(Game *g)
     fuelbox.pos[1] += fuelbox.vel[1];
     //Check for collision with window edges
     if (fuelbox.pos[0] < -100.0) {
-        fuelbox.pos[0] += (float)xres+200;
+	fuelbox.pos[0] += (float)xres+200;
     }
     else if (fuelbox.pos[0] > (float)xres+100) {
-        fuelbox.pos[0] -= (float)xres+200;
+	fuelbox.pos[0] -= (float)xres+200;
     }
     else if (fuelbox.pos[1] < -100.0) {
-        fuelbox.pos[1] += (float)yres+200;
+	fuelbox.pos[1] += (float)yres+200;
     }
     else if (fuelbox.pos[1] > (float)yres+100) {
-        fuelbox.pos[1] -= (float)yres+200;
+	fuelbox.pos[1] -= (float)yres+200;
     }
     fuelbox.angle += fuelbox.rotate;
 
@@ -835,16 +812,16 @@ void physics(Game *g)
     amobox.pos[1] += amobox.vel[1];
     //Check for collision with window edges
     if (amobox.pos[0] < -100.0) {
-        amobox.pos[0] += (float)xres+200;
+	amobox.pos[0] += (float)xres+200;
     }
     else if (amobox.pos[0] > (float)xres+100) {
-        amobox.pos[0] -= (float)xres+200;
+	amobox.pos[0] -= (float)xres+200;
     }
     else if (amobox.pos[1] < -100.0) {
-        amobox.pos[1] += (float)yres+200;
+	amobox.pos[1] += (float)yres+200;
     }
     else if (amobox.pos[1] > (float)yres+100) {
-        amobox.pos[1] -= (float)yres+200;
+	amobox.pos[1] -= (float)yres+200;
     }
     amobox.angle += amobox.rotate;
 
@@ -859,33 +836,33 @@ void physics(Game *g)
     // jonathanR.cpp. 
     astronautCollision(g, health);
     if (!gotHealth){
-    	gotHealth = getHealthPack(g, &healthbox, health);
+	gotHealth = getHealthPack(g, &healthbox, health);
     }
 
     if (!gotFuel){
-    	gotFuel = getFuelPack(g, &fuelbox, fuel);
+	gotFuel = getFuelPack(g, &fuelbox, fuel);
     }
     if (!gotAmo){
-    	gotAmo = getAmoPack(g, &amobox, bulletsRemain);
+	gotAmo = getAmoPack(g, &amobox, bulletsRemain);
     }
 
     // Currently exits the game if all health is lost. Change
     // it so that the game starts over...
     if (health == 0){
-        // Make sure to pause the game and expect an input.
-        // 'dead' is used to ensure that 'p' in the pause_game menu
-        // is no longer allowed to be pressed since health is now 0 
-        // which means you either restart or exit.
-        pause_game = true;
-        dead = 1;
-        if (pause_game) {
-            deadGame(xres, yres, pbox);
-            //int restart = checkPauseKeys(key, restart);
-            //if (restart)
-            //return 1;
-        }
+	// Make sure to pause the game and expect an input.
+	// 'dead' is used to ensure that 'p' in the pause_game menu
+	// is no longer allowed to be pressed since health is now 0 
+	// which means you either restart or exit.
+	pause_game = true;
+	dead = 1;
+	if (pause_game) {
+	    deadGame(xres, yres, pbox);
+	    //int restart = checkPauseKeys(key, restart);
+	    //if (restart)
+	    //return 1;
+	}
 
-        //exit(0);
+	//exit(0);
     }
     // End attempt...
     ////////////////////////////////////////////////////////////////////////
@@ -898,130 +875,131 @@ void physics(Game *g)
     //        if asteroid small, delete it
     a = g->ahead;
     while (a) {
-        //is there a bullet within its radius?
-        int i=0;
-        while (i < g->nbullets) {
-            Bullet *b = &g->barr[i];
-            d0 = b->pos[0] - a->pos[0];
-            d1 = b->pos[1] - a->pos[1];
-            dist = (d0*d0 + d1*d1);
-            if (dist < (a->radius*a->radius)) {
-                //std::cout << "asteroid hit." << std::endl;
-                //this asteroid is hit.
+	//is there a bullet within its radius?
+	int i=0;
+	while (i < g->nbullets) {
+	    Bullet *b = &g->barr[i];
+	    d0 = b->pos[0] - a->pos[0];
+	    d1 = b->pos[1] - a->pos[1];
+	    dist = (d0*d0 + d1*d1);
+	    if (dist < (a->radius*a->radius)) {
+		//std::cout << "asteroid hit." << std::endl;
+		//this asteroid is hit.
 		score = Score(score);
-        	getAudio(8, alSource);
+		getAudio(8, alSource);
 		if (a->radius > MINIMUM_ASTEROID_SIZE) {
-                    //break it into pieces.
-                    Asteroid *ta = a;
-                    buildAsteroidFragment(ta, a);
-                    int r = rand()%10+5;
-                    for (int k=0; k<r; k++) {
-                        //get the next asteroid position in the array
-                        Asteroid *ta = new Asteroid;
-                        buildAsteroidFragment(ta, a);
-                        //add to front of asteroid linked list
-                        ta->next = g->ahead;
-                        if (g->ahead != NULL)
-                            g->ahead->prev = ta;
-                        g->ahead = ta;
-                        g->nasteroids++;
-                    }
-                } else {
-                    a->color[0] = 1.0;
-                    a->color[1] = 0.1;
-                    a->color[2] = 0.1;
-                    //asteroid is too small to break up
-                    //delete the asteroid and bullet
-                    Asteroid *savea = a->next;
-                    deleteAsteroid(g, a);
-                    a = savea;
-                    g->nasteroids--;
-                }
-                //delete the bullet...
-                memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
-                g->nbullets--;
-                if (a == NULL)
-                    break;
-                //continue;
-            }
-            i++;
-        }
-        if (a == NULL)
-            break;
-        a = a->next;
+		    //break it into pieces.
+		    g->big_asteroids--;
+		    Asteroid *ta = a;
+		    buildAsteroidFragment(ta, a);
+		    int r = rand()%10+5;
+		    for (int k=0; k<r; k++) {
+			//get the next asteroid position in the array
+			Asteroid *ta = new Asteroid;
+			buildAsteroidFragment(ta, a);
+			//add to front of asteroid linked list
+			ta->next = g->ahead;
+			if (g->ahead != NULL)
+			    g->ahead->prev = ta;
+			g->ahead = ta;
+			g->small_asteroids++;
+		    }
+		} else {
+		    a->color[0] = 1.0;
+		    a->color[1] = 0.1;
+		    a->color[2] = 0.1;
+		    //asteroid is too small to break up
+		    //delete the asteroid and bullet
+		    Asteroid *savea = a->next;
+		    deleteAsteroid(g, a);
+		    a = savea;
+		    g->small_asteroids--;
+		}
+		//delete the bullet...
+		memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
+		g->nbullets--;
+		if (a == NULL)
+		    break;
+		//continue;
+	    }
+	    i++;
+	}
+	if (a == NULL)
+	    break;
+	a = a->next;
     }
     //---------------------------------------------------
     //check keys pressed now
     if (keys[XK_Left]) {
-        g->astronaut.angle += 4.0;
-        if (g->astronaut.angle >= 360.0f)
-            g->astronaut.angle -= 360.0f;
+	g->astronaut.angle += 4.0;
+	if (g->astronaut.angle >= 360.0f)
+	    g->astronaut.angle -= 360.0f;
     }
     if (keys[XK_Right]) {
-        g->astronaut.angle -= 4.0;
-        if (g->astronaut.angle < 0.0f)
-            g->astronaut.angle += 360.0f;
+	g->astronaut.angle -= 4.0;
+	if (g->astronaut.angle < 0.0f)
+	    g->astronaut.angle += 360.0f;
     }
     // Jonathan
     // Added second conditional statement to stop
     // thrust from occuring if no fuel remains
     if (keys[XK_Up] && fuelRemains(fuel)) {
-        //apply thrust
-        //convert astronaut angle to radians
-        Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
-        //convert angle to a vector
-        Flt xdir = cos(rad);
-        Flt ydir = sin(rad);
+	//apply thrust
+	//convert astronaut angle to radians
+	Flt rad = ((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0;
+	//convert angle to a vector
+	Flt xdir = cos(rad);
+	Flt ydir = sin(rad);
 
-        //Joe slowed astronaut down
-        g->astronaut.vel[0] += xdir*0.005f;
-        g->astronaut.vel[1] += ydir*0.005f;
-        Flt speed = sqrt(g->astronaut.vel[0]*g->astronaut.vel[0]+
-                g->astronaut.vel[1]*g->astronaut.vel[1]);
-        if (speed > 3.0f) {
-            speed = 3.0f;
-            normalize(g->astronaut.vel);
-            g->astronaut.vel[0] *= speed;
-            g->astronaut.vel[1] *= speed;
-        }
+	//Joe slowed astronaut down
+	g->astronaut.vel[0] += xdir*0.005f;
+	g->astronaut.vel[1] += ydir*0.005f;
+	Flt speed = sqrt(g->astronaut.vel[0]*g->astronaut.vel[0]+
+		g->astronaut.vel[1]*g->astronaut.vel[1]);
+	if (speed > 10.0f) {
+	    speed = 10.0f;
+	    normalize(g->astronaut.vel);
+	    g->astronaut.vel[0] *= speed;
+	    g->astronaut.vel[1] *= speed;
+	}
     }
     if (keys[XK_space]) {
-        //a little time between each bullet
-        struct timespec bt;
-        clock_gettime(CLOCK_REALTIME, &bt);
-        double ts = timeDiff(&g->bulletTimer, &bt);
-        if (ts > 0.1) {
-            timeCopy(&g->bulletTimer, &bt);
+	//a little time between each bullet
+	struct timespec bt;
+	clock_gettime(CLOCK_REALTIME, &bt);
+	double ts = timeDiff(&g->bulletTimer, &bt);
+	if (ts > 0.1) {
+	    timeCopy(&g->bulletTimer, &bt);
 
-            // Jonathan
-            // Added additional conditional statement so that astronaut
-            // does not have unlimited amount of bullets.
-            if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
-        	getAudio(0, alSource);
+	    // Jonathan
+	    // Added additional conditional statement so that astronaut
+	    // does not have unlimited amount of bullets.
+	    if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
+		getAudio(0, alSource);
 		bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
-                //shoot a bullet...
-                //Bullet *b = new Bullet;
-                Bullet *b = &g->barr[g->nbullets];
-                timeCopy(&b->time, &bt);
-                b->pos[0] = g->astronaut.pos[0];
-                b->pos[1] = g->astronaut.pos[1]+4;
-                b->vel[0] = g->astronaut.vel[0];
-                b->vel[1] = g->astronaut.vel[1];
-                //convert astronaut angle to radians
-                Flt rad = (-(g->astronaut.angle-89.0) / 360.0f) * PI * 2.0;
-                //convert angle to a vector
-                Flt xdir = sin(rad);
-                Flt ydir = cos(rad);
-                b->pos[0] += xdir*20.0f;
-                b->pos[1] += ydir*20.0f;
-                b->vel[0] += xdir*6.0f + rnd()*0.1;
-                b->vel[1] += ydir*6.0f + rnd()*0.1;
-                b->color[0] = 1.0f;
-                b->color[1] = 1.0f;
-                b->color[2] = 1.0f;
-                g->nbullets++;
-            }
-        }
+		//shoot a bullet...
+		//Bullet *b = new Bullet;
+		Bullet *b = &g->barr[g->nbullets];
+		timeCopy(&b->time, &bt);
+		b->pos[0] = g->astronaut.pos[0];
+		b->pos[1] = g->astronaut.pos[1]+4;
+		b->vel[0] = g->astronaut.vel[0];
+		b->vel[1] = g->astronaut.vel[1];
+		//convert astronaut angle to radians
+		Flt rad = (-(g->astronaut.angle-89.0) / 360.0f) * PI * 2.0;
+		//convert angle to a vector
+		Flt xdir = sin(rad);
+		Flt ydir = cos(rad);
+		b->pos[0] += xdir*20.0f;
+		b->pos[1] += ydir*20.0f;
+		b->vel[0] += xdir*6.0f + rnd()*0.1;
+		b->vel[1] += ydir*6.0f + rnd()*0.1;
+		b->color[0] = 1.0f;
+		b->color[1] = 1.0f;
+		b->color[2] = 1.0f;
+		g->nbullets++;
+	    }
+	}
     }
 }
 
@@ -1030,186 +1008,162 @@ void render(Game *g)
     Rect r;
     glClear(GL_COLOR_BUFFER_BIT);	
     if(GameStartMenu == true) {
-        glBindTexture(GL_TEXTURE_2D, StartUpMenuTexture);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
-        glEnd();
+	glBindTexture(GL_TEXTURE_2D, StartUpMenuTexture);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+	glTexCoord2f(0.0f, 0.0f); glVertex2i(0,yres);
+	glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
+	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
+	glEnd();
 
     } else { 
-        changeBackground(background, Level1Texture, Level2Texture, 
-                Level3Texture, Level4Texture, Level5Texture);
+	changeBackground(background, Level1Texture, Level2Texture, 
+		Level3Texture, Level4Texture, Level5Texture);
 
-        if (health < 100) {
-            DrawHealthBox(healthBoxTexture, &healthbox);
-	    gotHealth = 0;
-        }
-	if (bulletsRemain < 20){
-	    DrawAmoBox(amoBoxTexture, &amobox);
-	    gotAmo = 0;
-	}
 
-        r.bot = yres - 20;
-        r.left = 10;
-        r.center = 0;
-        ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
-        ggprint8b(&r, 16, 0x00ffff00, "Bullets Remaining: %i", 
-			bulletsRemain);
-        ggprint8b(&r, 16, 0x00ffff00, "Asteroids Remaining: %i", 
-			g->nasteroids);
 
-        // Display and decrease health when colliding with asteroid
-        // Chris added
+	r.bot = yres - 20;
+	r.left = 10;
+	r.center = 0;
+	ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
+	ggprint8b(&r, 16, 0x00ffff00, "Big Asteroids Remaining: %i", 
+		g->big_asteroids);
+	ggprint8b(&r, 16, 0x00ffff00, "Small Asteroids Remaining: %i", 
+		g->small_asteroids);
+
+	// Display and decrease health when colliding with asteroid
+	// Chris added
 	//
 	menubar(((xres/2)),yres-835,r, score);
-        healthbar(((xres/2)+200),yres-825,r, health);
+	healthbar(((xres/2)+200),yres-825,r, health);
 
-        // Display and decrease fuel when pressing up key
-        // Jonathan added
-        fuelbar(((xres/2)-190),yres-825,r, fuel);
+	// Display and decrease fuel when pressing up key
+	// Jonathan added
+	fuelbar(((xres/2)-190),yres-825,r, fuel);
 
-        if (!pause_game) {
-            //-------------------------------------------------------------------------
-            //Draw the astronaut
-            //glColor3fv(g->astronaut.color);
-/*
-            glPushMatrix();
-            glTranslatef(g->astronaut.pos[0], g->astronaut.pos[1], 
-		    	g->astronaut.pos[2]);
-            //float angle = atan2(astronaut.dir[1], astronaut.dir[0]);
-            glRotatef(g->astronaut.angle, 0.0f, 0.0f, 1.0f);
-            glBegin(GL_TRIANGLES);
-            //glVertex2f(-10.0f, -10.0f);
-            //glVertex2f(  0.0f, 20.0f);
-            //glVertex2f( 10.0f, -10.0f);
-            glVertex2f(-12.0f, -10.0f);
-            glVertex2f(  0.0f, 20.0f);
-            glVertex2f(  0.0f, -6.0f);
-            glVertex2f(  0.0f, -6.0f);
-            glVertex2f(  0.0f, 20.0f);
-            glVertex2f( 12.0f, -10.0f);
-            glEnd();
-            //glColor3f(1.0f, 0.0f, 0.0f);
-            glBegin(GL_POINTS);
-            glVertex2f(0.0f, 0.0f);
-            glEnd();
-            glPopMatrix();
-*/
-            // Jonathan
-            // Added second condition to stop rendering
-            // thrust coming out of astronaut
-            if (keys[XK_Up] && fuelRemains(fuel)) {
-                int i;
-                //draw thrust
-                // Jonathan Added
-                // Reduce fuel remaining
-                if (fuelRemains(fuel)) {
-                    fuel = reduceFuel(fuel);
-                }
-                Flt rad = (((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0);
-                //convert angle to a vector
-                Flt xdir = cos(rad);
-                Flt ydir = sin(rad);
-                Flt xs,ys,xe,ye,r;
-                glBegin(GL_LINES);
-                for (i=0; i<8; i++) {
-                    xs = (-xdir * 11.0f + rnd() * 8.0 - 2.0);
-                    ys = (-ydir * 11.0f + rnd() * 8.0 - 2.0);
-                    r = rnd()+30.0;
-                    xe = (-xdir * r + rnd() * 18.0 - 9.0);
-                    ye = (-ydir * r + rnd() * 18.0 - 9.0);
-                    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
-                    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
-                    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
-                    glColor3f(1.0f, 1.0f, 1.0f);
-                }
-                glEnd();
-            }
+	if (!pause_game) {
+	    //--------------------------------------------------------
+	    // Jonathan
+	    // Added second condition to stop rendering
+	    // thrust coming out of astronaut
+	    if (keys[XK_Up] && fuelRemains(fuel)) {
+		int i;
+		//draw thrust
+		// Jonathan Added
+		// Reduce fuel remaining
+		if (fuelRemains(fuel)) {
+		    fuel = reduceFuel(fuel);
+		}
+		Flt rad = (((g->astronaut.angle+90.0) / 360.0f) * PI * 2.0);
+		//convert angle to a vector
+		Flt xdir = cos(rad);
+		Flt ydir = sin(rad);
+		Flt xs,ys,xe,ye,r;
+		glBegin(GL_LINES);
+		for (i=0; i<8; i++) {
+		    xs = (-xdir * 11.0f + rnd() * 8.0 - 2.0);
+		    ys = (-ydir * 11.0f + rnd() * 8.0 - 2.0);
+		    r = rnd()+30.0;
+		    xe = (-xdir * r + rnd() * 18.0 - 9.0);
+		    ye = (-ydir * r + rnd() * 18.0 - 9.0);
+		    glColor3f(rnd()*.3+.7, rnd()*.3+.7, 0);
+		    glVertex2f(g->astronaut.pos[0]+xs,g->astronaut.pos[1]+ys);
+		    glVertex2f(g->astronaut.pos[0]+xe,g->astronaut.pos[1]+ye);
+		    glColor3f(1.0f, 1.0f, 1.0f);
+		}
+		glEnd();
+	    }
 
-        }
-
-        //Draw the bullets
-        for (int i=0; i<g->nbullets; i++) {
-            Bullet *b = &g->barr[i]; 
-            //Log("draw bullet...\n");
-            glBegin(GL_POINTS);
-            glVertex2f(b->pos[0],      b->pos[1]);
-            glVertex2f(b->pos[0]-1.0f, b->pos[1]);
-            glVertex2f(b->pos[0]+1.0f, b->pos[1]);
-            glVertex2f(b->pos[0],      b->pos[1]-1.0f);
-            glVertex2f(b->pos[0],      b->pos[1]+1.0f);
-            glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
-            glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
-            glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
-            glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
-            glEnd();
-        }
-        //pause game created by Joe
-        if (pause_game && dead==0)
-            pauseGame(xres, yres, pbox);
-        if (dead) 
-            deadGame(xres, yres, pbox);
-        if (fuel == 0 && g->astronaut.vel[0] < 0.08 && g->astronaut.vel[1] < 0.08) {
-            strandedGame(xres, yres, pbox);	    
-            pause_game = 1;
-        }
-
-            glPushMatrix();
-            glTranslatef(g->astronaut.pos[0], g->astronaut.pos[1], g->astronaut.pos[2]);
-            //float angle = atan2(astronaut.dir[1], astronaut.dir[0]);
-            glRotatef(g->astronaut.angle, 0.0f, 0.0f, 1.0f);
-            glBindTexture(GL_TEXTURE_2D, silhouette_astronautpicTexturepic);
-            glEnable(GL_ALPHA_TEST);
-            glAlphaFunc(GL_GREATER, 0.0f);
-            glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 1.0f); glVertex2i(-20,-20);
-            glTexCoord2f(0.0f, 0.0f); glVertex2i(-20,20);
-            glTexCoord2f(1.0f, 0.0f); glVertex2i(20,20);
-            glTexCoord2f(1.0f, 1.0f); glVertex2i(20,-20);
-            glEnd();
-            glPopMatrix();
-
-
-        //-------------------------------------------------------------------------
-	bulletdisplay(bulletsRemain,bullet_sprite);
-        //Draw the asteroids
-        {
-            Asteroid *a = g->ahead;
-            while (a) {
-                //Log("draw asteroid...\n");
-                //glColor3fv(a->color);
-                glPushMatrix();
-                glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
-                glRotatef(a->angle, 0.0f, 0.0f, 1.0f);
-
-                //DrawAsteroids(AsteroidTexturepic, a);
-                glBindTexture(GL_TEXTURE_2D, silhouetteTexture);
-                glEnable(GL_ALPHA_TEST);
-                glAlphaFunc(GL_GREATER, 0.0f);
-                //glColor4ub(255,255,255,255);
-                glBegin(GL_QUADS);
-
-                glTexCoord2f(0.0f, 1.0f); glVertex2i(-a->radius-10,-a->radius-10);
-                glTexCoord2f(0.0f, 0.0f); glVertex2i(-a->radius-10,a->radius+10);
-                glTexCoord2f(1.0f, 0.0f); glVertex2i(a->radius+10,a->radius+10);
-                glTexCoord2f(1.0f, 1.0f); glVertex2i(a->radius+10,-a->radius-10);
-
-                glEnd();
-                glPopMatrix();	
-
-                glPopMatrix();
-                //glBegin(GL_POINTS);
-                //glVertex2f(a->pos[0], a->pos[1]);
-                //glEnd();
-                a = a->next;
-            }
-	if (fuel < 100) {
-	    DrawFuelBox(fuelBoxTexture, &fuelbox);
-	    gotFuel = 0;
 	}
 
-        }
+	//Draw the bullets
+	for (int i=0; i<g->nbullets; i++) {
+	    Bullet *b = &g->barr[i]; 
+	    //Log("draw bullet...\n");
+	    glBegin(GL_POINTS);
+	    glVertex2f(b->pos[0],      b->pos[1]);
+	    glVertex2f(b->pos[0]-1.0f, b->pos[1]);
+	    glVertex2f(b->pos[0]+1.0f, b->pos[1]);
+	    glVertex2f(b->pos[0],      b->pos[1]-1.0f);
+	    glVertex2f(b->pos[0],      b->pos[1]+1.0f);
+	    glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
+	    glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
+	    glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
+	    glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
+	    glEnd();
+	}
+	glPushMatrix();
+	glTranslatef(g->astronaut.pos[0], g->astronaut.pos[1], g->astronaut.pos[2]);
+	//float angle = atan2(astronaut.dir[1], astronaut.dir[0]);
+	glRotatef(g->astronaut.angle, 0.0f, 0.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, silhouette_astronautpicTexturepic);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f); glVertex2i(-20,-20);
+	glTexCoord2f(0.0f, 0.0f); glVertex2i(-20,20);
+	glTexCoord2f(1.0f, 0.0f); glVertex2i(20,20);
+	glTexCoord2f(1.0f, 1.0f); glVertex2i(20,-20);
+	glEnd();
+	glPopMatrix();
+
+
+	//-------------------------------------------------------------------------
+	bulletdisplay(bulletsRemain,bullet_sprite);
+	//Draw the asteroids
+	{
+	    Asteroid *a = g->ahead;
+	    while (a) {
+		//Log("draw asteroid...\n");
+		//glColor3fv(a->color);
+		glPushMatrix();
+		glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
+		glRotatef(a->angle, 0.0f, 0.0f, 1.0f);
+
+		//DrawAsteroids(AsteroidTexturepic, a);
+		glBindTexture(GL_TEXTURE_2D, silhouetteTexture);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		//glColor4ub(255,255,255,255);
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(0.0f, 1.0f); glVertex2i(-a->radius-10,-a->radius-10);
+		glTexCoord2f(0.0f, 0.0f); glVertex2i(-a->radius-10,a->radius+10);
+		glTexCoord2f(1.0f, 0.0f); glVertex2i(a->radius+10,a->radius+10);
+		glTexCoord2f(1.0f, 1.0f); glVertex2i(a->radius+10,-a->radius-10);
+
+		glEnd();
+		glPopMatrix();	
+
+		glPopMatrix();
+		//glBegin(GL_POINTS);
+		//glVertex2f(a->pos[0], a->pos[1]);
+		//glEnd();
+		a = a->next;
+	    }
+	    if (fuel < 100) {
+		DrawFuelBox(fuelBoxTexture, &fuelbox);
+		gotFuel = 0;
+	    }
+	    if (health < 100) {
+		DrawHealthBox(healthBoxTexture, &healthbox);
+		gotHealth = 0;
+	    }
+	    if (bulletsRemain < 20){
+		DrawAmoBox(amoBoxTexture, &amobox);
+		gotAmo = 0;
+	    }
+	    //pause game created by Joe
+	    if (pause_game && dead==0)
+		pauseGame(xres, yres, pbox);
+	    if (dead) 
+		deadGame(xres, yres, pbox);
+	    if (fuel == 0 && g->astronaut.vel[0] < 0.08 && g->astronaut.vel[1] < 0.08) {
+		strandedGame(xres, yres, pbox);	    
+		pause_game = 1;
+	    }
+
+
+	}
     }
 }

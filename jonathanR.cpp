@@ -53,7 +53,7 @@ void astronautCollision(Game *g, int &health)
 		    if (g->ahead != NULL)
 			g->ahead->prev = ta; 
 		    g->ahead = ta; 
-		    g->nasteroids++;
+		    g->small_asteroids++;
 		}
 	    } else {
 		a->color[0] = 1.0;
@@ -64,7 +64,7 @@ void astronautCollision(Game *g, int &health)
 		Asteroid *savea = a->next;
 		deleteAsteroid(g, a); 
 		a = savea;
-		g->nasteroids--;
+		g->small_asteroids--;
 	    }
 
 	}
@@ -247,9 +247,9 @@ void buildAmoBox(AmoBox *a)
     a->pos[2] = 0.0f;
     a->angle = 0.0;
 
-    a->rotate = rnd() * 10.0 - 2.0;
-    a->vel[0] = (Flt)(rnd()/2);
-    a->vel[1] = (Flt)(rnd()/2);    
+    a->rotate = rnd() * 5.0 - 2.0;
+    a->vel[0] = (Flt)(rnd());
+    a->vel[1] = (Flt)(rnd());    
 }
 
 // Display AmoPack.ppm image
