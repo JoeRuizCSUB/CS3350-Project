@@ -10,25 +10,26 @@
 
 void pauseGame(int x, int y, Rect pausebox)
 {
-
+    glColor3f(0.01, 0.23, 0.25);
     float cx = x/2;
     int cy = y/2;
-    glColor3f(0.01, 0.23, 0.25);
     glBegin(GL_QUADS);
     glVertex2i(cx - 155, cy + 80);
     glVertex2i(cx + 155, cy + 80);
     glVertex2i(cx + 155, cy - 80);
     glVertex2i(cx - 155, cy - 80);
     glEnd();
-    glEnable(GL_TEXTURE_2D);
 
-    glColor3f(0.0, 0.1, 0.0);
+    glColor3f(0.0, 0.0, 0.0); 
+    glEnable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
     glVertex2i(cx - 150, cy + 75);
     glVertex2i(cx + 150, cy + 75);
     glVertex2i(cx + 150, cy - 75);
     glVertex2i(cx - 150, cy - 75);
     glEnd();
-   
+
+    glEnable(GL_TEXTURE_2D);
     pausebox.bot = cy + 30;
     pausebox.left = cx - 110;
     pausebox.center = 0;
@@ -41,28 +42,44 @@ void pauseGame(int x, int y, Rect pausebox)
 
 }
 
-void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score)
+void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, Game *g)
 {
     health = 300;
     fuel = 300;
     bulletsRemain = 30;
     score = 0;
+    g->ahead = NULL;
+    g->big_asteroids = 0;
+    g->small_asteroids = 0;
+    g->astronaut.pos[0] = 10.0;
+    g->astronaut.pos[1] = 20.0;
+    g->astronaut.vel[0] = 0.0;
+    g->astronaut.vel[1] = 0.0;
+    g->astronaut.angle = 0.0;
 
 }
 
 void deadGame(int x, int y, Rect pausebox)
 {
-    glColor3f(0.0, 0.0, 0.0);
-
+    glColor3f(0.01, 0.23, 0.25);
     float cx = x/2;
     int cy = y/2;
+    glBegin(GL_QUADS);
+    glVertex2i(cx - 155, cy + 80);
+    glVertex2i(cx + 155, cy + 80);
+    glVertex2i(cx + 155, cy - 80);
+    glVertex2i(cx - 155, cy - 80);
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+
+    glColor3f(0.0, 0.0, 0.0); 
+    glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
     glVertex2i(cx - 150, cy + 75);
     glVertex2i(cx + 150, cy + 75);
     glVertex2i(cx + 150, cy - 75);
     glVertex2i(cx - 150, cy - 75);
     glEnd();
-    glEnable(GL_TEXTURE_2D);
 
     pausebox.bot = cy + 30;
     pausebox.left = cx - 110;
@@ -78,8 +95,7 @@ void deadGame(int x, int y, Rect pausebox)
 
 void strandedGame(int x, int y, Rect pausebox)
 {
-    glColor3f(0.0, 0.0, 0.0);
-
+    glColor3f(0.01, 0.23, 0.25);
     float cx = x/2;
     int cy = y/2;
     glBegin(GL_QUADS);
@@ -89,6 +105,15 @@ void strandedGame(int x, int y, Rect pausebox)
     glVertex2i(cx - 150, cy - 75);
     glEnd();
     glEnable(GL_TEXTURE_2D);
+
+    glColor3f(0.0, 0.0, 0.0); 
+    glEnable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+    glVertex2i(cx - 155, cy + 80);
+    glVertex2i(cx + 155, cy + 80);
+    glVertex2i(cx + 155, cy - 80);
+    glVertex2i(cx - 155, cy - 80);
+    glEnd();
 
     pausebox.bot = cy + 30;
     pausebox.left = cx - 110;
@@ -119,7 +144,6 @@ void initBigAsteroid(Game *g)
     a->pos[1] = (Flt)(rand() % yres);
     a->pos[2] = 0.0f;
     a->angle = 0.0;
-
     a->rotate = rnd() * 2.0 - 2.0;
     a->vel[0] = -(Flt)(rnd());
     a->vel[1] = (Flt)(rnd());
@@ -128,4 +152,32 @@ void initBigAsteroid(Game *g)
 	g->ahead->prev = a;
     g->ahead = a;
     g->big_asteroids++;
+}
+
+void asteroidsRemainingBox(Rect r, Game *g)
+{
+    r.bot = yres - 20;
+    r.left = 10;
+    r.center = 0;
+    ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
+    ggprint8b(&r, 16, 0x00ffff00, "Big Asteroids Remaining: %i",
+	    g->big_asteroids);
+    ggprint8b(&r, 16, 0x00ffff00, "Small Asteroids Remaining: %i",
+	    g->small_asteroids);
+}
+
+void windowBorderCollision(Game *g)
+{
+    if (g->astronaut.pos[0] < 0.0) {
+	g->astronaut.pos[0] = 0.0;
+    }
+    if (g->astronaut.pos[0] > (float)xres) {
+	g->astronaut.pos[0] = (float)xres;
+    }
+    if (g->astronaut.pos[1] < 0.0) {
+	g->astronaut.pos[1] = 0.0;
+    }
+    if (g->astronaut.pos[1] > (float)yres) {
+	g->astronaut.pos[1] = (float)yres;
+    }
 }

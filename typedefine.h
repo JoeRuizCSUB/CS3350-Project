@@ -188,7 +188,10 @@ void buildAmoBox(AmoBox *a);
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
-void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score);
+void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, 
+	Game *g);
+void asteroidsRemainingBox(Rect r, Game *g);
+void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g);
 void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
