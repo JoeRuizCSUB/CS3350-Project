@@ -108,27 +108,29 @@ Sprite bullet_sprite;
 
 
 int xres=1250, yres=900;
-// Added by Joe
+int keys[65536];
+
+// Joe's Global Variables
 Rect pbox;
 int pause_game = 1;
 int level = 1;
 int restart = 0;
+int dead = 0;
+Game game;
 // end of Joe
-//
-//Chris's modifications
+
+//Chris's Global Variables
 Ppmimage *StartUpMenu = NULL;
 GLuint StartUpMenuTexture;
 int menu = 1;
-//end of CK mod
-int keys[65536];
-// Added by Jonathan
+int score = 0;
+//end of Chris
+// Jonathan's Global Variables
 // Used to keep track of how much health, fuel 
 // and bullets remain
 int health = 300;
 float fuel = 300;
 int bulletsRemain = 30;
-int dead = 0;
-Game game;
 HealthBox healthbox;
 FuelBox fuelbox;
 AmoBox amobox;
@@ -136,7 +138,8 @@ AmoBox amobox;
 int gotHealth = 0;
 int gotFuel = 0;
 int gotAmo = 0;
-int score = 0;
+// end of Jonathan
+
 int main(void)
 {
     logOpen();
@@ -385,13 +388,8 @@ void init_opengl(void)
 	    GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData2);
 
 
-
-
     free(silhouetteData);
     free(silhouetteData2);
-
-
-
     //ck end
 
 }
@@ -572,18 +570,9 @@ int check_keys(XEvent *e, Game *g)
 		return 1;
 	case XK_r:
 	    if (pause_game || dead || fuel==0) {
-		restartLevel(health, fuel, bulletsRemain, score);
+		restartLevel(health, fuel, bulletsRemain, score, g);
 		dead = 0;
-		g->ahead = NULL;
-
-		g->big_asteroids = 0;
-		g->small_asteroids = 0;
 		init(&game);
-		g->astronaut.pos[0] = 10.0;
-		g->astronaut.pos[1] = 20.0;
-		g->astronaut.vel[0] = 0.0;
-		g->astronaut.vel[1] = 0.0;
-		g->astronaut.angle = 0.0;
 		pause_game = 0;
 	    }
 	    break;
@@ -599,14 +588,8 @@ int check_keys(XEvent *e, Game *g)
 	    // Added by Joe
 	    // Do not allow to be paused before the game
 	    // starts.
-	    if (GameStartMenu == false && !dead){
+	    if (GameStartMenu == false && !dead) {
 		pause_game ^= 1;
-		if (pause_game) {
-		    pauseGame(xres, yres, pbox);
-		    //int restart = checkPauseKeys(key, restart);
-		    //if (restart)
-		    //return 1;
-		}
 	    }
 	    // end of Joe
 	    break;
@@ -687,19 +670,7 @@ void physics(Game *g)
 
     //Check for collision with window edges
     //Joe added window edge borders for astronaut only
-    if (g->astronaut.pos[0] < 0.0) {
-	g->astronaut.pos[0] = 0.0;
-    }
-    if (g->astronaut.pos[0] > (float)xres) {
-	g->astronaut.pos[0] = (float)xres;
-    }
-    if (g->astronaut.pos[1] < 0.0) {
-	g->astronaut.pos[1] = 0.0;
-    }
-    if (g->astronaut.pos[1] > (float)yres) {
-	g->astronaut.pos[1] = (float)yres;
-    }
-    //
+    windowBorderCollision(g);
     //
     //Update bullet positions
     struct timespec bt;
@@ -1021,16 +992,7 @@ void render(Game *g)
 		Level3Texture, Level4Texture, Level5Texture);
 
 
-
-	r.bot = yres - 20;
-	r.left = 10;
-	r.center = 0;
-	ggprint8b(&r, 16, 0x00ff0000, "CS3350 - Space Escape");
-	ggprint8b(&r, 16, 0x00ffff00, "Big Asteroids Remaining: %i", 
-		g->big_asteroids);
-	ggprint8b(&r, 16, 0x00ffff00, "Small Asteroids Remaining: %i", 
-		g->small_asteroids);
-
+	asteroidsRemainingBox(r, g);
 	// Display and decrease health when colliding with asteroid
 	// Chris added
 	//
@@ -1044,8 +1006,6 @@ void render(Game *g)
 	if (!pause_game) {
 	    //--------------------------------------------------------
 	    // Jonathan
-	    // Added second condition to stop rendering
-	    // thrust coming out of astronaut
 	    if (keys[XK_Up] && fuelRemains(fuel)) {
 		int i;
 		//draw thrust
@@ -1158,11 +1118,13 @@ void render(Game *g)
 		pauseGame(xres, yres, pbox);
 	    if (dead) 
 		deadGame(xres, yres, pbox);
-	    if (fuel == 0 && g->astronaut.vel[0] < 0.08 && g->astronaut.vel[1] < 0.08) {
+	    if (fuel == 0 && g->astronaut.vel[0] < 0.08 && g->astronaut.vel[1] 
+		    < 0.08) {
 		strandedGame(xres, yres, pbox);	    
 		pause_game = 1;
 	    }
-
+	    if (pause_game) 
+		pauseGame(xres, yres, pbox);
 
 	}
     }
