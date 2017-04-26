@@ -57,8 +57,8 @@ Window win;     //
 GLXContext glc; //
 
 /*********************************************************/ 
-// Sean's Global Variables
-
+// Global Variables
+// added by sean
 // **Textures**
 
 Ppmimage *Level1=NULL;
@@ -81,7 +81,7 @@ int background = 1;
 ALuint alBuffer[9];
 ALuint alSource[9];
 int sound = 1;
-// End of Sean's Global Variables
+// Global Variables end
 /********************************************************/
 
 GLuint silhouetteTexture;
