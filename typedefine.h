@@ -191,6 +191,7 @@ void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score);
 void initBigAsteroid(Game *g);
 void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
