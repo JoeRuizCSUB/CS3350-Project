@@ -76,6 +76,8 @@ GLuint Level4Texture;
 Ppmimage *Level5=NULL;
 GLuint Level5Texture;
 int background = 1;
+// **levels**
+int levelnum = 1;
 
 // **Sounds**
 ALuint alBuffer[9];
@@ -939,6 +941,8 @@ void render(Game *g)
 
 
 	asteroidsRemainingBox(r, g);
+	showLevel(r, levelnum);
+	
 	// Display and decrease health when colliding with asteroid
 	// Chris added
 	//

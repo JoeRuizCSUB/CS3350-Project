@@ -1,8 +1,8 @@
 //Author: Sean Nickell
 //Purpose of file: Keypresses, and soon to be rendering
 //Date Modified: 3/2/17
-
 #include <GL/glx.h>
+#include "typedefine.h"
 #include </usr/include/AL/alut.h>
 #include "ppm.h"
 
@@ -132,3 +132,11 @@ void init_openal(ALuint *alBuffer, ALuint *alSource)
     getAudio(1, alSource);	
 }
 
+void showLevel(Rect r, int levelnum)
+{
+    	r.bot = yres - 40;
+	r.left = xres - 100;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ff0000, "Level %i", levelnum);
+}
+    

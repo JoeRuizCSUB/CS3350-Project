@@ -184,7 +184,7 @@ void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f);
 void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a);
 void buildFuelBox(FuelBox *f);
 void buildAmoBox(AmoBox *a);
-//////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
@@ -193,9 +193,12 @@ void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score,
 void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g);
+// Sean Added
 void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
+void showLevel(Rect, int);
+///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);
 
