@@ -194,7 +194,7 @@ void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g);
 // Sean Added
-void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void changeBackground(int, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void showLevel(Rect, int);
