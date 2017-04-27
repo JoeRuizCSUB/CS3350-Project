@@ -530,6 +530,7 @@ int check_keys(XEvent *e, Game *g)
 	    if (GameStartMenu == true){
 		GameStartMenu = false;
 		pause_game = false;
+	    	getAudio(2, alSource);
 	    }
 	    break;
 	case XK_p:
@@ -666,9 +667,20 @@ void physics(Game *g)
     }
     //
     //Update asteroid positions
-    if (g->small_asteroids < 8 && g->big_asteroids < 2)
-	initBigAsteroid(g);
-    Asteroid *a = g->ahead;
+
+    if (levelnum == 1){
+	if (g->small_asteroids < 8 && g->big_asteroids < 2)
+	    initBigAsteroid(g);
+    }
+    if (levelnum == 2){
+	if (g->small_asteroids < 10 && g->big_asteroids < 2)
+	    initBigAsteroid(g);
+    }
+    if (levelnum == 3){
+	if (g->small_asteroids < 10 && g->big_asteroids < 3)
+	    initBigAsteroid(g);
+    }
+    Asteroid *a= g->ahead;
     while (a) {
 	a->pos[0] += a->vel[0];
 	a->pos[1] += a->vel[1];
@@ -941,8 +953,14 @@ void render(Game *g)
 
 
 	asteroidsRemainingBox(r, g);
-	showLevel(r, levelnum);
 	
+	if (score >= 100 && levelnum ==1){
+	    levelnum = 2;
+	    nextLevel(health, fuel, bulletsRemain, g);	    
+	    getAudio(4, alSource);	
+	}
+	
+	showLevel(r, levelnum);
 	// Display and decrease health when colliding with asteroid
 	// Chris added
 	//
