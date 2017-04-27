@@ -964,12 +964,12 @@ void render(Game *g)
 	// Display and decrease health when colliding with asteroid
 	// Chris added
 	//
-	menubar(((xres/2)),yres-835,r, score);
-	healthbar(((xres/2)+200),yres-825,r, health);
+	menubar(((xres/2)),r, score);
+	healthbar(((xres/2)+200),r, health);
 
 	// Display and decrease fuel when pressing up key
 	// Jonathan added
-	fuelbar(((xres/2)-190),yres-825,r, fuel);
+	fuelbar(((xres/2)-190),r, fuel);
 
 	if (!pause_game) {
 	    //--------------------------------------------------------

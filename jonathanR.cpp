@@ -77,7 +77,7 @@ void astronautCollision(Game *g, int &health)
 
 // Used to display how much fuel is left and decreases as it
 // is used..
-void fuelbar(int x, int y, Rect r, float &fuel)
+void fuelbar(int x,  Rect r, float &fuel)
 {
     float fuelView = fuel;// - 150;
     // glDisable(GL_TEXTURE_2D);
