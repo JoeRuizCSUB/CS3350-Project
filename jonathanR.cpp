@@ -9,6 +9,7 @@
 #include "typedefine.h"
 #include <unistd.h>
 #include <ctime>
+#include <string.h>
 
 void astronautCollision(Game *g, int &health)
 {
@@ -26,7 +27,7 @@ void astronautCollision(Game *g, int &health)
 	d5 = (g->astronaut.pos[1]+20) - a->pos[1];
 	dist4 = (d4*d4 + d5*d5);
 
-	if (dist2 < (a->radius)*(a->radius) || dist4 < (a->radius)*(a->radius)) {
+	if (dist2 < (a->radius)*(a->radius)+900 || dist4 < (a->radius)*(a->radius+4)+900) {
 	    //std::cout << "asteroid hit." << std::endl;
 	    //this asteroid is hit.
 
@@ -156,7 +157,7 @@ int getHealthPack(Game *g, HealthBox *healthbox, int &health)
     d2 = g->astronaut.pos[0] - healthbox->pos[0];
     d3 = g->astronaut.pos[1] - healthbox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < healthbox->radius*healthbox->radius) {
+    if (dist2 < healthbox->radius*healthbox->radius && health < 100) {
 	// You can come into the radius of the healthbox
 	health += 50;
 	return 1;
@@ -171,7 +172,7 @@ int getFuelPack(Game *g, FuelBox *fuelbox, float &fuel)
     d2 = g->astronaut.pos[0] - fuelbox->pos[0];
     d3 = g->astronaut.pos[1] - fuelbox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < fuelbox->radius*fuelbox->radius) {
+    if (dist2 < fuelbox->radius*fuelbox->radius && fuel < 100) {
 	// You can come into the radius of the fuel pack
 	fuel += 100;
 	return 1;
@@ -322,7 +323,6 @@ void DrawAlien(GLuint AlienTexture, Alien *a)
 void AlienFollows(Game *g, Alien *alien)
 {
 
-
     Flt d1 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
     Flt d2 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
 
@@ -345,23 +345,23 @@ void AlienFollows(Game *g, Alien *alien)
 
     if (dist1 < dist2 && dist1 < dist3 && dist1 < dist4) {
 
-    alien->pos[0]-= .5;
-    alien->pos[1]+= .5;
+	alien->pos[0]-= .5;
+	alien->pos[1]+= .5;
 
     }
     else if (dist2 < dist1 && dist2 < dist3 && dist2 < dist4) {
-    alien->pos[0]-= .5;
-    alien->pos[1]-= .5;
+	alien->pos[0]-= .5;
+	alien->pos[1]-= .5;
 
     }
     else if (dist3 < dist2 && dist3 < dist1 && dist3 < dist4) {
-    alien->pos[0]+= .5;
-    alien->pos[1]-= .5;
+	alien->pos[0]+= .5;
+	alien->pos[1]-= .5;
 
     }
     else if (dist4 < dist2 && dist4 < dist3 && dist4 < dist1) {
-    alien->pos[0]+= .5;
-    alien->pos[1]+= .5;
+	alien->pos[0]+= .5;
+	alien->pos[1]+= .5;
 
     }
 }
@@ -374,10 +374,32 @@ int AlienHits(Game *g, Alien *alien, int &health)
     d3 = g->astronaut.pos[1] - alien->pos[1];
     dist2 = (d2*d2 + d3*d3);
     if (dist2 < alien->radius*alien->radius) {
-        health -= 20;
-        alien->pos[0] = (Flt)(rand() % xres);
-        alien->pos[1] = (Flt)(rand() % yres);
-        return 1;
+	health -= 20;
+	alien->pos[0] = (Flt)(rand() % xres);
+	alien->pos[1] = (Flt)(rand() % yres);
+	return 1;
+    }
+    return 0;
+}
+int ShotAlien(Game *g, Alien *alien, int &score)
+{
+
+    //is there a bullet within its radius?
+    int i=0;
+
+    Flt d0, d1, dist;
+    while (i < g->nbullets) {
+	Bullet *b = &g->barr[i];
+	d0 = b->pos[0] - alien->pos[0];
+	d1 = b->pos[1] - alien->pos[1];
+	dist = (d0*d0 + d1*d1);
+	if (dist < (alien->radius*alien->radius)) {
+	    score = 0;
+	    //delete the bullet...
+	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
+	    g->nbullets--;
+	}
+	i++;
     }
     return 0;
 }

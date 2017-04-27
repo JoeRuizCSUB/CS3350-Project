@@ -875,6 +875,7 @@ void physics(Game *g)
 	    break;
 	a = a->next;
     }
+    ShotAlien(g, &alienEnemy, score);
     //---------------------------------------------------
     //check keys pressed now
     if (keys[XK_Left]) {
@@ -1063,7 +1064,9 @@ void render(Game *g)
 
 	//-------------------------------------------------------------------------
 
-	DrawAlien(alienTexturepic, &alienEnemy);
+	if (score >= 30){
+	    DrawAlien(alienTexturepic, &alienEnemy);
+	}
 
 	bulletdisplay(bulletsRemain,bullet_sprite);
 	//Draw the asteroids
