@@ -63,8 +63,8 @@ struct Astronaut {
     float color[3];
     Astronaut() {
         VecZero(dir);
-        pos[0] = (Flt)(xres/4);
-        pos[1] = (Flt)(yres/4);
+        pos[0] = 10.0;
+        pos[1] = 20.0;
         pos[2] = 0.0f;
         VecZero(vel);
         angle = 0.0;
@@ -134,35 +134,20 @@ struct AmoBox {
     float rotate;
 
 };
-struct Alien{
-    Vec pos;
-    Vec vel;
-    Flt radius;
-    float angle;
-    float rotate;
-};
-
-
-// Created by Joe
-struct Debris {
-    Vec pos;
-    Vec vel;
-    int mass;
-    Flt radius;
-    Debris() { }
-};
 
 struct Game {
     Astronaut astronaut;
     Asteroid *ahead;
     Bullet *barr;
-    int nasteroids;
+    int big_asteroids;
+    int small_asteroids;
     int nbullets;
     struct timespec bulletTimer;
     Game() {
         ahead = NULL;
         barr = new Bullet[MAX_BULLETS];
-        nasteroids = 0;
+        big_asteroids = 0;
+	small_asteroids = 0;
         nbullets = 0;
     }
     ~Game() {
@@ -199,17 +184,22 @@ void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f);
 void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a);
 void buildFuelBox(FuelBox *f);
 void buildAmoBox(AmoBox *a);
-void buildAlien(Alien *a);
-void DrawAlien(GLuint AlienTexture, Alien *a);
-void AlienFollows(Game *g, Alien *alien);
-int AlienHits(Game *g, Alien *alien, int &health);
-//////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
-void restartLevel(int &health, float &fuel, int &bulletsRemain);
+void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, 
+	Game *g);
+void asteroidsRemainingBox(Rect r, Game *g);
+void windowBorderCollision(Game *g);
+void initBigAsteroid(Game *g);
+// Sean Added
 void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
+void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
+void showLevel(Rect, int);
+void nextLevel(int&, float&, int&, Game*);
+///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, Rect r, int &health);
 void fuelbar(int x, Rect r, float &fuel);
 

@@ -17,7 +17,7 @@ void astronautCollision(Game *g, int &health)
     // astronaut
     Flt d2, d3, dist2;
     Flt d4, d5, dist4;
-    while(a) {
+    while(a){
 	d2 = g->astronaut.pos[0] - a->pos[0];
 	d3 = g->astronaut.pos[1] - a->pos[1];
 	dist2 = (d2*d2 + d3*d3);
@@ -26,13 +26,12 @@ void astronautCollision(Game *g, int &health)
 	d5 = (g->astronaut.pos[1]+20) - a->pos[1];
 	dist4 = (d4*d4 + d5*d5);
 
-	if (dist2 < (a->radius)*(a->radius)+900 || 
-		dist4 < (a->radius)*(a->radius+4)+900) {
+	if (dist2 < (a->radius)*(a->radius) || dist4 < (a->radius)*(a->radius)) {
 	    //std::cout << "asteroid hit." << std::endl;
 	    //this asteroid is hit.
 
 	    // Reducing health when hitting an asteroid.
-	    if (health >= 0) {
+	    if (health >= 0){
 		health = health - 120;
 		// So that health display does not show 
 		// a negative number.
@@ -54,7 +53,7 @@ void astronautCollision(Game *g, int &health)
 		    if (g->ahead != NULL)
 			g->ahead->prev = ta; 
 		    g->ahead = ta; 
-		    g->nasteroids++;
+		    g->small_asteroids++;
 		}
 	    } else {
 		a->color[0] = 1.0;
@@ -65,7 +64,7 @@ void astronautCollision(Game *g, int &health)
 		Asteroid *savea = a->next;
 		deleteAsteroid(g, a); 
 		a = savea;
-		g->nasteroids--;
+		g->small_asteroids--;
 	    }
 
 	}
@@ -78,7 +77,7 @@ void astronautCollision(Game *g, int &health)
 
 // Used to display how much fuel is left and decreases as it
 // is used..
-void fuelbar(int x, Rect r, float &fuel)
+void fuelbar(int x,  Rect r, float &fuel)
 {
     float fuelView = fuel;// - 150;
     // glDisable(GL_TEXTURE_2D);
@@ -157,12 +156,9 @@ int getHealthPack(Game *g, HealthBox *healthbox, int &health)
     d2 = g->astronaut.pos[0] - healthbox->pos[0];
     d3 = g->astronaut.pos[1] - healthbox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < healthbox->radius*healthbox->radius && health < 100) {
+    if (dist2 < healthbox->radius*healthbox->radius) {
 	// You can come into the radius of the healthbox
 	health += 50;
-	healthbox->pos[0] = (Flt)(rand() % xres);
-	healthbox->pos[1] = (Flt)(rand() % yres);
-
 	return 1;
     }
     return 0;
@@ -175,12 +171,9 @@ int getFuelPack(Game *g, FuelBox *fuelbox, float &fuel)
     d2 = g->astronaut.pos[0] - fuelbox->pos[0];
     d3 = g->astronaut.pos[1] - fuelbox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < fuelbox->radius*fuelbox->radius && fuel < 100) {
+    if (dist2 < fuelbox->radius*fuelbox->radius) {
 	// You can come into the radius of the fuel pack
 	fuel += 100;
-	fuelbox->pos[0] = (Flt)(rand() % xres);
-	fuelbox->pos[1] = (Flt)(rand() % yres);
-
 	return 1;
     }
     return 0;
@@ -194,11 +187,9 @@ int getAmoPack(Game *g, AmoBox *amobox, int &bulletsRemain)
     d2 = g->astronaut.pos[0] - amobox->pos[0];
     d3 = g->astronaut.pos[1] - amobox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < amobox->radius*amobox->radius && bulletsRemain < 20) {
+    if (dist2 < amobox->radius*amobox->radius) {
 	// You can come into the radius of the amo pack
 	bulletsRemain += 15;
-	amobox->pos[0] = (Flt)(rand() % xres);
-	amobox->pos[1] = (Flt)(rand() % yres);
 	return 1;
     }
     return 0;
@@ -252,18 +243,17 @@ void buildAmoBox(AmoBox *a)
     a->radius = 35;
     a->angle = 0.0f;
     a->pos[0] = (Flt)(rand() % xres);
-    a->pos[1] = (Flt)(rand() % yres);
+    a->pos[1] = (Flt)(rand() % xres);
     a->pos[2] = 0.0f;
     a->angle = 0.0;
 
-    a->rotate = rnd() * 10.0 - 2.0;
-    a->vel[0] = (Flt)(rnd()/2);
-    a->vel[1] = (Flt)(rnd()/2);    
+    a->rotate = rnd() * 5.0 - 2.0;
+    a->vel[0] = (Flt)(rnd());
+    a->vel[1] = (Flt)(rnd());    
 }
 
 // Display AmoPack.ppm image
-void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a)
-{
+void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a){
 
     glPushMatrix();
     glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
@@ -284,107 +274,3 @@ void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a)
     // glVertex2f(a->pos[0], a->pos[1]);
     glEnd();
 }
-
-void buildAlien(Alien *a)
-{
-    a->radius = 15;
-    a->angle = 0.0f;
-    a->pos[0] = (Flt)(rand() % xres);
-    a->pos[1] = (Flt)(rand() % yres);
-    a->pos[2] = 0.0f;
-    a->angle = 0.0;
-
-    a->rotate = rnd() * 10.0 - 2.0;
-    a->vel[0] = (Flt)(rnd()/5);
-    a->vel[1] = (Flt)(rnd()/5);    
-
-}
-void DrawAlien(GLuint AlienTexture, Alien *a)
-{
-
-    glPushMatrix();
-    glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
-    glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
-
-    // Texture
-    glBindTexture(GL_TEXTURE_2D, AlienTexture);
-    glBegin(GL_QUADS);
-    // Center is 0 so going + and - lets us draw around
-    // the center.
-    glTexCoord2f(0.0f, 1.0f); glVertex2i(-15,-20);
-    glTexCoord2f(0.0f, 0.0f); glVertex2i(-15,20);
-    glTexCoord2f(1.0f, 0.0f); glVertex2i(15,20);
-    glTexCoord2f(1.0f, 1.0f); glVertex2i(15,-20);
-    glEnd();
-    glPopMatrix();
-    glBegin(GL_POINTS);
-    // glVertex2f(a->pos[0], a->pos[1]);
-    glEnd();
-
-}
-
-// The physics applied so that the alien comes in your
-// direction and attacks you. 
-void AlienFollows(Game *g, Alien *alien)
-{
-
-
-    Flt d1 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
-    Flt d2 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
-
-    Flt dist1 = sqrt(d1*d1 + d2*d2);
-
-    Flt d3 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
-    Flt d4 = abs(g->astronaut.pos[1] - alien->pos[1]+1);
-
-    Flt dist2 = sqrt(d3*d3 + d4*d4);
-
-    Flt d5 = abs(g->astronaut.pos[0] - alien->pos[0]-1);
-    Flt d6 = abs(g->astronaut.pos[1] - alien->pos[1]+1);
-
-    Flt dist3 = sqrt(d5*d5 + d6*d6);
-
-    Flt d7 = abs(g->astronaut.pos[0] - alien->pos[0]-1);
-    Flt d8 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
-
-    Flt dist4 = sqrt(d7*d7 + d8*d8);
-
-    if (dist1 < dist2 && dist1 < dist3 && dist1 < dist4) {
-
-    alien->pos[0]-= .5;
-    alien->pos[1]+= .5;
-
-    }
-    else if (dist2 < dist1 && dist2 < dist3 && dist2 < dist4) {
-    alien->pos[0]-= .5;
-    alien->pos[1]-= .5;
-
-    }
-    else if (dist3 < dist2 && dist3 < dist1 && dist3 < dist4) {
-    alien->pos[0]+= .5;
-    alien->pos[1]-= .5;
-
-    }
-    else if (dist4 < dist2 && dist4 < dist3 && dist4 < dist1) {
-    alien->pos[0]+= .5;
-    alien->pos[1]+= .5;
-
-    }
-}
-int AlienHits(Game *g, Alien *alien, int &health)
-{
-    // Attempt to detect collision between amo pack and
-    // astronaut
-    Flt d2, d3, dist2;
-    d2 = g->astronaut.pos[0] - alien->pos[0];
-    d3 = g->astronaut.pos[1] - alien->pos[1];
-    dist2 = (d2*d2 + d3*d3);
-    if (dist2 < alien->radius*alien->radius) {
-	health -= 20;
-	alien->pos[0] = (Flt)(rand() % xres);
-	alien->pos[1] = (Flt)(rand() % yres);
-	return 1;
-    }
-    return 0;
-}
-

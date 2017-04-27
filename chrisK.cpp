@@ -53,11 +53,8 @@ void menubar(int a, Rect r, int score){
     glEnable(GL_TEXTURE_2D);
     ggprint8b(&r,20,0x00ffffff, "Ammo:");
     r.bot = 100;//cb +35;
-    r.left = ca -320;
-    ggprint8b(&r,20,0x00ffffff, "Lives:");
-    r.bot = 100;//cb +35;
-    r.left = ca +70;
-    ggprint8b(&r,20,0x00ffffff, "Score: %i", score );
+    r.left = ca -310;
+    ggprint16(&r,20,0x00ffffff, "Score: %i", score );
 }
 
 void healthbar(int x, Rect r, int &health) 
