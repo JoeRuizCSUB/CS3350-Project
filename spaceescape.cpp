@@ -98,6 +98,10 @@ GLuint AsteroidTexturepic;
 Ppmimage *astronautpic = NULL;
 GLuint astronautpicTexturepic;
 
+Ppmimage *alien= NULL;
+GLuint alienTexturepic;
+
+
 Ppmimage *bulletImage;
 GLuint bulletTexture;
 Sprite bullet_sprite;
@@ -130,6 +134,9 @@ int bulletsRemain = 30;
 HealthBox healthbox;
 FuelBox fuelbox;
 AmoBox amobox;
+Alien alienEnemy;
+
+
 
 int gotHealth = 0;
 int gotFuel = 0;
@@ -336,6 +343,17 @@ void init_opengl(void)
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Asteroidpic->data);
 
 
+    alien= ppm6GetImage("./Images/Alien2.ppm");
+    glGenTextures(1, &alienTexturepic);
+    glBindTexture(GL_TEXTURE_2D, alienTexturepic);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+	    alien->width, alien->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, alien->data);
+
+
+
 
     //system("convert ./Images/Astronaut.jpg ./Images/Astronaut.ppm");
     astronautpic= ppm6GetImage("./Images/Astronaut.ppm");
@@ -407,7 +425,9 @@ void init(Game *g)
 {
     //build 3 big asteroids...
     for (int j=0; j<3; j++) 
-	initBigAsteroid(g); 
+	initBigAsteroid(g);
+
+   buildAlien(&alienEnemy); 
     buildHealthBox(&healthbox);
     buildFuelBox(&fuelbox);
     buildAmoBox(&amobox);
@@ -751,7 +771,7 @@ void physics(Game *g)
     amobox.angle += amobox.rotate;
 
 
-
+    AlienFollows(g, &alienEnemy);
 
     ////////////////////////////////////////////////////////////////////////
     // Jonathan Added
@@ -770,6 +790,8 @@ void physics(Game *g)
     if (!gotAmo){
 	gotAmo = getAmoPack(g, &amobox, bulletsRemain);
     }
+    AlienHits(g, &alienEnemy, health);
+
 
     // Currently exits the game if all health is lost. Change
     // it so that the game starts over...
@@ -1040,6 +1062,9 @@ void render(Game *g)
 
 
 	//-------------------------------------------------------------------------
+
+	DrawAlien(alienTexturepic, &alienEnemy);
+
 	bulletdisplay(bulletsRemain,bullet_sprite);
 	//Draw the asteroids
 	{
