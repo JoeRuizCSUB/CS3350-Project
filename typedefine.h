@@ -198,6 +198,7 @@ void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void showLevel(Rect, int);
+void nextLevel(int&, float&, int&, Game*);
 ///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, int y, Rect r, int &health);
 void fuelbar(int x, int y, Rect r, float &fuel);

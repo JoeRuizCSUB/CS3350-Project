@@ -134,9 +134,24 @@ void init_openal(ALuint *alBuffer, ALuint *alSource)
 
 void showLevel(Rect r, int levelnum)
 {
-    	r.bot = yres - 40;
-	r.left = xres - 100;
-	r.center = 0;
-	ggprint16(&r, 16, 0x00ff0000, "Level %i", levelnum);
+    r.bot = yres - 40;
+    r.left = xres - 100;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ff0000, "Level %i", levelnum);
 }
-    
+
+void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
+{
+    health = 300;
+    fuel = 300;
+    bulletsRemain= 30;
+    g->ahead = NULL;
+    g->big_asteroids = 0;
+    for(int i=0; i<4; i++) 
+	initBigAsteroid(g);
+    g->astronaut.pos[0] = 10.0;
+    g->astronaut.pos[1] = 20.0;
+    g->astronaut.vel[0] = 0.0;
+    g->astronaut.vel[1] = 0.0;
+    g->astronaut.angle = 0.0;
+}
