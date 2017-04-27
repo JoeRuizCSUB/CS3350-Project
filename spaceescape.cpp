@@ -1122,9 +1122,6 @@ void render(Game *g)
 		strandedGame(xres, yres, pbox);	    
 		pause_game = 1;
 	    }
-	    if (pause_game) 
-		pauseGame(xres, yres, pbox);
-
 	}
     }
 }
