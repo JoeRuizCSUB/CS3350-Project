@@ -32,28 +32,28 @@ void menubar(int a, Rect r, int score){
     //int cb = b;
     glColor3f(0.01,0.23,0.25);
     glBegin(GL_QUADS);
-    glVertex2i(ca-400,135/*cb+70*/);
-    glVertex2i(ca+400,135/*cb+70*/);
-    glVertex2i(ca+400,5/*cb-70*/);
-    glVertex2i(ca-400,5/*cb-70*/);
+    glVertex2i(ca-500,135/*cb+70*/);
+    glVertex2i(ca+500,135/*cb+70*/);
+    glVertex2i(ca+500,5/*cb-70*/);
+    glVertex2i(ca-500,5/*cb-70*/);
     glEnd();
     glEnable(GL_TEXTURE_2D);
 
     glColor3f(0.0,0.0,0.0);
     glBegin(GL_QUADS);
-    glVertex2i(ca-395,130/*cb+65*/);
-    glVertex2i(ca+395,130/*cb+65*/);
-    glVertex2i(ca+395,10/*cb-60*/);
-    glVertex2i(ca-395,10/*cb-60*/);
+    glVertex2i(ca-495,130/*cb+65*/);
+    glVertex2i(ca+495,130/*cb+65*/);
+    glVertex2i(ca+495,10/*cb-60*/);
+    glVertex2i(ca-495,10/*cb-60*/);
     glEnd();
     glEnable(GL_TEXTURE_2D);
     r.bot = 20;//cb -50;
-    r.left = ca -320;
+    r.left = ca -440;
     r.center = 1;
     glEnable(GL_TEXTURE_2D);
     ggprint8b(&r,20,0x00ffffff, "Ammo:");
     r.bot = 100;//cb +35;
-    r.left = ca -310;
+    r.left = ca -425;
     ggprint16(&r,20,0x00ffffff, "Score: %i", score );
 }
 
@@ -72,7 +72,7 @@ void healthbar(int x, Rect r, int &health)
     glEnd(); 
     glEnable(GL_TEXTURE_2D);
     glColor3f(0.0,1.0,0.0);
-    if (healthView <= 20) {
+    if (healthView <= 100) {
 	glColor3f(1.0,0.0,0.0);
     }
 
@@ -83,7 +83,7 @@ void healthbar(int x, Rect r, int &health)
     glVertex2i(cx-150,55/*cy-10*/);
     glEnd(); 
     r.bot = 60;//cy -5;
-    r.left = cx ;
+    r.left = cx;
     r.center = 1;
     //glEnable(GL_TEXTURE_2D);		If you want to see amount
     ggprint8b(&r,20,0x00ffffff, "Health");// %d", health);
@@ -188,7 +188,7 @@ void bulletdisplay(int &bulletsRemain, Sprite bullet_sprite) {
     //dist = bulletsRemain*20;
     if(bulletsRemain != 0) {
         for(int i=0; i <bulletsRemain; i++) {
-            bullet_sprite.pos[0] = xres/2 - 285 +(i *20);
+            bullet_sprite.pos[0] = xres/2 - 400 +(i *20);
             bullet_sprite.pos[1] = 25;//yres - 880;
             bullet_sprite.pos[2] = 0;
                 float wid = 10.0f;

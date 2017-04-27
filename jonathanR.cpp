@@ -87,10 +87,10 @@ void fuelbar(int x,  Rect r, float &fuel)
     //int cy = y;
     glBegin(GL_QUADS);
 
-    glVertex2i(cx-155,80);
-    glVertex2i(cx+155,80);
-    glVertex2i(cx+155,50);
-    glVertex2i(cx-155,50);
+    glVertex2i(cx-255,80);
+    glVertex2i(cx+55,80);
+    glVertex2i(cx+55,50);
+    glVertex2i(cx-255,50);
     glEnd();
     glEnable(GL_TEXTURE_2D);
     glColor3f(0.0,1.0,0.0);
@@ -100,13 +100,13 @@ void fuelbar(int x,  Rect r, float &fuel)
 
     // Setting up location of box
     glBegin(GL_QUADS);
-    glVertex2i(cx-150,75);
-    glVertex2i(cx+fuelView-150,75);
-    glVertex2i(cx+fuelView-150,55);
-    glVertex2i(cx-150,55);
+    glVertex2i(cx-250,75);
+    glVertex2i(cx+fuelView-250,75);
+    glVertex2i(cx+fuelView-250,55);
+    glVertex2i(cx-250,55);
     glEnd();
     r.bot = 60;
-    r.left = cx ;
+    r.left = cx - 100;
     r.center = 1;
     //glEnable(GL_TEXTURE_2D);		If you want to see amount
     ggprint8b(&r,20,0x00ffffff, "Fuel");//%d", (int)fuel);
@@ -372,7 +372,7 @@ int AlienHits(Game *g, Alien *alien, int &health)
     Flt d2, d3, dist2;
     d2 = g->astronaut.pos[0] - alien->pos[0];
     d3 = g->astronaut.pos[1] - alien->pos[1];
-    dist2 = (d2*d2 + d3*d3);
+    dist2 = (d2*d2 + d3*d3) - 20;
     if (dist2 < alien->radius*alien->radius) {
 	health -= 20;
 	alien->pos[0] = (Flt)(rand() % xres);
@@ -392,9 +392,9 @@ int ShotAlien(Game *g, Alien *alien, int &score)
 	Bullet *b = &g->barr[i];
 	d0 = b->pos[0] - alien->pos[0];
 	d1 = b->pos[1] - alien->pos[1];
-	dist = (d0*d0 + d1*d1);
+	dist = (d0*d0 + d1*d1) - 40;
 	if (dist < (alien->radius*alien->radius)) {
-	    score = 0;
+	    score += 5;
 	    //delete the bullet...
 	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
 	    g->nbullets--;

@@ -7,6 +7,14 @@
 #include "fonts.h"
 #include "typedefine.h"
 #include "math.h"
+#include <ctime>
+#include "string.h"
+
+extern Alien alienEnemy;
+extern HealthBox healthbox;
+extern FuelBox fuelbox;
+extern AmoBox amobox;
+extern int keys[65536];
 
 void pauseGame(int x, int y, Rect pausebox)
 {
@@ -42,12 +50,16 @@ void pauseGame(int x, int y, Rect pausebox)
 
 }
 
-void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, Game *g)
+void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, 
+	int &levelnum, int &background, Game *g)
 {
     health = 300;
     fuel = 300;
     bulletsRemain = 30;
     score = 0;
+    levelnum = 1;
+    background = 1;
+    g->nbullets = 0;
     g->ahead = NULL;
     g->big_asteroids = 0;
     g->small_asteroids = 0;
@@ -154,6 +166,19 @@ void initBigAsteroid(Game *g)
     g->big_asteroids++;
 }
 
+void init(Game *g)
+{
+    //build 3 big asteroids...
+    for (int j=0; j<3; j++) 
+	initBigAsteroid(g);
+    buildAlien(&alienEnemy);
+    buildHealthBox(&healthbox);
+    buildFuelBox(&fuelbox);
+    buildAmoBox(&amobox);
+    clock_gettime(CLOCK_REALTIME, &g->bulletTimer);
+    memset(keys, 0, 65536);
+}
+
 void asteroidsRemainingBox(Rect r, Game *g)
 {
     r.bot = yres - 20;
@@ -181,3 +206,4 @@ void windowBorderCollision(Game *g)
 	g->astronaut.pos[1] = (float)yres;
     }
 }
+

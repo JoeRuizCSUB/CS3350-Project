@@ -199,12 +199,13 @@ void DrawAlien(GLuint AlienTexture, Alien *a);
 void AlienFollows(Game *g, Alien *alien);
 int AlienHits(Game *g, Alien *alien, int &health);
 int ShotAlien(Game *a, Alien *alien, int &score);
-///////////////////////////////////////////////////////////////////////////////
+// Joe Added
+void init(Game *g);
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
 void strandedGame(int xsize, int ysize, Rect pausebox);
 void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score, 
-	Game *g);
+	int &levelnum, int &background, Game *g);
 void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g);
