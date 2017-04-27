@@ -198,6 +198,7 @@ void buildAlien(Alien *a);
 void DrawAlien(GLuint AlienTexture, Alien *a);
 void AlienFollows(Game *g, Alien *alien);
 int AlienHits(Game *g, Alien *alien, int &health);
+int ShotAlien(Game *a, Alien *alien, int &score);
 ///////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
