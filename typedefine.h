@@ -135,6 +135,16 @@ struct AmoBox {
 
 };
 
+struct Alien{
+    Vec pos;
+    Vec vel;
+    Flt radius;
+    float angle;
+    float rotate;
+};
+
+
+
 struct Game {
     Astronaut astronaut;
     Asteroid *ahead;
@@ -184,6 +194,10 @@ void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f);
 void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a);
 void buildFuelBox(FuelBox *f);
 void buildAmoBox(AmoBox *a);
+void buildAlien(Alien *a);
+void DrawAlien(GLuint AlienTexture, Alien *a);
+void AlienFollows(Game *g, Alien *alien);
+int AlienHits(Game *g, Alien *alien, int &health);
 ///////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
