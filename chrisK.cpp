@@ -27,7 +27,7 @@ extern int xres;
 extern int yres;
 
 
-void menubar(int a, int b, Rect r, int score){
+void menubar(int a, Rect r, int score){
     int ca = a;
     //int cb = b;
     glColor3f(0.01,0.23,0.25);
@@ -53,11 +53,14 @@ void menubar(int a, int b, Rect r, int score){
     glEnable(GL_TEXTURE_2D);
     ggprint8b(&r,20,0x00ffffff, "Ammo:");
     r.bot = 100;//cb +35;
-    r.left = ca -310;
-    ggprint16(&r,20,0x00ffffff, "Score: %i", score );
+    r.left = ca -320;
+    ggprint8b(&r,20,0x00ffffff, "Lives:");
+    r.bot = 100;//cb +35;
+    r.left = ca +70;
+    ggprint8b(&r,20,0x00ffffff, "Score: %i", score );
 }
 
-void healthbar(int x, int y, Rect r, int &health) 
+void healthbar(int x, Rect r, int &health) 
 {
     int healthView = health;
     // glDisable(GL_TEXTURE_2D);
