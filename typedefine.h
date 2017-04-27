@@ -20,7 +20,7 @@ extern int xres, yres;
 #define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
 #define VecDot(a,b)     ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
-                             (c)[1]=(a)[1]-(b)[1]; \
+			     (c)[1]=(a)[1]-(b)[1]; \
 (c)[2]=(a)[2]-(b)[2]
 //constants
 const float timeslice = 1.0f;
@@ -32,8 +32,8 @@ const Flt MINIMUM_ASTEROID_SIZE = 60.0;
 
 typedef double Arr[3];
 struct Sprite {
-        Arr pos;
-	    Arr vel;
+    Arr pos;
+    Arr vel;
 };
 
 
@@ -62,15 +62,15 @@ struct Astronaut {
     float angle;
     float color[3];
     Astronaut() {
-        VecZero(dir);
-        pos[0] = 10.0;
-        pos[1] = 20.0;
-        pos[2] = 0.0f;
-        VecZero(vel);
-        angle = 0.0;
-        color[0] = 1.0;
-        color[1] = 1.0;
-        color[2] = 1.0;
+	VecZero(dir);
+	pos[0] = 10.0;
+	pos[1] = 20.0;
+	pos[2] = 0.0f;
+	VecZero(vel);
+	angle = 0.0;
+	color[0] = 1.0;
+	color[1] = 1.0;
+	color[2] = 1.0;
     }
 };
 
@@ -94,8 +94,8 @@ struct Asteroid {
     struct Asteroid *prev;
     struct Asteroid *next;
     Asteroid() {
-        prev = NULL;
-        next = NULL;
+	prev = NULL;
+	next = NULL;
     }
 };
 
@@ -109,12 +109,12 @@ struct HealthBox {
 
 };
 struct Vector {
-        float x, y, z;
+    float x, y, z;
 };
 struct Shape {
-        float width, height;
-	    float radius;
-	        Vector center;
+    float width, height;
+    float radius;
+    Vector center;
 };
 
 
@@ -135,6 +135,14 @@ struct AmoBox {
 
 };
 
+struct Alien{
+    Vec pos;
+    Vec vel;
+    Flt radius;
+    float angle;
+    float rotate;
+};
+
 struct Game {
     Astronaut astronaut;
     Asteroid *ahead;
@@ -144,14 +152,14 @@ struct Game {
     int nbullets;
     struct timespec bulletTimer;
     Game() {
-        ahead = NULL;
-        barr = new Bullet[MAX_BULLETS];
-        big_asteroids = 0;
+	ahead = NULL;
+	barr = new Bullet[MAX_BULLETS];
+	big_asteroids = 0;
 	small_asteroids = 0;
-        nbullets = 0;
+	nbullets = 0;
     }
     ~Game() {
-        delete [] barr;
+	delete [] barr;
     }
 };
 
@@ -184,6 +192,10 @@ void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f);
 void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a);
 void buildFuelBox(FuelBox *f);
 void buildAmoBox(AmoBox *a);
+void buildAlien(Alien *a);
+void DrawAlien(GLuint AlienTexture, Alien *a);
+void AlienFollows(Game *g, Alien *alien);
+int AlienHits(Game *g, Alien *alien, int &health);
 ///////////////////////////////////////////////////////////////////////////////
 void pauseGame(int xsize, int ysize, Rect pausebox);
 void deadGame(int xsize, int ysize, Rect pausebox);
@@ -194,7 +206,7 @@ void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g);
 // Sean Added
-void changeBackground(int, GLuint, GLuint, GLuint);
+void changeBackground(int, GLuint, GLuint, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void showLevel(Rect, int);

@@ -274,3 +274,124 @@ void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a){
     // glVertex2f(a->pos[0], a->pos[1]);
     glEnd();
 }
+
+void buildAlien(Alien *a)
+{
+    a->radius = 15;
+    a->angle = 0.0f;
+    a->pos[0] = (Flt)(rand() % xres);
+    a->pos[1] = (Flt)(rand() % yres);
+    a->pos[2] = 0.0f;
+    a->angle = 0.0;
+
+    a->rotate = rnd() * 10.0 - 2.0;
+    a->vel[0] = (Flt)(rnd()/5);
+    a->vel[1] = (Flt)(rnd()/5);
+
+}
+void DrawAlien(GLuint AlienTexture, Alien *a)
+{
+
+    glPushMatrix();
+    glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
+    glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
+
+    // Texture
+    glBindTexture(GL_TEXTURE_2D, AlienTexture);
+    glBegin(GL_QUADS);
+    // Center is 0 so going + and - lets us draw around
+    // the center.
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(-15,-20);
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(-15,20);
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(15,20);
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(15,-20);
+    glEnd();
+    glPopMatrix();
+    glBegin(GL_POINTS);
+    // glVertex2f(a->pos[0], a->pos[1]);
+    glEnd();
+
+}
+
+// The physics applied so that the alien comes in your
+// direction and attacks you. 
+void AlienFollows(Game *g, Alien *alien)
+{
+
+
+    Flt d1 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
+    Flt d2 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
+
+    Flt dist1 = sqrt(d1*d1 + d2*d2);
+
+    Flt d3 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
+    Flt d4 = abs(g->astronaut.pos[1] - alien->pos[1]+1);
+
+    Flt dist2 = sqrt(d3*d3 + d4*d4);
+
+    Flt d5 = abs(g->astronaut.pos[0] - alien->pos[0]-1);
+    Flt d6 = abs(g->astronaut.pos[1] - alien->pos[1]+1);
+
+    Flt dist3 = sqrt(d5*d5 + d6*d6);
+
+    Flt d7 = abs(g->astronaut.pos[0] - alien->pos[0]-1);
+    Flt d8 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
+
+    Flt dist4 = sqrt(d7*d7 + d8*d8);
+
+    if (dist1 < dist2 && dist1 < dist3 && dist1 < dist4) {
+
+    alien->pos[0]-= .5;
+    alien->pos[1]+= .5;
+
+    }
+    else if (dist2 < dist1 && dist2 < dist3 && dist2 < dist4) {
+    alien->pos[0]-= .5;
+    alien->pos[1]-= .5;
+
+    }
+    else if (dist3 < dist2 && dist3 < dist1 && dist3 < dist4) {
+    alien->pos[0]+= .5;
+    alien->pos[1]-= .5;
+
+    }
+    else if (dist4 < dist2 && dist4 < dist3 && dist4 < dist1) {
+    alien->pos[0]+= .5;
+    alien->pos[1]+= .5;
+
+    }
+}
+int AlienHits(Game *g, Alien *alien, int &health)
+{
+    // Attempt to detect collision between amo pack and
+    // astronaut
+    Flt d2, d3, dist2;
+    d2 = g->astronaut.pos[0] - alien->pos[0];
+    d3 = g->astronaut.pos[1] - alien->pos[1];
+    dist2 = (d2*d2 + d3*d3);
+    if (dist2 < alien->radius*alien->radius) {
+        health -= 20;
+        alien->pos[0] = (Flt)(rand() % xres);
+        alien->pos[1] = (Flt)(rand() % yres);
+        return 1;
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

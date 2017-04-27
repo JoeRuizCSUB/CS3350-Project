@@ -69,6 +69,12 @@ GLuint Level2Texture;
 
 Ppmimage *Level3=NULL;
 GLuint Level3Texture;
+
+Ppmimage *Level4=NULL;
+GLuint Level4Texture;
+
+Ppmimage *Level5=NULL;
+GLuint Level5Texture;
 int background = 1;
 // **levels**
 int levelnum = 1;
@@ -97,6 +103,10 @@ GLuint AsteroidTexturepic;
 
 Ppmimage *astronautpic = NULL;
 GLuint astronautpicTexturepic;
+
+Ppmimage *alien= NULL;
+GLuint alienTexturepic;
+
 
 Ppmimage *bulletImage;
 GLuint bulletTexture;
@@ -130,6 +140,7 @@ int bulletsRemain = 30;
 HealthBox healthbox;
 FuelBox fuelbox;
 AmoBox amobox;
+Alien alienEnemy;
 
 int gotHealth = 0;
 int gotFuel = 0;
@@ -269,16 +280,16 @@ void init_opengl(void)
 	    Level1->width, Level1->height,
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
-    system("convert ./Images/Level3.jpg ./Images/Level3.ppm");
-    Level3 = ppm6GetImage("./Images/Level3.ppm");
-    glGenTextures(1, &Level3Texture);
+    system("convert ./Images/Level2.jpg ./Images/Level2.ppm");
+    Level2 = ppm6GetImage("./Images/Level2.ppm");
+    glGenTextures(1, &Level2Texture);
 
-    glBindTexture(GL_TEXTURE_2D, Level3Texture);
+    glBindTexture(GL_TEXTURE_2D, Level2Texture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-	    Level3->width, Level3->height,
-	    0, GL_RGB, GL_UNSIGNED_BYTE, Level3->data);
+	    Level2->width, Level2->height,
+	    0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
     //End of Seans	
 
     //Chris's Code
@@ -334,6 +345,16 @@ void init_opengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
 	    Asteroidpic->width, Asteroidpic->height,
 	    0, GL_RGB, GL_UNSIGNED_BYTE, Asteroidpic->data);
+
+
+    alien= ppm6GetImage("./Images/Alien2.ppm");
+    glGenTextures(1, &alienTexturepic);
+    glBindTexture(GL_TEXTURE_2D, alienTexturepic);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+            alien->width, alien->height,
+            0, GL_RGB, GL_UNSIGNED_BYTE, alien->data);
 
 
 
@@ -407,7 +428,9 @@ void init(Game *g)
 {
     //build 3 big asteroids...
     for (int j=0; j<3; j++) 
-	initBigAsteroid(g); 
+	initBigAsteroid(g);
+
+    buildAlien(&alienEnemy); 
     buildHealthBox(&healthbox);
     buildFuelBox(&fuelbox);
     buildAmoBox(&amobox);
@@ -496,12 +519,12 @@ int check_keys(XEvent *e, Game *g)
 		GameStartMenu = true;
 	    break;
 	case XK_b:
-	    if(background<3)
+	    if(background<5)
 		background++;
 	    else
 		background = 1;
 	    changeBackground(background, Level1Texture, Level2Texture, 
-		    Level3Texture); 
+		    Level3Texture, Level4Texture, Level5Texture); 
 	    break;	
 	    // End of testing keypresses
 	    /************************************************************/
@@ -524,7 +547,7 @@ int check_keys(XEvent *e, Game *g)
 	    if (GameStartMenu == true){
 		GameStartMenu = false;
 		pause_game = false;
-		getAudio(3, alSource);
+	    	getAudio(2, alSource);
 	    }
 	    break;
 	case XK_p:
@@ -750,7 +773,7 @@ void physics(Game *g)
     }
     amobox.angle += amobox.rotate;
 
-
+    AlienFollows(g, &alienEnemy);
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -770,6 +793,8 @@ void physics(Game *g)
     if (!gotAmo){
 	gotAmo = getAmoPack(g, &amobox, bulletsRemain);
     }
+    AlienHits(g, &alienEnemy, health);
+
 
     // Currently exits the game if all health is lost. Change
     // it so that the game starts over...
@@ -811,7 +836,7 @@ void physics(Game *g)
 		//std::cout << "asteroid hit." << std::endl;
 		//this asteroid is hit.
 		score = Score(score);
-		getAudio(6, alSource);
+		getAudio(8, alSource);
 		if (a->radius > MINIMUM_ASTEROID_SIZE) {
 		    //break it into pieces.
 		    g->big_asteroids--;
@@ -943,26 +968,17 @@ void render(Game *g)
 
     } else { 
 	changeBackground(background, Level1Texture, Level2Texture, 
-		Level3Texture);
+		Level3Texture, Level4Texture, Level5Texture);
 
 
 	asteroidsRemainingBox(r, g);
-
+	
 	if (score >= 100 && levelnum ==1){
 	    levelnum = 2;
 	    nextLevel(health, fuel, bulletsRemain, g);	    
-	    getAudio(4, alSource);		
-	    background = 2;
-	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture); 
+	    getAudio(4, alSource);	
 	}
-	if (score >= 300 && levelnum ==2){
-	    levelnum = 3;
-	    nextLevel(health, fuel, bulletsRemain, g);
-	    getAudio(5, alSource);
-	    background = 3;
-	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture);
-	}
-
+	
 	showLevel(r, levelnum);
 	// Display and decrease health when colliding with asteroid
 	// Chris added
@@ -1072,6 +1088,7 @@ void render(Game *g)
 		//glEnd();
 		a = a->next;
 	    }
+        DrawAlien(alienTexturepic, &alienEnemy);
 	    if (fuel < 100) {
 		DrawFuelBox(fuelBoxTexture, &fuelbox);
 		gotFuel = 0;
