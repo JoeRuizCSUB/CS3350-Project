@@ -138,6 +138,7 @@ Alien alienEnemy;
 int gotHealth = 0;
 int gotFuel = 0;
 int gotAmo = 0;
+int alienActive = 0;
 // end of Jonathan
 
 int main(void)
@@ -754,7 +755,9 @@ void physics(Game *g)
 	 amobox.angle += amobox.rotate;
 
 
-	 AlienFollows(g, &alienEnemy);
+	 if (alienActive){
+	     AlienFollows(g, &alienEnemy);
+	 }
 
 	 ////////////////////////////////////////////////////////////////////////
 	 // Jonathan Added
@@ -773,7 +776,9 @@ void physics(Game *g)
 	 if (!gotAmo){
 		  gotAmo = getAmoPack(g, &amobox, bulletsRemain);
 	 }
-	 AlienHits(g, &alienEnemy, health);
+	 if (alienActive == 1){
+	     alienActive = AlienHits(g, &alienEnemy, health);
+	 }
 
 
 	 // Currently exits the game if all health is lost. Change
@@ -855,7 +860,9 @@ void physics(Game *g)
 				break;
 		  a = a->next;
 	 }
-	 ShotAlien(g, &alienEnemy, score);
+	 if (alienActive){
+	     alienActive = ShotAlien(g, &alienEnemy, score);
+	 }
 	 //---------------------------------------------------
 	 //check keys pressed now
 	 if (keys[XK_Left]) {
@@ -1053,11 +1060,18 @@ void render(Game *g)
 
 		  //-------------------------------------------------------------------------
 
-		  if (score != 0 && score % 50 == 0)
+		  if (score != 0 && score % 50 == 0){
 				DrawAlien(alienTexturepic, &alienEnemy);
+				alienActive = 1;
+		  }
+		  else{
+		      alienActive = 0;
+		  }
 
-		  if (levelnum > 1 && score % 30 == 0)
+		  if (levelnum > 1 && score % 30 == 0){
 				DrawAlien(alienTexturepic, &alienEnemy);
+				alienActive = 1;
+		  }
 
 		  bulletdisplay(bulletsRemain,bullet_sprite);
 		  //Draw the asteroids
