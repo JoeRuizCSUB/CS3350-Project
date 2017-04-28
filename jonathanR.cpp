@@ -377,9 +377,9 @@ int AlienHits(Game *g, Alien *alien, int &health)
 	health -= 20;
 	alien->pos[0] = (Flt)(rand() % xres);
 	alien->pos[1] = (Flt)(rand() % yres);
-	return 1;
+	return 0;
     }
-    return 0;
+    return 1;
 }
 int ShotAlien(Game *g, Alien *alien, int &score)
 {
@@ -398,9 +398,10 @@ int ShotAlien(Game *g, Alien *alien, int &score)
 	    //delete the bullet...
 	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
 	    g->nbullets--;
+	    return 0;
 	}
 	i++;
     }
-    return 0;
+    return 1;
 }
 
