@@ -516,6 +516,9 @@ int check_keys(XEvent *e, Game *g)
 					 return 1;
 		  case XK_r:
 				if (pause_game || dead || fuel==0) {
+					 if(levelnum != 1)
+					 getAudio(3, alSource);
+ 				
 					 restartLevel(health, fuel, bulletsRemain, score, levelnum,
 								background, g);
 					 dead = 0;
