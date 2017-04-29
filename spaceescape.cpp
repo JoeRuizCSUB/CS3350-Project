@@ -523,6 +523,7 @@ int check_keys(XEvent *e, Game *g)
 		  case XK_Return:	
 				if (backstoryOn) { 
 				backstoryOn = false;
+				pause_game = false;
 				getAudio(3, alSource);
 				}
 				break;
@@ -973,9 +974,10 @@ void render(Game *g)
 		  glEnd();
 
 	 }
-	 else if (backstoryOn) 
-	 	  backstory(r);
-
+	 else if (backstoryOn) {
+	 	  pause_game = 1;
+		  backstory(r);
+		  }
  	 else if (!backstoryOn && !GameStartMenu) { 
 		  changeBackground(background, Level1Texture, Level2Texture,  
 					 Level3Texture);
