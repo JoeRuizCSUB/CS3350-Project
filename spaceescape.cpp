@@ -72,7 +72,7 @@ GLuint Level3Texture;
 int background = 1;
 // **levels**
 int levelnum = 1;
-
+bool backstoryOn = false;
 // **Sounds**
 ALuint alBuffer[9];
 ALuint alSource[9];
@@ -173,6 +173,7 @@ int main(void)
 	 }
 	 cleanupXWindows();
 	 cleanup_fonts();
+	 cleanup_openAl(alBuffer, alSource);
 	 logClose();
 	 return 0;
 }
@@ -487,28 +488,13 @@ int check_keys(XEvent *e, Game *g)
 	 }
 	 if (shift){}
 	 switch (key) {
-
-		  /*************************************************************/
-		  // These keypresses are only for testing purposes, made by sean
-		  case XK_m:
-				if(sound<7)
-					 sound ++;
-				else
-					 sound = 1;
-				getAudio(sound, alSource);
-				if (pause_game)
-					 GameStartMenu = true;
+			
+		  case XK_Return:	
+				if (backstoryOn) { 
+				backstoryOn = false;
+				getAudio(3, alSource);
+				}
 				break;
-		  case XK_b:
-				if(background<3)
-					 background++;
-				else
-					 background = 1;
-				changeBackground(background, Level1Texture, Level2Texture, 
-						  Level3Texture); 
-				break;	
-				// End of testing keypresses
-				/************************************************************/
 		  case XK_Escape:
 				return 1;
 		  case XK_e:
@@ -530,9 +516,10 @@ int check_keys(XEvent *e, Game *g)
 				// Conditional statement so that
 				// game does not start before pressing 's'
 				if (GameStartMenu == true){
+					 backstoryOn = true;
 					 GameStartMenu = false;
 					 pause_game = false;
-					 getAudio(3, alSource);
+					 getAudio(2, alSource);
 				}
 				break;
 		  case XK_p:
@@ -954,13 +941,16 @@ void render(Game *g)
 		  glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 		  glEnd();
 
-	 } else { 
-		  changeBackground(background, Level1Texture, Level2Texture, 
+	 }
+	 else if (backstoryOn) 
+	 	  backstory(r);
+
+ 	 else if (!backstoryOn && !GameStartMenu) { 
+		  changeBackground(background, Level1Texture, Level2Texture,  
 					 Level3Texture);
+		  
 
-
-		  asteroidsRemainingBox(r, g);
-
+		  asteroidsRemainingBox(r, g);	
 		  if (score >= 300 && levelnum ==1){
 				levelnum = 2;
 				nextLevel(health, fuel, bulletsRemain, g);	    

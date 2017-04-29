@@ -109,7 +109,19 @@ void init_openal(ALuint *alBuffer, ALuint *alSource)
     }
     getAudio(1, alSource);	
 }
+void cleanup_openAl(ALuint *alBuffer, ALuint *alSource)
+{
+	for(int i=0; i<6; i++) {
+	alDeleteSources(7, &alSource[i]);
+	alDeleteBuffers(7, &alBuffer[i]);
+	}
+ 	ALCcontext *Context = alcGetCurrentContext();
+        ALCdevice *Device = alcGetContextsDevice(Context);
+        alcMakeContextCurrent(NULL);
+        alcDestroyContext(Context);
+        alcCloseDevice(Device);
 
+}
 void showLevel(Rect r, int levelnum)
 {
     r.bot = yres - 40;
@@ -133,3 +145,12 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
     g->astronaut.vel[1] = 0.0;
     g->astronaut.angle = 0.0;
 }
+
+void backstory(Rect r)
+{
+    r.bot = yres/2;
+    r.left = (xres/2) -120;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ff0000, "Backstory stuff hit enter");
+}
+

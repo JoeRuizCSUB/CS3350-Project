@@ -212,9 +212,11 @@ void initBigAsteroid(Game *g);
 // Sean Added
 void changeBackground(int, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
+void cleanup_openAl(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void showLevel(Rect, int);
 void nextLevel(int&, float&, int&, Game*);
+void backstory(Rect);
 ///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, Rect r, int &health);
 void fuelbar(int x, Rect r, float &fuel);
