@@ -69,6 +69,11 @@ GLuint Level2Texture;
 
 Ppmimage *Level3=NULL;
 GLuint Level3Texture;
+
+GLuint healthSilhouette;
+GLuint ammoSilhouette;
+GLuint fuelSilhouette;
+
 int background = 1;
 // **levels**
 int levelnum = 1;
@@ -399,10 +404,36 @@ void init_opengl(void)
 	 unsigned char *silhouetteData2 = buildAlphaData(astronautpic);
 	 glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
 				GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData2);
+	
+	 glGenTextures(1, &ammoSilhouette);
+         glBindTexture(GL_TEXTURE_2D, ammoSilhouette);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+         unsigned char *silhouetteData3 = buildAlphaData(amoBox);
+         glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
+                                GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData3);
 
+	 glGenTextures(1, &healthSilhouette);
+         glBindTexture(GL_TEXTURE_2D, healthSilhouette);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+         unsigned char *silhouetteData4 = buildAlphaData(healthBox);
+         glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
+                                GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData4);
 
+	 glGenTextures(1, &fuelSilhouette);
+         glBindTexture(GL_TEXTURE_2D, fuelSilhouette);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+         unsigned char *silhouetteData5 = buildAlphaData(fuelBox);
+         glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
+                                GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData5);
+	 
 	 free(silhouetteData);
 	 free(silhouetteData2);
+	 free(silhouetteData3);
+	 free(silhouetteData4);
+	 free(silhouetteData5);
 	 //ck end
 
 }
@@ -1099,15 +1130,15 @@ void render(Game *g)
 					 a = a->next;
 				}
 				if (fuel < 100) {
-					 DrawFuelBox(fuelBoxTexture, &fuelbox);
+					 DrawFuelBox(fuelSilhouette, &fuelbox);
 					 gotFuel = 0;
 				}
 				if (health < 100) {
-					 DrawHealthBox(healthBoxTexture, &healthbox);
+					 DrawHealthBox(healthSilhouette, &healthbox);
 					 gotHealth = 0;
 				}
-				if (bulletsRemain < 20){
-					 DrawAmoBox(amoBoxTexture, &amobox);
+				if (bulletsRemain < 20){				 
+					 DrawAmoBox(ammoSilhouette, &amobox);
 					 gotAmo = 0;
 				}
 

@@ -112,7 +112,7 @@ void buildHealthBox(HealthBox *h) {
 // so that it "floats" in space.
 
 
-void DrawHealthBox(GLuint healthBoxTexture, HealthBox *h) {
+void DrawHealthBox(GLuint healthSilhouette, HealthBox *h) {
 
     glPushMatrix();
     glTranslatef(h->pos[0], h->pos[1], h->pos[2]);
@@ -121,7 +121,9 @@ void DrawHealthBox(GLuint healthBoxTexture, HealthBox *h) {
 
     // Texture
 
-    glBindTexture(GL_TEXTURE_2D, healthBoxTexture);
+    glBindTexture(GL_TEXTURE_2D, healthSilhouette);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
     glBegin(GL_QUADS);
     // The 20's are used to draw around the center.
     // Center is 0 so going + and - lets us draw around

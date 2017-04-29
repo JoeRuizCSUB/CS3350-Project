@@ -214,7 +214,7 @@ void buildFuelBox(FuelBox *f)
 }
 
 // Displays Fuel.ppm image
-void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f)
+void DrawFuelBox(GLuint fuelSilhouette, FuelBox *f)
 {
 
     glPushMatrix();
@@ -222,7 +222,9 @@ void DrawFuelBox(GLuint fuelBoxTexture, FuelBox *f)
     glRotatef(f->angle+10, 0.0f, 0.0f, 1.0f);
 
     // Texture
-    glBindTexture(GL_TEXTURE_2D, fuelBoxTexture);
+    glBindTexture(GL_TEXTURE_2D, fuelSilhouette);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
     glBegin(GL_QUADS);
     // Center is 0 so going + and - lets us draw around
     // the center.
@@ -254,14 +256,17 @@ void buildAmoBox(AmoBox *a)
 }
 
 // Display AmoPack.ppm image
-void DrawAmoBox(GLuint amoBoxTexture, AmoBox *a){
+void DrawAmoBox(GLuint ammoSilhouette, AmoBox *a){
 
     glPushMatrix();
     glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
     glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
 
     // Texture
-    glBindTexture(GL_TEXTURE_2D, amoBoxTexture);
+    //glBindTexture(GL_TEXTURE_2D, amoBoxTexture);
+    glBindTexture(GL_TEXTURE_2D, ammoSilhouette);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
     glBegin(GL_QUADS);
     // Center is 0 so going + and - lets us draw around
     // the center.
