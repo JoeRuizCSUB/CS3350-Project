@@ -280,6 +280,17 @@ void init_opengl(void)
 				Level1->width, Level1->height,
 				0, GL_RGB, GL_UNSIGNED_BYTE, Level1->data);
 
+	 system("convert ./Images/Level2.jpg ./Images/Level2.ppm");
+	 Level2 = ppm6GetImage("./Images/Level2.ppm");
+	 glGenTextures(1, &Level2Texture);
+
+	 glBindTexture(GL_TEXTURE_2D, Level2Texture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 glTexImage2D(GL_TEXTURE_2D, 0, 3,
+				Level2->width, Level2->height,
+				0, GL_RGB, GL_UNSIGNED_BYTE, Level2->data);
+	 
 	 system("convert ./Images/Level3.jpg ./Images/Level3.ppm");
 	 Level3 = ppm6GetImage("./Images/Level3.ppm");
 	 glGenTextures(1, &Level3Texture);
