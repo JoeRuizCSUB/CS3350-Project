@@ -9,6 +9,7 @@
 
 extern int xres, yres;
 
+//Changes Background after a level is beaten
 void changeBackground(int background, GLuint Level1Texture, GLuint Level2Texture, 
 	GLuint Level3Texture)
 {
@@ -43,6 +44,7 @@ void changeBackground(int background, GLuint Level1Texture, GLuint Level2Texture
 	}
 }
 
+//Plays audio loops and single sounds
 void getAudio(int num, ALuint* alSource)
 {
     if (num == 0) {
@@ -63,7 +65,7 @@ void getAudio(int num, ALuint* alSource)
     }
 }
 
-//openal function for audio created by Sean
+//openal initialize function for audio created by Sean
 void init_openal(ALuint *alBuffer, ALuint *alSource)
 {
 
@@ -109,6 +111,8 @@ void init_openal(ALuint *alBuffer, ALuint *alSource)
     }
     getAudio(1, alSource);	
 }
+
+//Closes openAl and deletes the sounds and buffers
 void cleanup_openAl(ALuint *alBuffer, ALuint *alSource)
 {
 	for(int i=0; i<6; i++) {
@@ -122,6 +126,8 @@ void cleanup_openAl(ALuint *alBuffer, ALuint *alSource)
         alcCloseDevice(Device);
 
 }
+
+//Shows level in top right corner
 void showLevel(Rect r, int levelnum)
 {
     r.bot = yres - 40;
@@ -130,6 +136,7 @@ void showLevel(Rect r, int levelnum)
     ggprint16(&r, 16, 0x00ff0000, "Level %i", levelnum);
 }
 
+//Similar to restart, restets all the stats except score
 void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
 {
     health = 300;
@@ -146,6 +153,7 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
     g->astronaut.angle = 0.0;
 }
 
+//Shows the backstory right after menu
 void backstory(Rect r)
 {
     r.bot = yres/2;
