@@ -139,7 +139,7 @@ void strandedGame(int x, int y, Rect pausebox)
 
 }
 
-void initBigAsteroid(Game *g)
+void initBigAsteroid(Game *g, bool GameStartMenu)
 {
     Asteroid *a = new Asteroid;
     a->nverts = 4;
@@ -152,7 +152,12 @@ void initBigAsteroid(Game *g)
 	a->vert[i][1] = cos(angle) * (r2 + rnd() * a->radius);
 	angle += inc;
     }
-    a->pos[0] = xres;
+    if (GameStartMenu){
+    	a->pos[0] = (Flt)(rand() % xres);
+    }
+    else {
+    	a->pos[0] = xres;
+    }
     a->pos[1] = (Flt)(rand() % yres);
     a->pos[2] = 0.0f;
     a->angle = 0.0;
@@ -166,11 +171,11 @@ void initBigAsteroid(Game *g)
     g->big_asteroids++;
 }
 
-void init(Game *g)
+void init(Game *g, int i, bool GameStartMenu)
 {
     //build 3 big asteroids...
-    for (int j=0; j<3; j++) 
-	initBigAsteroid(g);
+    for (int j=0; j<i; j++) 
+	initBigAsteroid(g, GameStartMenu);
     buildAlien(&alienEnemy);
     buildHealthBox(&healthbox);
     buildFuelBox(&fuelbox);
