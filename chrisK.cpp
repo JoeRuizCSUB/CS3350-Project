@@ -10,6 +10,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
+#include <sstream>
 #include <cmath>
 #include <X11/Xlib.h>
 //#include <X11/Xutil.h>
@@ -21,10 +22,60 @@
 #include "fonts.h"
 #include "ppm.h"
 #include "typedefine.h"
+using namespace std;
 
 
 extern int xres;
 extern int yres;
+class Ck_input {
+    public:
+        int location[2];
+        int num;
+        char input_txt[100];
+        Ck_input () {
+            location[0] = 0;
+            location[1] = 0;
+            input_txt[0] = '\0';
+            num =32;
+        }
+} ck_input;
+
+void highScoreMenu(Rect r) {
+    glColor3f(0.0,0.0,0.0);
+    int cx = xres/2;
+    int cy = yres/2;
+    glBegin(GL_QUADS);
+    glVertex2i(cx-200, cy+200);
+    glVertex2i(cx+200, cy+200);
+    glVertex2i(cx+200, cy-200);
+    glVertex2i(cx-200, cy-200);
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+    r.bot = cy + 100;
+    r.left = cx;
+    r.center = 1;
+    ggprint8b(&r, 16, 0x00ffff00, "CONGRATULATIONS!!!!");
+    ggprint8b(&r, 16, 0x00ffff00, "HIGH-SCORE !!!!!");
+    ggprint8b(&r, 16, 0x00ffff00, "PLEASE ENTER NAME");
+    //draw input box
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(1.0,1.0,0.0);
+    cx = ck_input.location[0]+cx-200;
+    cy = ck_input.location[1]+cy-40;
+    glBegin(GL_QUADS);
+    glVertex2i(cx, cy);
+    glVertex2i(cx, cy+16);
+    glVertex2i(cx+(ck_input.num*12)+15, cy+16);
+    glVertex2i(cx+(ck_input.num*12)+15, cy);
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+    r.bot = cy;
+    r.left = cx;
+    r.center = 0;
+    ggprint8b(&r, 16, 0x00000000, ck_input.input_txt);
+}
+
+
 
 
 void menubar(int a, Rect r, int score){
@@ -179,15 +230,6 @@ int Score(int score){
 void bulletdisplay(int &bulletsRemain, Sprite bullet_sprite) {
    
     glColor3ub(90,140,90);
-   // Shape *s;
-   // s= &g->box[0];
-//    glPushMatrix();
-    //glTranslatef(s->center.x,s->center.y,s->center.z);
-   // float w,h;
-   // w = s->width;
-    //h = s->height;
-    //int dist =0;
-    //dist = bulletsRemain*20;
     if(bulletsRemain != 0) {
         for(int i=0; i <bulletsRemain; i++) {
             bullet_sprite.pos[0] = xres/2 - 400 +(i *20);
@@ -213,4 +255,39 @@ void bulletdisplay(int &bulletsRemain, Sprite bullet_sprite) {
         }
         glColor4ub(255,255,255,255);
 }
+
+void check(XEvent *e) {
+    int key = XLookupKeysym(&e->xkey, 0);
+
+    if (e->type == KeyRelease) {
+        if (key >= 'a' && key <= 'z') {
+            char x[2];
+            x[0] = key;
+            x[1] = '\0';
+            strcat(ck_input.input_txt,x);
+        }
+        if (key == XK_BackSpace) {
+            int len = strlen(ck_input.input_txt);
+            ck_input.input_txt[len-1] = '\0';
+        }
+        if (key == XK_space) {
+            strcat(ck_input.input_txt," ");
+        }
+    }
+    return;
+}
+
+  void highScorefile(int score) {
+   string name = ck_input.input_txt;
+   stringstream ss;
+   ss << score;
+   string scr = ss.str();
+   string command = "curl http://cs.csubak.edu/\\~ckelly/3350/spaceescape/update_scores.php";
+   command += "\\?name=" + name;
+   command += "\\&score=" + scr;
+   cout << command << endl;
+   system(command.c_str());
+
+   }
+
 

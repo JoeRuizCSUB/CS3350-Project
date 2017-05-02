@@ -229,4 +229,8 @@ void menubar(int a, Rect r, int score);
 void bulletdisplay(int &bulletsRemain, Sprite bullet_sprite);
 unsigned char *buildAlphaData(Ppmimage *img);
 int Score(int score);
+void check(XEvent *e);
+void highScoreMenu(Rect r);
+void highScorefile(int score);
+void ifhighScore(int score);
 
