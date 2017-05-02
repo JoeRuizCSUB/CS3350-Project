@@ -152,7 +152,7 @@ int main(void)
     initXWindows();
     init_opengl();	
     init_openal(alBuffer, alSource);
-    init(&game);
+    init(&game, 7, GameStartMenu);
     srand(time(NULL));
     clock_gettime(CLOCK_REALTIME, &timePause);
     clock_gettime(CLOCK_REALTIME, &timeStart);
@@ -552,7 +552,7 @@ int check_keys(XEvent *e, Game *g)
 			background, g);
 		dead = 0;
 		alienEnemy.dead = 0;
-		init(&game);
+		init(&game, 3, GameStartMenu);
 		pause_game = 0;
 	    }
 	    break;
@@ -700,17 +700,17 @@ void physics(Game *g)
 
     if (levelnum == 1){
 	if (g->small_asteroids < 10 && g->big_asteroids < 1)
-	    initBigAsteroid(g);
+	    initBigAsteroid(g, GameStartMenu);
     }
     if (levelnum == 2){
 	if ((g->small_asteroids < 10 && g->big_asteroids < 2) ||
 		(g->big_asteroids < 2))
-	    initBigAsteroid(g);
+	    initBigAsteroid(g, GameStartMenu);
     }
     if (levelnum == 3){
 	if ((g->small_asteroids < 8 && g->big_asteroids < 3 ) || 
 		(g->big_asteroids < 3))
-	    initBigAsteroid(g);
+	    initBigAsteroid(g, GameStartMenu);
     }
     Asteroid *a= g->ahead;
     while (a) {
@@ -921,8 +921,8 @@ void physics(Game *g)
 	Flt ydir = sin(rad);
 
 	//Joe slowed astronaut down
-	g->astronaut.vel[0] += xdir*0.055f;
-	g->astronaut.vel[1] += ydir*0.055f;
+	g->astronaut.vel[0] += xdir*0.01f;
+	g->astronaut.vel[1] += ydir*0.01f;
 	Flt speed = sqrt(g->astronaut.vel[0]*g->astronaut.vel[0]+
 		g->astronaut.vel[1]*g->astronaut.vel[1]);
 	if (speed > 10.0f) {
@@ -985,10 +985,71 @@ void render(Game *g)
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	glEnd();
 
+
+	{
+	    Asteroid *a = g->ahead;
+	    while (a) {
+		//Log("draw asteroid...\n");
+		//glColor3fv(a->color);
+		glPushMatrix();
+		glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
+		glRotatef(a->angle, 0.0f, 0.0f, 1.0f);
+
+		//DrawAsteroids(AsteroidTexturepic, a);
+		glBindTexture(GL_TEXTURE_2D, silhouetteTexture);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		//glColor4ub(255,255,255,255);
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(0.0f, 1.0f); glVertex2i(-a->radius-10,-a->radius-10);
+		glTexCoord2f(0.0f, 0.0f); glVertex2i(-a->radius-10,a->radius+10);
+		glTexCoord2f(1.0f, 0.0f); glVertex2i(a->radius+10,a->radius+10);
+		glTexCoord2f(1.0f, 1.0f); glVertex2i(a->radius+10,-a->radius-10);
+
+		glEnd();
+		glPopMatrix();	
+
+		glPopMatrix();
+		//glBegin(GL_POINTS);
+		//glVertex2f(a->pos[0], a->pos[1]);
+		//glEnd();
+		//	a = a->next;
+		//  }
+		//while (a) {
+		a->pos[0] += a->vel[0];
+		a->pos[1] += a->vel[1];
+		//Check for collision with window edges
+		if (a->pos[0] < -100.0) {
+		    a->pos[0] += (float)xres+200;
+		}
+		else if (a->pos[0] > (float)xres+100) {
+		    a->pos[0] -= (float)xres+200;
+		}
+		else if (a->pos[1] < -100.0) {
+		    a->pos[1] += (float)yres+200;
+		}
+		else if (a->pos[1] > (float)yres+100) {
+		    a->pos[1] -= (float)yres+200;
+		}
+		a->angle += a->rotate;
+		a = a->next;
+	}
+
+	}
+
+
     }
     else if (backstoryOn) {
 	pause_game = 1;
 	backstory(r);
+	restartLevel(health, fuel, bulletsRemain, score, levelnum,
+		background, g);
+	dead = 0;
+	alienEnemy.dead = 0;
+	init(&game, 3, GameStartMenu);
+	pause_game = 0;
+
     }
     else if (!backstoryOn && !GameStartMenu) { 
 	changeBackground(background, Level1Texture, Level2Texture,  
@@ -998,14 +1059,14 @@ void render(Game *g)
 	asteroidsRemainingBox(r, g);	
 	if (score >= 300 && levelnum ==1){
 	    levelnum = 2;
-	    nextLevel(health, fuel, bulletsRemain, g);	    
+	    nextLevel(health, fuel, bulletsRemain, g, GameStartMenu);
 	    getAudio(4, alSource);		
 	    background = 2;
 	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture); 
 	}
 	if (score >= 750 && levelnum ==2){
 	    levelnum = 3;
-	    nextLevel(health, fuel, bulletsRemain, g);
+	    nextLevel(health, fuel, bulletsRemain, g, GameStartMenu);
 	    getAudio(5, alSource);
 	    background = 3;
 	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture);

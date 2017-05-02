@@ -137,7 +137,7 @@ void showLevel(Rect r, int levelnum)
 }
 
 //Similar to restart, restets all the stats except score
-void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
+void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameStartMenu)
 {
     health = 300;
     fuel = 300;
@@ -145,7 +145,7 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g)
     g->ahead = NULL;
     g->big_asteroids = 0;
     for(int i=0; i<4; i++) 
-	initBigAsteroid(g);
+	initBigAsteroid(g, GameStartMenu);
     g->astronaut.pos[0] = 10.0;
     g->astronaut.pos[1] = 20.0;
     g->astronaut.vel[0] = 0.0;

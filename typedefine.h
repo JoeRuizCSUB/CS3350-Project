@@ -174,7 +174,7 @@ void cleanupXWindows(void);
 void check_resize(XEvent *e);
 void check_mouse(XEvent *e, Game *game);
 int check_keys(XEvent *e, Game *g);
-void init(Game *g);
+void init(Game *g, int i, bool GameStartMenu);
 void init_sounds(void);
 void physics(Game *game);
 void render(Game *game);
@@ -209,14 +209,14 @@ void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score,
 	int &levelnum, int &background, Game *g);
 void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
-void initBigAsteroid(Game *g);
+void initBigAsteroid(Game *g, bool GameStartMenu);
 // Sean Added
 void changeBackground(int, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
 void cleanup_openAl(ALuint*, ALuint*);
 void getAudio(int, ALuint*); 
 void showLevel(Rect, int);
-void nextLevel(int&, float&, int&, Game*);
+void nextLevel(int&, float&, int&, Game*, bool GameStartMenu);
 void backstory(Rect);
 ///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, Rect r, int &health);
