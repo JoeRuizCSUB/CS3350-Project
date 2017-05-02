@@ -141,6 +141,7 @@ struct Alien{
     Flt radius;
     float angle;
     float rotate;
+    int dead;
 };
 
 

@@ -188,7 +188,7 @@ int getAmoPack(Game *g, AmoBox *amobox, int &bulletsRemain)
     d2 = g->astronaut.pos[0] - amobox->pos[0];
     d3 = g->astronaut.pos[1] - amobox->pos[1];
     dist2 = (d2*d2 + d3*d3);
-    if (dist2 < amobox->radius*amobox->radius) {
+    if (dist2 < amobox->radius*amobox->radius && bulletsRemain < 20) {
 	// You can come into the radius of the amo pack
 	bulletsRemain += 15;
 	return 1;
@@ -297,6 +297,7 @@ void buildAlien(Alien *a)
     a->rotate = rnd() * 10.0 - 2.0;
     a->vel[0] = (Flt)(rnd()/5);
     a->vel[1] = (Flt)(rnd()/5);
+    a->dead = 0;
 
 }
 void DrawAlien(GLuint AlienTexture, Alien *a)
@@ -403,10 +404,10 @@ int ShotAlien(Game *g, Alien *alien, int &score)
 	    //delete the bullet...
 	    memcpy(&g->barr[i], &g->barr[g->nbullets-1], sizeof(Bullet));
 	    g->nbullets--;
-	    return 0;
+	    return 1;
 	}
 	i++;
     }
-    return 1;
+    return 0;
 }
 
