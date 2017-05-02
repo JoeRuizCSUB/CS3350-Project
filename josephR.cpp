@@ -77,20 +77,20 @@ void deadGame(int x, int y, Rect pausebox)
     float cx = x/2;
     int cy = y/2;
     glBegin(GL_QUADS);
-    glVertex2i(cx - 155, cy + 80);
-    glVertex2i(cx + 155, cy + 80);
-    glVertex2i(cx + 155, cy - 80);
-    glVertex2i(cx - 155, cy - 80);
+    glVertex2i(cx - 155, cy + 85);
+    glVertex2i(cx + 155, cy + 85);
+    glVertex2i(cx + 155, cy - 85);
+    glVertex2i(cx - 155, cy - 85);
     glEnd();
     glEnable(GL_TEXTURE_2D);
 
     glColor3f(0.0, 0.0, 0.0); 
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
-    glVertex2i(cx - 150, cy + 75);
-    glVertex2i(cx + 150, cy + 75);
-    glVertex2i(cx + 150, cy - 75);
-    glVertex2i(cx - 150, cy - 75);
+    glVertex2i(cx - 150, cy + 80);
+    glVertex2i(cx + 150, cy + 80);
+    glVertex2i(cx + 150, cy - 80);
+    glVertex2i(cx - 150, cy - 80);
     glEnd();
 
     pausebox.bot = cy + 30;
@@ -101,6 +101,7 @@ void deadGame(int x, int y, Rect pausebox)
     ggprint12(&pausebox, 20, 0x00ffffff, "Press R to Restart Game");
     ggprint12(&pausebox, 20, 0x00ffffff, "Press M to Return to Menu");
     ggprint12(&pausebox, 20, 0x00ffffff, "Press E to Exit Game");
+    ggprint12(&pausebox, 20, 0x00ffffff, "Press V to See & Enter to ScoreBoard");
     glEnable(GL_TEXTURE_2D);
 
 }
@@ -111,20 +112,20 @@ void strandedGame(int x, int y, Rect pausebox)
     float cx = x/2;
     int cy = y/2;
     glBegin(GL_QUADS);
-    glVertex2i(cx - 150, cy + 75);
-    glVertex2i(cx + 150, cy + 75);
-    glVertex2i(cx + 150, cy - 75);
-    glVertex2i(cx - 150, cy - 75);
+    glVertex2i(cx - 150, cy + 80);
+    glVertex2i(cx + 150, cy + 80);
+    glVertex2i(cx + 150, cy - 80);
+    glVertex2i(cx - 150, cy - 80);
     glEnd();
     glEnable(GL_TEXTURE_2D);
 
     glColor3f(0.0, 0.0, 0.0); 
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
-    glVertex2i(cx - 155, cy + 80);
-    glVertex2i(cx + 155, cy + 80);
-    glVertex2i(cx + 155, cy - 80);
-    glVertex2i(cx - 155, cy - 80);
+    glVertex2i(cx - 155, cy + 85);
+    glVertex2i(cx + 155, cy + 85);
+    glVertex2i(cx + 155, cy - 85);
+    glVertex2i(cx - 155, cy - 85);
     glEnd();
 
     pausebox.bot = cy + 30;
@@ -135,6 +136,7 @@ void strandedGame(int x, int y, Rect pausebox)
     ggprint12(&pausebox, 20, 0x00ffffff, "Press R to Restart Game");
     ggprint12(&pausebox, 20, 0x00ffffff, "Press M to Return to Menu");
     ggprint12(&pausebox, 20, 0x00ffffff, "Press E to Exit Game");
+    ggprint12(&pausebox, 20, 0x00ffffff, "Press V to See & Enter to ScoreBoard");
     glEnable(GL_TEXTURE_2D);
 
 }
@@ -143,7 +145,12 @@ void initBigAsteroid(Game *g, bool GameStartMenu)
 {
     Asteroid *a = new Asteroid;
     a->nverts = 4;
+    if (GameStartMenu){
+    	a->radius = 20.0;
+    }
+    else{
     a->radius = 80.0;
+    }
     Flt r2 = a->radius / 2.0;
     Flt angle = 0.0f;
     Flt inc = (PI * 2.0) / (Flt)a->nverts;

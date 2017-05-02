@@ -145,6 +145,23 @@ int gotFuel = 0;
 int gotAmo = 0;
 int alienActive = 0;
 // end of Jonathan
+int state_menu=0;
+int done=0;
+
+class Input {
+    public:
+	int loc[2];
+	int size;
+	char text[100];
+	Input () {
+	    loc[0] = 0;
+	    loc[1] = 0;
+	    text[0] = '\0';
+	    size = 32;
+	}
+} input;
+
+
 
 int main(void)
 {
@@ -152,7 +169,7 @@ int main(void)
     initXWindows();
     init_opengl();	
     init_openal(alBuffer, alSource);
-    init(&game, 7, GameStartMenu);
+    init(&game, 30, GameStartMenu);
     srand(time(NULL));
     clock_gettime(CLOCK_REALTIME, &timePause);
     clock_gettime(CLOCK_REALTIME, &timeStart);
@@ -511,7 +528,23 @@ int check_keys(XEvent *e, Game *g)
     //keyboard input?
     static int shift=0;
     int key = XLookupKeysym(&e->xkey, 0);
-    //Log("key: %i\n", key);
+    if(state_menu == 1) {
+	check(e);
+	if (e->type == KeyRelease) {
+	    if (key == XK_Return) {
+		highScorefile(score);
+		system("xdg-open http://www.cs.csub.edu/~ckelly/3350/spaceescape/update_scores.php");
+		state_menu = 0;
+	    }
+	    if (key == XK_Escape) {
+		return 1;
+	    }
+	}
+	return 0;
+    }
+
+
+
     if (e->type == KeyRelease) {
 	keys[key]=0;
 	if (key == XK_Shift_L || key == XK_Shift_R)
@@ -576,6 +609,9 @@ int check_keys(XEvent *e, Game *g)
 	    // end of Joe
 	    break;
 	case XK_Down:
+	    break;
+	case XK_v:
+	    state_menu = 1;
 	    break;
 	case XK_equal:
 	    break;
@@ -1091,6 +1127,10 @@ void render(Game *g)
 		< 0.08) {
 	    strandedGame(xres, yres, pbox);	    
 	    pause_game = 1;
+	}
+	if(state_menu == 1) {
+		highScoreMenu(r);
+
 	}
 	if (!pause_game) {
 	    //--------------------------------------------------------
