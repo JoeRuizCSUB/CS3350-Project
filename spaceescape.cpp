@@ -1210,7 +1210,7 @@ void render(Game *g)
 	//-------------------------------------------------------------------------
 
 	if (score > 50 && alienEnemy.dead == 0){
-	    DrawAlien(alienTexturepic, &alienEnemy);
+	    DrawAlien(alienSilhouette, &alienEnemy);
 	    alienActive = 1;
 	}
 	else{
