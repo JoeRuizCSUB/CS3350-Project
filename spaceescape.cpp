@@ -73,6 +73,7 @@ GLuint Level3Texture;
 GLuint healthSilhouette;
 GLuint ammoSilhouette;
 GLuint fuelSilhouette;
+GLuint alienSilhouette;
 
 int background = 1;
 // **levels**
@@ -457,11 +458,20 @@ void init_opengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
 	    GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData5);
 
+    glGenTextures(1, &alienSilhouette);
+    glBindTexture(GL_TEXTURE_2D, alienSilhouette);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    unsigned char *silhouetteData6 = buildAlphaData(alien);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData6);
+
     free(silhouetteData);
     free(silhouetteData2);
     free(silhouetteData3);
     free(silhouetteData4);
     free(silhouetteData5);
+    free(silhouetteData6);	
     //ck end
 
 }

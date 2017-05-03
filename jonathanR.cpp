@@ -300,7 +300,7 @@ void buildAlien(Alien *a)
     a->dead = 0;
 
 }
-void DrawAlien(GLuint AlienTexture, Alien *a)
+void DrawAlien(GLuint alienSilhouette, Alien *a)
 {
 
     glPushMatrix();
@@ -308,7 +308,9 @@ void DrawAlien(GLuint AlienTexture, Alien *a)
     glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
 
     // Texture
-    glBindTexture(GL_TEXTURE_2D, AlienTexture);
+    glBindTexture(GL_TEXTURE_2D, alienSilhouette);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
     glBegin(GL_QUADS);
     // Center is 0 so going + and - lets us draw around
     // the center.
