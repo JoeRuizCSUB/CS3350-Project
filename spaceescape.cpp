@@ -79,6 +79,7 @@ int background = 1;
 // **levels**
 int levelnum = 1;
 bool backstoryOn = false;
+int state_menu2 =0;
 // **Sounds**
 ALuint alBuffer[9];
 ALuint alSource[9];
@@ -552,8 +553,8 @@ int check_keys(XEvent *e, Game *g)
 	}
 	return 0;
     }
-
-
+    if(state_menu2 == 1) 
+	check_n(e);
 
     if (e->type == KeyRelease) {
 	keys[key]=0;
@@ -603,6 +604,7 @@ int check_keys(XEvent *e, Game *g)
 	    // Conditional statement so that
 	    // game does not start before pressing 's'
 	    if (GameStartMenu == true){
+		state_menu2 = 1;
 		backstoryOn = true;
 		GameStartMenu = false;
 		pause_game = false;

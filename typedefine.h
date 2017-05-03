@@ -218,6 +218,7 @@ void getAudio(int, ALuint*);
 void showLevel(Rect, int);
 void nextLevel(int&, float&, int&, Game*, bool GameStartMenu);
 void backstory(Rect);
+void check_n(XEvent *e);    
 ///////////////////////////////////////////////////////////////////////////////
 void healthbar(int x, Rect r, int &health);
 void fuelbar(int x, Rect r, float &fuel);

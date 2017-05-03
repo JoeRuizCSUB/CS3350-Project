@@ -8,8 +8,12 @@
 #include "ppm.h"
 #include <X11/keysym.h>
 #include <ctime>
+#include <unistd.h>
+#include <iostream>
+using namespace std;
 
 extern int xres, yres;
+int keycount =0;
 
 //Changes Background after a level is beaten
 void changeBackground(int background, GLuint Level1Texture, GLuint Level2Texture, 
@@ -155,44 +159,73 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameS
     g->astronaut.angle = 0.0;
 }
 
+void check_n(XEvent *e)
+{
+    int key =  XLookupKeysym(&e->xkey, 0);
+    
+    if (e->type == KeyRelease) {
+	if(key =='n')
+		keycount++;
+    }
+}
+
 //Shows the backstory right after menu
 void backstory(Rect r)
 {   
-    r.bot = yres - 40;
-    r.left = xres - 200;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "[Enter] to Continue");
 
+    r.bot = yres - 40;
+    r.left = xres - 180;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "[Enter] to Skip");
+
+    if(keycount < 6) {
+    r.bot = yres/2 - 30;
+    r.left = (xres/2) -100;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "[n] to proceed");
+    }
+    if(keycount == 0) {
     r.bot = yres/2;
     r.left = (xres/2) -180;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "Mission control to ExoExplorer...");
-
-    r.bot = yres/2 -20;
+    }
+    if(keycount == 1) {
+    r.bot = yres/2;
     r.left = (xres/2) -245;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "We heard your spaceship has been destroyed...");
-	
-    r.bot = yres/2 -40;
+    }
+    if(keycount == 2) {
+    r.bot = yres/2;
     r.left = (xres/2) -380;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "We can lock in on you and hurl you closer and closer to earth with our tractor beams...");
-
-    r.bot = yres/2 -60;
+    }
+    if(keycount == 3) {
+    r.bot = yres/2;
     r.left = (xres/2) -340;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "But you will first need to rid the area of enough asteroids, to ensure safety...");
-    
-    r.bot = yres/2 -80;
+    }
+    if(keycount == 4) {
+    r.bot = yres/2;
     r.left = (xres/2) -300;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "One last thing, Aliens have been spotted in this area so be careful...");
-
-    r.bot = yres/2 -140;
+    }
+    if(keycount == 5) {
+    r.bot = yres/2;
     r.left = (xres/2) -90;
     r.center = 0;
     ggprint16(&r, 16, 0x00ffffff, "Goodluck...");
-
+    }
+    if(keycount >= 6) {
+	r.bot = yres/2 - 30;
+	r.left = (xres/2) -110;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "[Enter] to proceed");
+    }			        
 }
 
 
