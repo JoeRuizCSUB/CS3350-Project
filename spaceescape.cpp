@@ -609,6 +609,10 @@ int check_keys(XEvent *e, Game *g)
 		getAudio(2, alSource);
 	    }
 	    break;
+	case XK_m:
+	    if (pause_game)
+	    	GameStartMenu = true;
+	    break;
 	case XK_p:
 	    // Added by Joe
 	    // Do not allow to be paused before the game
