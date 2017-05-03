@@ -6,6 +6,8 @@
 #include "typedefine.h"
 #include </usr/include/AL/alut.h>
 #include "ppm.h"
+#include <X11/keysym.h>
+#include <ctime>
 
 extern int xres, yres;
 
@@ -155,10 +157,42 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameS
 
 //Shows the backstory right after menu
 void backstory(Rect r)
-{
-    r.bot = yres/2;
-    r.left = (xres/2) -120;
+{   
+    r.bot = yres - 40;
+    r.left = xres - 200;
     r.center = 0;
-    ggprint16(&r, 16, 0x00ff0000, "Backstory stuff hit enter");
+    ggprint16(&r, 16, 0x00ffffff, "[Enter] to Continue");
+
+    r.bot = yres/2;
+    r.left = (xres/2) -180;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "Mission control to ExoExplorer...");
+
+    r.bot = yres/2 -20;
+    r.left = (xres/2) -245;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "We heard your spaceship has been destroyed...");
+	
+    r.bot = yres/2 -40;
+    r.left = (xres/2) -380;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "We can lock in on you and hurl you closer and closer to earth with our tractor beams...");
+
+    r.bot = yres/2 -60;
+    r.left = (xres/2) -340;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "But you will first need to rid the area of enough asteroids, to ensure safety...");
+    
+    r.bot = yres/2 -80;
+    r.left = (xres/2) -300;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "One last thing, Aliens have been spotted in this area so be careful...");
+
+    r.bot = yres/2 -140;
+    r.left = (xres/2) -90;
+    r.center = 0;
+    ggprint16(&r, 16, 0x00ffffff, "Goodluck...");
+
 }
+
 
