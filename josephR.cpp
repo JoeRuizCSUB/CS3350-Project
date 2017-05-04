@@ -3,6 +3,25 @@
 // CS 3350 Software Engineering
 // My contributions to the game "Engage Hyperdrive" aka Space Escape
 //
+/* Summary of Functions 
+The functions pauseGame, deadGame, and strandedGame are used as menus
+to give the player a chance to resume the game, restart the game from
+the beginning, return to main menu, or exit the game. 
+
+The restartLevel function resets all pertinent variables to zero, 
+deletes all asteroids in the linked list, and reinitializes the game.
+
+The init and initBigAsteroid functions are called at the start of the game or
+when the game is restarted. initBigAsteroid is called whenever more asteroids
+are added to the game.
+
+The asteroidsRemainingBox counts the number of asteroids from the Game 
+structure as big_asteriods and small_asteroids.
+
+The windowBorderCollision function prevents the astronaut/player from 
+wrapping from the windows from right to left and top to bottom.
+*/
+
 #include <GL/glx.h>
 #include "fonts.h"
 #include "typedefine.h"
