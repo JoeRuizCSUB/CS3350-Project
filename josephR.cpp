@@ -200,7 +200,7 @@ void asteroidsRemainingBox(Rect r, Game *g)
     ggprint8b(&r, 16, 0x00ffff00, "Big Asteroids Remaining: %i",
 	    g->big_asteroids);
     ggprint8b(&r, 16, 0x00ffff00, "Small Asteroids Remaining: %i",
-	    g->small_asteroids);
+	    g->small_asteroids+1);
 }
 
 void windowBorderCollision(Game *g)

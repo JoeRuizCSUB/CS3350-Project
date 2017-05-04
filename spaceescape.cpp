@@ -676,8 +676,8 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
 	ta->vert[i][1] = cos(angle) * (r2 * ta->radius);
 	angle += inc;
     }
-    ta->pos[0] = a->pos[0] + rnd()*10.0-5.0;
-    ta->pos[1] = a->pos[1] + rnd()*10.0-5.0;
+    ta->pos[0] = a->pos[0] + 10.0-5.0;
+    ta->pos[1] = a->pos[1] + 10.0-5.0;
     ta->pos[2] = 0.0f;
     ta->angle = 0.0;
     ta->rotate = a->rotate + (rnd() * 4.0 - 2.0);
@@ -1224,7 +1224,7 @@ void render(Game *g)
 	}
 
 	if (levelnum > 1 && score > 0 && alienEnemy.dead == 0){
-	    DrawAlien(alienTexturepic, &alienEnemy);
+	    DrawAlien(alienSilhouette, &alienEnemy);
 	    alienActive = 1;
 	}
 
