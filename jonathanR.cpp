@@ -125,7 +125,7 @@ int fuelRemains(float fuel)
 // Reduces the fuel the astronaut has left
 float reduceFuel(float fuel)
 {
-    fuel = fuel - .1;
+    fuel = fuel - .125;
     //So that fuel does not go negative..
     if (fuel < 0) {
 	fuel = 0;

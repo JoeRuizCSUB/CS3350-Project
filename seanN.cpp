@@ -142,7 +142,7 @@ void showLevel(Rect r, int levelnum)
     ggprint16(&r, 16, 0x00ff0000, "Level %i", levelnum);
 }
 
-//Similar to restart, restets all the stats except score
+//Similar to restart, resets all the stats except score
 void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameStartMenu)
 {
     health = 300;
@@ -150,6 +150,7 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameS
     bulletsRemain= 30;
     g->ahead = NULL;
     g->big_asteroids = 0;
+    g->nbullets = 0;
     for(int i=0; i<4; i++) 
 	initBigAsteroid(g, GameStartMenu);
     g->astronaut.pos[0] = 10.0;
