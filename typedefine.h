@@ -210,6 +210,7 @@ void restartLevel(int &health, float &fuel, int &bulletsRemain, int &score,
 void asteroidsRemainingBox(Rect r, Game *g);
 void windowBorderCollision(Game *g);
 void initBigAsteroid(Game *g, bool GameStartMenu);
+void moreAsteroids(Game *g, int levelnum);
 // Sean Added
 void changeBackground(int, GLuint, GLuint, GLuint);
 void init_openal(ALuint*, ALuint*);
