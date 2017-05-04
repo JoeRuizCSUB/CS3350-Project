@@ -4,23 +4,26 @@
 // My contributions to the game "Engage Hyperdrive" aka Space Escape
 //
 /* Summary of Functions 
-The functions pauseGame, deadGame, and strandedGame are used as menus
-to give the player a chance to resume the game, restart the game from
-the beginning, return to main menu, or exit the game. 
+   The functions pauseGame, deadGame, and strandedGame are used as menus
+   to give the player a chance to resume the game, restart the game from
+   the beginning, return to main menu, or exit the game. 
 
-The restartLevel function resets all pertinent variables to zero, 
-deletes all asteroids in the linked list, and reinitializes the game.
+   The restartLevel function resets all pertinent variables to zero, 
+   deletes all asteroids in the linked list, and reinitializes the game.
 
-The init and initBigAsteroid functions are called at the start of the game or
-when the game is restarted. initBigAsteroid is called whenever more asteroids
-are added to the game.
+   The init and initBigAsteroid functions are called at the start of the game or
+   when the game is restarted. initBigAsteroid is called whenever more asteroids
+   are added to the game.
 
-The asteroidsRemainingBox counts the number of asteroids from the Game 
-structure as big_asteriods and small_asteroids.
+   The asteroidsRemainingBox counts the number of asteroids from the Game 
+   structure as big_asteriods and small_asteroids.
 
-The windowBorderCollision function prevents the astronaut/player from 
-wrapping from the windows from right to left and top to bottom.
-*/
+   The windowBorderCollision function prevents the astronaut/player from 
+   wrapping from the windows from right to left and top to bottom.
+
+   The moreAsteroids function checks to see if the conditions are met to add
+   more asteroids to the playing field.
+   */
 
 #include <GL/glx.h>
 #include "fonts.h"
@@ -34,6 +37,7 @@ extern HealthBox healthbox;
 extern FuelBox fuelbox;
 extern AmoBox amobox;
 extern int keys[65536];
+extern bool GameStartMenu;
 
 void pauseGame(int x, int y, Rect pausebox)
 {
@@ -163,12 +167,12 @@ void strandedGame(int x, int y, Rect pausebox)
 void initBigAsteroid(Game *g, bool GameStartMenu)
 {
     Asteroid *a = new Asteroid;
-    a->nverts = 4;
+    a->nverts = 8;
     if (GameStartMenu){
-    	a->radius = 20.0;
+	a->radius = 20.0;
     }
     else{
-    a->radius = 80.0;
+	a->radius = 80.0;
     }
     Flt r2 = a->radius / 2.0;
     Flt angle = 0.0f;
@@ -179,10 +183,10 @@ void initBigAsteroid(Game *g, bool GameStartMenu)
 	angle += inc;
     }
     if (GameStartMenu){
-    	a->pos[0] = (Flt)(rand() % xres);
+	a->pos[0] = (Flt)(rand() % xres);
     }
     else {
-    	a->pos[0] = xres;
+	a->pos[0] = xres;
     }
     a->pos[1] = (Flt)(rand() % yres);
     a->pos[2] = 0.0f;
@@ -219,7 +223,7 @@ void asteroidsRemainingBox(Rect r, Game *g)
     ggprint8b(&r, 16, 0x00ffff00, "Big Asteroids Remaining: %i",
 	    g->big_asteroids);
     ggprint8b(&r, 16, 0x00ffff00, "Small Asteroids Remaining: %i",
-	    g->small_asteroids+1);
+	    g->small_asteroids);
 }
 
 void windowBorderCollision(Game *g)
@@ -238,3 +242,20 @@ void windowBorderCollision(Game *g)
     }
 }
 
+void moreAsteroids(Game *g, int levelnum) 
+{
+    if (levelnum == 1){
+	if (g->small_asteroids < 10 && g->big_asteroids < 1)
+	    initBigAsteroid(g, GameStartMenu);
+    }
+    if (levelnum == 2){
+	if ((g->small_asteroids < 10 && g->big_asteroids < 2) ||
+		(g->big_asteroids < 2))
+	    initBigAsteroid(g, GameStartMenu);
+    }
+    if (levelnum == 3){
+	if ((g->small_asteroids < 8 && g->big_asteroids < 3 ) ||
+		(g->big_asteroids < 3))
+	    initBigAsteroid(g, GameStartMenu);
+    }
+}

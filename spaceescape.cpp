@@ -667,8 +667,8 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
 {
     //build ta from a
     ta->nverts = 8;
-    ta->radius = a->radius / 2.0;
-    Flt r2 = ta->radius / 2.0;
+    ta->radius = 20.0;
+    Flt r2 =  20.0;
     Flt angle = 0.0f;
     Flt inc = (PI * 2.0) / (Flt)ta->nverts;
     for (int i=0; i<ta->nverts; i++) {
@@ -676,8 +676,8 @@ void buildAsteroidFragment(Asteroid *ta, Asteroid *a)
 	ta->vert[i][1] = cos(angle) * (r2 * ta->radius);
 	angle += inc;
     }
-    ta->pos[0] = a->pos[0] + 10.0-5.0;
-    ta->pos[1] = a->pos[1] + 10.0-5.0;
+    ta->pos[0] = a->pos[0] + rnd()*10.0-5.0;
+    ta->pos[1] = a->pos[1] + rnd()*10.0-5.0;
     ta->pos[2] = 0.0f;
     ta->angle = 0.0;
     ta->rotate = a->rotate + (rnd() * 4.0 - 2.0);
@@ -748,22 +748,7 @@ void physics(Game *g)
 	i++;
     }
     //
-    //Update asteroid positions
-
-    if (levelnum == 1){
-	if (g->small_asteroids < 10 && g->big_asteroids < 1)
-	    initBigAsteroid(g, GameStartMenu);
-    }
-    if (levelnum == 2){
-	if ((g->small_asteroids < 10 && g->big_asteroids < 2) ||
-		(g->big_asteroids < 2))
-	    initBigAsteroid(g, GameStartMenu);
-    }
-    if (levelnum == 3){
-	if ((g->small_asteroids < 8 && g->big_asteroids < 3 ) || 
-		(g->big_asteroids < 3))
-	    initBigAsteroid(g, GameStartMenu);
-    }
+    moreAsteroids(g, levelnum);
     Asteroid *a= g->ahead;
     while (a) {
 	a->pos[0] += a->vel[0];
@@ -878,12 +863,8 @@ void physics(Game *g)
 	dead = 1;
 	if (pause_game) {
 	    deadGame(xres, yres, pbox);
-	    //int restart = checkPauseKeys(key, restart);
-	    //if (restart)
-	    //return 1;
 	}
 
-	//exit(0);
     }
     // End attempt...
     ////////////////////////////////////////////////////////////////////////
@@ -925,6 +906,7 @@ void physics(Game *g)
 			g->ahead = ta;
 			g->small_asteroids++;
 		    }
+		    g->small_asteroids++;
 		} else {
 		    //asteroid is too small to break up
 		    //delete the asteroid and bullet
