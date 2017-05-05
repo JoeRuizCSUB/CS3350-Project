@@ -250,12 +250,12 @@ void moreAsteroids(Game *g, int levelnum)
     }
     if (levelnum == 2){
 	if ((g->small_asteroids < 10 && g->big_asteroids < 2) ||
-		(g->big_asteroids < 2))
+		(g->big_asteroids < 1))
 	    initBigAsteroid(g, GameStartMenu);
     }
     if (levelnum == 3){
 	if ((g->small_asteroids < 8 && g->big_asteroids < 3 ) ||
-		(g->big_asteroids < 3))
+		(g->big_asteroids < 2))
 	    initBigAsteroid(g, GameStartMenu);
     }
 }
