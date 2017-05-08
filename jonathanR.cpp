@@ -1,7 +1,12 @@
 /* Jonathan Roman
  *
  * This is the code I have contributed to 
- * my groups project.
+ * my groups project. This code includes collision
+ * detection between all the texture maps. The 
+ * initialization of some textures. An alien is created
+ * along with its functionality such as following and
+ * getting shot. Some checks for the attributes are done
+ * to determine when resources run out.
  */
 #include<iostream>
 #include <GL/glx.h>
@@ -27,7 +32,8 @@ void astronautCollision(Game *g, int &health)
 	d5 = (g->astronaut.pos[1]+20) - a->pos[1];
 	dist4 = (d4*d4 + d5*d5);
 
-	if (dist2 < (a->radius)*(a->radius)+900 || dist4 < (a->radius)*(a->radius+4)+900) {
+	if (dist2 < (a->radius)*(a->radius)+900 || 
+		dist4 < (a->radius)*(a->radius+4)+900) {
 	    //std::cout << "asteroid hit." << std::endl;
 	    //this asteroid is hit.
 
@@ -67,26 +73,21 @@ void astronautCollision(Game *g, int &health)
 		a = savea;
 		g->small_asteroids--;
 	    }
-
 	}
 	if (a == NULL)
 	    break;
 	a = a->next;
     }   
-    // End attempt...
 }
 
 // Used to display how much fuel is left and decreases as it
 // is used..
 void fuelbar(int x,  Rect r, float &fuel)
 {
-    float fuelView = fuel;// - 150;
-    // glDisable(GL_TEXTURE_2D);
+    float fuelView = fuel;
     glColor3f(0.01,0.23,0.25);
     float cx = x;
-    //int cy = y;
     glBegin(GL_QUADS);
-
     glVertex2i(cx-255,80);
     glVertex2i(cx+55,80);
     glVertex2i(cx+55,50);
@@ -108,10 +109,8 @@ void fuelbar(int x,  Rect r, float &fuel)
     r.bot = 60;
     r.left = cx - 100;
     r.center = 1;
-    //glEnable(GL_TEXTURE_2D);		If you want to see amount
-    ggprint8b(&r,20,0x00ffffff, "Fuel");//%d", (int)fuel);
+    ggprint8b(&r,20,0x00ffffff, "Fuel");
     glEnable(GL_TEXTURE_2D);
-
 }
 
 // Used to determin if astronaut has fuel to use
@@ -201,26 +200,21 @@ void buildFuelBox(FuelBox *f)
 {
     f->radius = 45;
     f->angle = 0.0f;
-    f->pos[0] = 100;//(Flt)(rand() % xres);
-    f->pos[1] = 100;//(Flt)(rand() % xres);
+    f->pos[0] = 100;
+    f->pos[1] = 100;
     f->pos[2] = 0.0f;
     f->angle = 0.0;
-
     f->rotate = rnd() * 4.0 - 2.0;
-
     f->vel[0] = (Flt)(rnd()/2);
     f->vel[1] = (Flt)(rnd()/2);    
-
 }
 
 // Displays Fuel.ppm image
 void DrawFuelBox(GLuint fuelSilhouette, FuelBox *f)
 {
-
     glPushMatrix();
     glTranslatef(f->pos[0], f->pos[1], f->pos[2]);
     glRotatef(f->angle+10, 0.0f, 0.0f, 1.0f);
-
     // Texture
     glBindTexture(GL_TEXTURE_2D, fuelSilhouette);
     glEnable(GL_ALPHA_TEST);
@@ -235,9 +229,7 @@ void DrawFuelBox(GLuint fuelSilhouette, FuelBox *f)
     glEnd();
     glPopMatrix();
     glBegin(GL_POINTS);
-    // glVertex2f(a->pos[0], a->pos[1]);
     glEnd();
-
 }
 
 // Initialize the values of the AmoBox struct
@@ -249,19 +241,17 @@ void buildAmoBox(AmoBox *a)
     a->pos[1] = (Flt)(rand() % xres);
     a->pos[2] = 0.0f;
     a->angle = 0.0;
-
     a->rotate = rnd() * 5.0 - 2.0;
     a->vel[0] = (Flt)(rnd());
     a->vel[1] = (Flt)(rnd());    
 }
 
 // Display AmoPack.ppm image
-void DrawAmoBox(GLuint ammoSilhouette, AmoBox *a){
-
+void DrawAmoBox(GLuint ammoSilhouette, AmoBox *a)
+{
     glPushMatrix();
     glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
     glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
-
     // Texture
     //glBindTexture(GL_TEXTURE_2D, amoBoxTexture);
     glBindTexture(GL_TEXTURE_2D, ammoSilhouette);
@@ -277,14 +267,10 @@ void DrawAmoBox(GLuint ammoSilhouette, AmoBox *a){
     glEnd();
     glPopMatrix();
     glBegin(GL_POINTS);
-    // glVertex2f(a->pos[0], a->pos[1]);
     glEnd();
 }
 
-
-
-
-
+// Initialize values for the Alien
 void buildAlien(Alien *a)
 {
     a->radius = 15;
@@ -293,16 +279,14 @@ void buildAlien(Alien *a)
     a->pos[1] = (Flt)(rand() % yres);
     a->pos[2] = 0.0f;
     a->angle = 0.0;
-
     a->rotate = rnd() * 10.0 - 2.0;
     a->vel[0] = (Flt)(rnd()/5);
     a->vel[1] = (Flt)(rnd()/5);
     a->dead = 0;
-
 }
+// Draws the Texture map of the alien
 void DrawAlien(GLuint alienSilhouette, Alien *a)
 {
-
     glPushMatrix();
     glTranslatef(a->pos[0], a->pos[1], a->pos[2]);
     glRotatef(a->angle+10, 0.0f, 0.0f, 1.0f);
@@ -321,16 +305,15 @@ void DrawAlien(GLuint alienSilhouette, Alien *a)
     glEnd();
     glPopMatrix();
     glBegin(GL_POINTS);
-    // glVertex2f(a->pos[0], a->pos[1]);
     glEnd();
-
 }
 
 // The physics applied so that the alien comes in your
 // direction and attacks you. 
 void AlienFollows(Game *g, Alien *alien)
 {
-
+    // Calculate the distance from various points to determine
+    // which position is closer to atronaut.
     Flt d1 = abs(g->astronaut.pos[0] - alien->pos[0]+1);
     Flt d2 = abs(g->astronaut.pos[1] - alien->pos[1]-1);
 
@@ -352,31 +335,26 @@ void AlienFollows(Game *g, Alien *alien)
     Flt dist4 = sqrt(d7*d7 + d8*d8);
 
     if (dist1 < dist2 && dist1 < dist3 && dist1 < dist4) {
-
 	alien->pos[0]-= .5;
 	alien->pos[1]+= .5;
-
     }
     else if (dist2 < dist1 && dist2 < dist3 && dist2 < dist4) {
 	alien->pos[0]-= .5;
 	alien->pos[1]-= .5;
-
     }
     else if (dist3 < dist2 && dist3 < dist1 && dist3 < dist4) {
 	alien->pos[0]+= .5;
 	alien->pos[1]-= .5;
-
     }
     else if (dist4 < dist2 && dist4 < dist3 && dist4 < dist1) {
 	alien->pos[0]+= .5;
 	alien->pos[1]+= .5;
-
     }
 }
 int AlienHits(Game *g, Alien *alien, int &health)
 {
-    // Attempt to detect collision between amo pack and
-    // astronaut
+    // Attempt to detect collision between Alien and
+    // astronaut's bullet
     Flt d2, d3, dist2;
     d2 = g->astronaut.pos[0] - alien->pos[0];
     d3 = g->astronaut.pos[1] - alien->pos[1];
@@ -389,12 +367,10 @@ int AlienHits(Game *g, Alien *alien, int &health)
     }
     return 1;
 }
+// Determine if atronaut has shot the alien
 int ShotAlien(Game *g, Alien *alien, int &score)
 {
-
-    //is there a bullet within its radius?
     int i=0;
-
     Flt d0, d1, dist;
     while (i < g->nbullets) {
 	Bullet *b = &g->barr[i];
@@ -412,4 +388,3 @@ int ShotAlien(Game *g, Alien *alien, int &score)
     }
     return 0;
 }
-
