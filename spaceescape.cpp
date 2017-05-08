@@ -1,6 +1,6 @@
 //3350 Spring 2017
-//
-//program: /steroids.cpp
+///
+//program: /asteroids.cpp
 //author:  Gordon Griesel
 //date:    2014
 //mod spring 2015: added constructors
@@ -27,6 +27,8 @@
 // use of textures
 // 
 //
+//#define USE_OPENAL_SOUND
+
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -81,9 +83,11 @@ int levelnum = 1;
 bool backstoryOn = false;
 int state_menu2 =0;
 // **Sounds**
+#ifdef USE_OPENAL_SOUND
 ALuint alBuffer[9];
 ALuint alSource[9];
 int sound = 1;
+#endif
 // Global Variables end
 /********************************************************/
 
@@ -169,8 +173,10 @@ int main(void)
 {
     logOpen();
     initXWindows();
-    init_opengl();	
+    init_opengl();
+#ifdef USE_OPENAL_SOUND    
     init_openal(alBuffer, alSource);
+#endif
     init(&game, 30, GameStartMenu);
     srand(time(NULL));
     clock_gettime(CLOCK_REALTIME, &timePause);
@@ -197,7 +203,9 @@ int main(void)
     }
     cleanupXWindows();
     cleanup_fonts();
+#ifdef USE_OPENAL_SOUND
     cleanup_openAl(alBuffer, alSource);
+#endif
     logClose();
     return 0;
 }
@@ -465,7 +473,7 @@ void init_opengl(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     unsigned char *silhouetteData6 = buildAlphaData(alien);
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData6);
+	    GL_RGBA, GL_UNSIGNED_BYTE, silhouetteData6);
 
     free(silhouetteData);
     free(silhouetteData2);
@@ -579,7 +587,9 @@ int check_keys(XEvent *e, Game *g)
 	    if (backstoryOn) { 
 		backstoryOn = false;
 		pause_game = false;
+#ifdef USE_OPENAL_SOUND
 		getAudio(3, alSource);
+#endif
 	    }
 	    break;
 	case XK_Escape:
@@ -590,8 +600,9 @@ int check_keys(XEvent *e, Game *g)
 	case XK_r:
 	    if (pause_game || dead || fuel==0) {
 		if(levelnum != 1)
+#ifdef USE_OPENAL_SOUND
 		    getAudio(3, alSource);
-
+#endif
 		restartLevel(health, fuel, bulletsRemain, score, levelnum,
 			background, g);
 		dead = 0;
@@ -608,12 +619,14 @@ int check_keys(XEvent *e, Game *g)
 		backstoryOn = true;
 		GameStartMenu = false;
 		pause_game = false;
+#ifdef USE_OPENAL_SOUND
 		getAudio(2, alSource);
+#endif
 	    }
 	    break;
 	case XK_m:
 	    if (pause_game)
-	    	GameStartMenu = true;
+		GameStartMenu = true;
 	    break;
 	case XK_p:
 	    // Added by Joe
@@ -888,7 +901,9 @@ void physics(Game *g)
 		//std::cout << "asteroid hit." << std::endl;
 		//this asteroid is hit.
 		score = Score(score);
+#ifdef USE_OPENAL_SOUND
 		getAudio(6, alSource);
+#endif
 		if (a->radius > MINIMUM_ASTEROID_SIZE) {
 		    //break it into pieces.
 		    g->big_asteroids--;
@@ -978,7 +993,9 @@ void physics(Game *g)
 	    // Added additional conditional statement so that astronaut
 	    // does not have unlimited amount of bullets.
 	    if ( (g->nbullets < MAX_BULLETS) && remainingAmo(bulletsRemain)) {
+#ifdef USE_OPENAL_SOUND
 		getAudio(0, alSource);
+#endif
 		bulletsRemain = reduceAmo(bulletsRemain);//bulletsRemain - 1;
 		//shoot a bullet...
 		//Bullet *b = new Bullet;
@@ -1094,14 +1111,18 @@ void render(Game *g)
 	if (score >= 300 && levelnum ==1){
 	    levelnum = 2;
 	    nextLevel(health, fuel, bulletsRemain, g, GameStartMenu);
-	    getAudio(4, alSource);		
+#ifdef USE_OPENAL_SOUND
+	    getAudio(4, alSource);
+#endif	    
 	    background = 2;
 	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture); 
 	}
 	if (score >= 750 && levelnum ==2){
 	    levelnum = 3;
 	    nextLevel(health, fuel, bulletsRemain, g, GameStartMenu);
+#ifdef USE_OPENAL_SOUND
 	    getAudio(5, alSource);
+#endif
 	    background = 3;
 	    changeBackground(background, Level1Texture, Level2Texture, Level3Texture);
 	}
@@ -1127,7 +1148,7 @@ void render(Game *g)
 	    pause_game = 1;
 	}
 	if(state_menu == 1) {
-		highScoreMenu(r);
+	    highScoreMenu(r);
 
 	}
 	if (!pause_game) {
