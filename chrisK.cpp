@@ -13,9 +13,6 @@
 #include <sstream>
 #include <cmath>
 #include <X11/Xlib.h>
-//#include <X11/Xutil.h>
-//#include <GL/gl.h>
-//#include <GL/glu.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "log.h"
@@ -74,9 +71,6 @@ void highScoreMenu(Rect r) {
     r.center = 0;
     ggprint8b(&r, 16, 0x00000000, ck_input.input_txt);
 }
-
-
-
 
 void menubar(int a, Rect r, int score){
     int ca = a;
@@ -192,8 +186,7 @@ void DrawHealthBox(GLuint healthSilhouette, HealthBox *h) {
     glEnd();
 }
 
-unsigned char *buildAlphaData(Ppmimage *img)
-{
+unsigned char *buildAlphaData(Ppmimage *img) {
         //add 4th component to RGB stream...
         int i;
         int a,b,c;
@@ -223,7 +216,7 @@ unsigned char *buildAlphaData(Ppmimage *img)
         }
         return newdata;
 }
-int Score(int score){
+int Score(int score) {
     return score + 10;
 }
 
@@ -277,7 +270,7 @@ void check(XEvent *e) {
     return;
 }
 
-  void highScorefile(int score) {
+void highScorefile(int score) {
    string name = ck_input.input_txt;
    stringstream ss;
    ss << score;
@@ -287,7 +280,6 @@ void check(XEvent *e) {
    command += "\\&score=" + scr;
    cout << command << endl;
    system(command.c_str());
-
    }
 
 
