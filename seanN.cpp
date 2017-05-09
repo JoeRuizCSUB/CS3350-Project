@@ -47,7 +47,7 @@ void changeBackground(int background, GLuint Level1Texture, GLuint Level2Texture
 	glTexCoord2f(1.0f, 0.0f); glVertex2i(xres,yres);
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(xres,0);
 	glEnd();
-	}
+    }
 }
 
 //Plays audio loops and single sounds
@@ -121,15 +121,16 @@ void init_openal(ALuint *alBuffer, ALuint *alSource)
 //Closes openAl and deletes the sounds and buffers
 void cleanup_openAl(ALuint *alBuffer, ALuint *alSource)
 {
-	for(int i=0; i<6; i++) {
+    for(int i=0; i<6; i++) {
 	alDeleteSources(7, &alSource[i]);
 	alDeleteBuffers(7, &alBuffer[i]);
-	}
- 	ALCcontext *Context = alcGetCurrentContext();
-        ALCdevice *Device = alcGetContextsDevice(Context);
-        alcMakeContextCurrent(NULL);
-        alcDestroyContext(Context);
-        alcCloseDevice(Device);
+    }
+
+    ALCcontext *Context = alcGetCurrentContext();
+    ALCdevice *Device = alcGetContextsDevice(Context);
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(Context);
+    alcCloseDevice(Device);
 
 }
 
@@ -163,10 +164,10 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameS
 void check_n(XEvent *e)
 {
     int key =  XLookupKeysym(&e->xkey, 0);
-    
+
     if (e->type == KeyRelease) {
 	if(key =='n')
-		keycount++;
+	    keycount++;
     }
 }
 
@@ -180,46 +181,46 @@ void backstory(Rect r)
     ggprint16(&r, 16, 0x00ffffff, "[Enter] to Skip");
 
     if(keycount < 6) {
-    r.bot = yres/2 - 30;
-    r.left = (xres/2) -100;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "[n] to proceed");
+	r.bot = yres/2 - 30;
+	r.left = (xres/2) -100;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "[n] to proceed");
     }
     if(keycount == 0) {
-    r.bot = yres/2;
-    r.left = (xres/2) -180;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "Mission control to ExoExplorer...");
+	r.bot = yres/2;
+	r.left = (xres/2) -180;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "Mission control to ExoExplorer...");
     }
     if(keycount == 1) {
-    r.bot = yres/2;
-    r.left = (xres/2) -245;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "We heard your spaceship has been destroyed...");
+	r.bot = yres/2;
+	r.left = (xres/2) -245;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "We heard your spaceship has been destroyed...");
     }
     if(keycount == 2) {
-    r.bot = yres/2;
-    r.left = (xres/2) -380;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "We can lock in on you and hurl you closer and closer to earth with our tractor beams...");
+	r.bot = yres/2;
+	r.left = (xres/2) -380;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "We can lock in on you and hurl you closer and closer to earth with our tractor beams...");
     }
     if(keycount == 3) {
-    r.bot = yres/2;
-    r.left = (xres/2) -340;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "But you will first need to rid the area of enough asteroids, to ensure safety...");
+	r.bot = yres/2;
+	r.left = (xres/2) -340;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "But you will first need to rid the area of enough asteroids, to ensure safety...");
     }
     if(keycount == 4) {
-    r.bot = yres/2;
-    r.left = (xres/2) -300;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "One last thing, Aliens have been spotted in this area so be careful...");
+	r.bot = yres/2;
+	r.left = (xres/2) -300;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "One last thing, Aliens have been spotted in this area so be careful...");
     }
     if(keycount == 5) {
-    r.bot = yres/2;
-    r.left = (xres/2) -90;
-    r.center = 0;
-    ggprint16(&r, 16, 0x00ffffff, "Goodluck...");
+	r.bot = yres/2;
+	r.left = (xres/2) -90;
+	r.center = 0;
+	ggprint16(&r, 16, 0x00ffffff, "Goodluck...");
     }
     if(keycount >= 6) {
 	r.bot = yres/2 - 30;
