@@ -1,7 +1,10 @@
 //Author: Sean Nickell
-//Purpose of file: audio/visual/level system
+//Project: Space Escape
+//Purpose of file: audio/visual/level system/backstory
 //also responsible for composing all the sound files from scratch
-//Date Modified: 4/27/17
+//many textures from scratch as well
+//Date Modified: 5/09/17
+
 #include <GL/glx.h>
 #include "typedefine.h"
 #include </usr/include/AL/alut.h>
@@ -144,7 +147,8 @@ void showLevel(Rect r, int levelnum)
 }
 
 //Similar to restart, resets all the stats except score
-void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameStartMenu)
+void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g,
+	bool GameStartMenu)
 {
     health = 300;
     fuel = 300;
@@ -152,8 +156,10 @@ void nextLevel(int &health, float &fuel, int &bulletsRemain, Game *g, bool GameS
     g->ahead = NULL;
     g->big_asteroids = 0;
     g->nbullets = 0;
+
     for(int i=0; i<4; i++) 
 	initBigAsteroid(g, GameStartMenu);
+
     g->astronaut.pos[0] = 10.0;
     g->astronaut.pos[1] = 20.0;
     g->astronaut.vel[0] = 0.0;
@@ -196,25 +202,29 @@ void backstory(Rect r)
 	r.bot = yres/2;
 	r.left = (xres/2) -245;
 	r.center = 0;
-	ggprint16(&r, 16, 0x00ffffff, "We heard your spaceship has been destroyed...");
+	ggprint16(&r, 16, 0x00ffffff,
+		"We heard your spaceship has been destroyed...");
     }
     if(keycount == 2) {
 	r.bot = yres/2;
-	r.left = (xres/2) -380;
+	r.left = (xres/2) -280;
 	r.center = 0;
-	ggprint16(&r, 16, 0x00ffffff, "We can lock in on you and hurl you closer and closer to earth with our tractor beams...");
+	ggprint16(&r, 16, 0x00ffffff,
+		"We can hurl you closer to earth with our tractor beams");
     }
     if(keycount == 3) {
 	r.bot = yres/2;
-	r.left = (xres/2) -340;
+	r.left = (xres/2) -280;
 	r.center = 0;
-	ggprint16(&r, 16, 0x00ffffff, "But you will first need to rid the area of enough asteroids, to ensure safety...");
+	ggprint16(&r, 16, 0x00ffffff,
+		"To ensure safety, you'll need to rid the area asteroids...");
     }
     if(keycount == 4) {
 	r.bot = yres/2;
-	r.left = (xres/2) -300;
+	r.left = (xres/2) -280;
 	r.center = 0;
-	ggprint16(&r, 16, 0x00ffffff, "One last thing, Aliens have been spotted in this area so be careful...");
+	ggprint16(&r, 16, 0x00ffffff,
+		"Also, Aliens have been spotted in this area so be careful");
     }
     if(keycount == 5) {
 	r.bot = yres/2;
